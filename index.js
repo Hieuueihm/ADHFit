@@ -8,4 +8,4 @@ import Home from './src/screens/home/Home';
 import { name as appName } from './app.json';
 import Donutchart from './src/components/Donutchart';
 
-AppRegistry.registerComponent(appName, () => () => AppS);
+AppRegistry.registerComponent(appName, () => App);

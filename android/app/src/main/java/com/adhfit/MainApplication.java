@@ -9,11 +9,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
-<<<<<<< HEAD
 import com.oblador.vectoricons.VectorIconsPackage;
-=======
 // import com.oblador.vectoricons.VectorIconsPackage;
->>>>>>> 9150f5dd997ccf4e116bb8b82693140426632d63
 
 public class MainApplication extends Application implements ReactApplication {
 
