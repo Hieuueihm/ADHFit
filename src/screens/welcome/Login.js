@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert } from "react-native";
-import { COLORS, APP_NAME } from '../../constants/index.js';
+import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 
@@ -26,7 +26,7 @@ const Login = () => {
         >
             <View style={styles.layoutLogo}>
                 <Image
-                    source={require('../assets/logos/logo.png')}
+                    source={require('../../assets/logos/logo.png')}
                     style={styles.mainLogo}
                 />
             </View>
@@ -236,13 +236,13 @@ const Login = () => {
                 }}>
                     <TouchableOpacity
                     >
-                        <Image source={require('../assets/logos/facebook.png')} />
+                        <Image source={require('../../assets/logos/facebook.png')} />
                     </TouchableOpacity>
                     <TouchableOpacity>
-                        <Image source={require('../assets/logos/google.png')} />
+                        <Image source={require('../../assets/logos/google.png')} />
                     </TouchableOpacity>
                     <TouchableOpacity>
-                        <Image source={require('../assets/logos/github.png')} />
+                        <Image source={require('../../assets/logos/github.png')} />
                     </TouchableOpacity>
                 </View>
             </View>

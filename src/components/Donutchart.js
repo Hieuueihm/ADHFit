@@ -3,8 +3,8 @@ import { View, StyleSheet, Text } from "react-native";
 import Svg, { G, Circle } from "react-native-svg";
 
 //export các cái dữ liệu này nếu cần.
-export const targetAmount = 3211;   // cái này là target
-export const spentAmount = 3000      //  Cai nay la so buoc chan chay duoc 
+export const targetAmount = 5000;   // cái này là target
+export const spentAmount = 0     //  Cai nay la so buoc chan chay duoc 
 
 const Donutchart = () => {
   const radius = 70;
