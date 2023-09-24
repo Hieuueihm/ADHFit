@@ -1,13 +1,13 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import Svg, { G, Circle } from "react-native-svg";
-
+import Countdown from "../screens/welcome/Coutdown";
 //export các cái dữ liệu này nếu cần.
-export const targetAmount = 3211;   // cái này là target
-export const spentAmount = 3000      //  Cai nay la so buoc chan chay duoc 
+export const targetAmount = 5000;   // cái này là target
+export const spentAmount =  2000//  Cai nay la so buoc chan chay duoc 
 
 const Donutchart = () => {
-  const radius = 70;
+  const radius = 20;
   const circleCircumference = 2 * Math.PI * radius;
 
   const percentage = (spentAmount / targetAmount) * 100;
@@ -25,7 +25,7 @@ const Donutchart = () => {
               r={radius}
               stroke="#6ce5e8"
               fill="transparent"
-              strokeWidth="30"
+              strokeWidth="5"    // điều chỉnh độ béo gầy của bánh donut
             />
             <Circle
               cx="50%"
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     textAlign: "center",
     fontWeight: "600",
-    fontSize: 18,
+    fontSize: 10,
     color: "#394867",
   },
 });
