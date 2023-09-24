@@ -3,23 +3,73 @@ import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacit
 import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
+import { userGetCaptcha, userLogin } from "../../api/UserAPI.js";
+
+import { useNavigation } from '@react-navigation/native';
+import Home from "../home/Home.js";
+
 
 const Login = () => {
+    const navigation = useNavigation();
     const [isTextInputEmailFocused, setIsTextInputEmailFocused] = useState(false);
     const [isTextInputCaptchaFocused, setIsTextInputCaptchaFocused] = useState(false);
     const [email, setEmail] = useState('');
+    const [captchaInput, setCaptchaInput] = useState('');
+    const [captcha, setCaptcha] = useState('');
+    const [isClickCaptcha, setIsClickCaptcha] = useState(false)
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
-
     };
     const handleGetCaptcha = () => {
         if (!validateEmail(email)) {
             Alert.alert('Lỗi email', 'Vui lòng nhập đúng đinh dạng email');
             return;
+        } else {
+            setIsClickCaptcha(true);
+            userGetCaptcha({
+                "email": email
+            }).then(async (result) => {
+                // console.log(result);
+                if (result.status === 200) {
+                    console.log("Captcha đã được xử lý thành công!");
+                    // viết logic để chuyển giao diện
+                }
+            })
+                .catch(err => console.log(err))
         }
 
     };
+
+    const handleLogin = async () => {
+        const captchaRegex = /^\d{6}$/;
+        const isCaptchaValid = captchaRegex.test(captchaInput);
+
+        if (validateEmail(email)) {
+
+            // Thực hiện các tác vụ sau khi captcha hợp lệ
+            if (isCaptchaValid) {
+                userLogin({
+                    "email": email,
+                    "captcha": captchaInput
+                })
+                    .then(async (result) => {
+                        if (result.data.status == 200) {
+                            navigation.navigate('Home')
+                        } else {
+                            alert("Mã captcha sai!");
+                        }
+                    })
+                    .catch(error => console.log(error))
+            } else {
+                alert("Captcha không hợp lệ. Vui lòng nhập lại!");
+                // Thông báo lỗi cho người dùng hoặc thực hiện các tác vụ khác khi captcha không hợp lệ
+            }
+
+        } else {
+            alert("email không hợp lệ");
+        }
+    }
     return (
         <SafeAreaView
             style={styles.container}
@@ -96,8 +146,8 @@ const Login = () => {
 
                         }}
                         placeholderTextColor={COLORS.grey}
-                        keyboardType="email-address"W
-
+                        keyboardType="email-address"
+                        editable={!isClickCaptcha}
                     />
                 </View>
 
@@ -124,6 +174,7 @@ const Login = () => {
                         placeholder="Captcha"
                         onFocus={() => setIsTextInputCaptchaFocused(true)}
                         onBlur={() => setIsTextInputCaptchaFocused(false)}
+                        onChangeText={text => setCaptchaInput(text)}
                         style={{
                             flex: 1,
                             paddingVertical: 0,
@@ -133,7 +184,6 @@ const Login = () => {
                         placeholderTextColor={COLORS.grey}
 
                         keyboardType="number-pad"
-
                     />
                 </View>
 
@@ -168,6 +218,8 @@ const Login = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                    onPress={handleLogin}
+
                     style={{
                         backgroundColor: COLORS.signin,
                         padding: 10,
