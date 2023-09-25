@@ -29,3 +29,19 @@ export const userLogin = async (data) => {
         return error;
     }
 }
+
+
+export const userLoginFacebook = async (data) => {
+    try {
+        const response = await APIManager('user/loginfacebook', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error;
+    }
+}

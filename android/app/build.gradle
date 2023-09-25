@@ -131,8 +131,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     
 
-    //  implementation 'com.facebook.android:facebook-login:latest.release'
-    //     implementation project(':react-native-fbsdk-next')
+     implementation 'com.facebook.android:facebook-login:latest.release'
+        implementation project(':react-native-fbsdk-next')
     //     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 
 
