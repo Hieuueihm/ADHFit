@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert } from "react-native";
+import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert, ActivityIndicator } from "react-native";
 import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
@@ -15,8 +15,10 @@ const Login = () => {
     const [isTextInputCaptchaFocused, setIsTextInputCaptchaFocused] = useState(false);
     const [email, setEmail] = useState('');
     const [captchaInput, setCaptchaInput] = useState('');
-    const [captcha, setCaptcha] = useState('');
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
+    const [loadingCaptcha, setLoadingCaptcha] = useState(false);
+    const [loadingLogin, setLoadingLogin] = useState(false)
+
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -26,17 +28,22 @@ const Login = () => {
             Alert.alert('Lỗi email', 'Vui lòng nhập đúng đinh dạng email');
             return;
         } else {
+            setLoadingCaptcha(true);
             setIsClickCaptcha(true);
             userGetCaptcha({
                 "email": email
             }).then(async (result) => {
                 // console.log(result);
-                if (result.status === 200) {
+                if (result.data.status === 200) {
+                    setLoadingCaptcha(false);
                     console.log("Captcha đã được xử lý thành công!");
                     // viết logic để chuyển giao diện
                 }
             })
-                .catch(err => console.log(err))
+                .catch(err => {
+                    setLoadingCaptcha(false);
+                    console.log(err)
+                })
         }
 
     };
@@ -46,21 +53,28 @@ const Login = () => {
         const isCaptchaValid = captchaRegex.test(captchaInput);
 
         if (validateEmail(email)) {
-
             // Thực hiện các tác vụ sau khi captcha hợp lệ
             if (isCaptchaValid) {
+                setLoadingLogin(true)
                 userLogin({
                     "email": email,
                     "captcha": captchaInput
                 })
                     .then(async (result) => {
-                        if (result.data.status == 200) {
-                            navigation.navigate('Home')
+                        if (result.data.status === 200) {
+                            setTimeout(() => {
+                                setLoadingLogin(false);
+                                navigation.navigate('Home');
+                            }, 1000);
                         } else {
+                            setLoadingLogin(false)
                             alert("Mã captcha sai!");
                         }
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        setLoadingLogin(false)
+                        console.log(error)
+                    })
             } else {
                 alert("Captcha không hợp lệ. Vui lòng nhập lại!");
                 // Thông báo lỗi cho người dùng hoặc thực hiện các tác vụ khác khi captcha không hợp lệ
@@ -201,6 +215,11 @@ const Login = () => {
                         borderWidth: 1
                     }}
                 >
+                    {loadingCaptcha && (
+                        <View style={styles.spinnerContainer}>
+                            <ActivityIndicator size="large" color="#0000ff" />
+                        </View>
+                    )}
                     <Text
                         style={{
                             color: COLORS.black,
@@ -208,8 +227,6 @@ const Login = () => {
                             textAlign: "center",
                             fontSize: 18,
                             fontWeight: "400"
-
-
                         }}
                     >
                         get Captcha
@@ -230,6 +247,11 @@ const Login = () => {
 
                     }}
                 >
+                    {loadingLogin && (
+                        <View style={styles.spinnerContainer}>
+                            <ActivityIndicator size="large" color="#0000ff" />
+                        </View>
+                    )}
                     <Text
                         style={{
                             color: COLORS.black,
@@ -320,7 +342,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-end',
         minHeight: 100,
-    }
+    },
+    spinnerContainer: {
+        ...StyleSheet.absoluteFillObject, // Để spinner trải dài trên toàn màn hình
+        backgroundColor: 'rgba(255,255,255,0.7)', // Để có một nền mờ (tuỳ chọn)
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 
