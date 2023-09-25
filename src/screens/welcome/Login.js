@@ -3,10 +3,12 @@ import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacit
 import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
-import { userGetCaptcha, userLogin } from "../../api/UserAPI.js";
-
+import { userGetCaptcha, userLogin, userLoginFacebook } from "../../api/UserAPI.js";
 import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
+import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
+
+
 
 
 const Login = () => {
@@ -47,7 +49,64 @@ const Login = () => {
         }
 
     };
+    const handleLoginFacebook = async () => {
+        LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+            function (result) {
+                if (result.isCancelled) {
+                    console.log("Login cancelled");
+                } else {
+                    const currentProfile = Profile.getCurrentProfile();
+                    currentProfile.then((profile) => {
+                        if (profile) {
+                            console.log("The current logged user is: " +
+                                profile.name
+                                + ". His profile id is: " +
+                                profile.userID
+                            );
+                            const emailRequest = new GraphRequest(
+                                '/me',
+                                {
+                                    accessToken: currentProfile.accessToken,
+                                    parameters: {
+                                        fields: { string: 'email' }
+                                    },
+                                },
+                                (error, result) => {
+                                    if (error) {
+                                        console.error(error);
+                                    } else {
+                                        // console.log("Email: " + result.email);
+                                        userLoginFacebook({
+                                            "email": result.email,
+                                            "name": profile.name
+                                        }).then(async (result) => {
+                                            // console.log(result)
+                                            if (result.data.success === true) {
+                                                navigation.navigate('Home');
+                                            } else {
+                                            }
+                                        })
+                                            .catch(error => {
+                                                setLoadingLogin(false)
+                                                console.log(error)
+                                            })
 
+                                    }
+                                }
+                            );
+
+                            new GraphRequestManager().addRequest(emailRequest).start();
+                        } else {
+                            console.log("No current profile found.");
+                        }
+                    });
+                }
+            },
+            function (error) {
+                console.log("Login fail with error: " + error);
+            }
+        );
+    };
     const handleLogin = async () => {
         const captchaRegex = /^\d{6}$/;
         const isCaptchaValid = captchaRegex.test(captchaInput);
@@ -309,6 +368,7 @@ const Login = () => {
                     flexDirection: 'row', justifyContent: 'space-around', marginTop: 40
                 }}>
                     <TouchableOpacity
+                        onPress={handleLoginFacebook}
                     >
                         <Image source={require('../../assets/logos/facebook.png')} />
                     </TouchableOpacity>
