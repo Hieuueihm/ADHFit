@@ -1,14 +1,23 @@
 import React, { useState } from "react";
-import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert } from "react-native";
+import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert, ActivityIndicator } from "react-native";
 import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
+<<<<<<< HEAD
 import { userGetCaptcha, userLogin } from "../../api/UserAPI.js";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
 import Timer from "../../components/Timer";
+=======
+import { userGetCaptcha, userLogin, userLoginFacebook } from "../../api/UserAPI.js";
+import { useNavigation } from '@react-navigation/native';
+import Home from "../home/Home.js";
+import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
+
+
+>>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
 
 
 const Login = () => {
@@ -17,9 +26,14 @@ const Login = () => {
     const [isTextInputCaptchaFocused, setIsTextInputCaptchaFocused] = useState(false);
     const [email, setEmail] = useState('');
     const [captchaInput, setCaptchaInput] = useState('');
-    const [captcha, setCaptcha] = useState('');
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
+<<<<<<< HEAD
     const [isshow, setishow] = useState(false) /********************************************************** */
+=======
+    const [loadingCaptcha, setLoadingCaptcha] = useState(false);
+    const [loadingLogin, setLoadingLogin] = useState(false)
+
+>>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -29,44 +43,116 @@ const Login = () => {
             Alert.alert('Lỗi email', 'Vui lòng nhập đúng đinh dạng email');
             return;
         } else {
+            setLoadingCaptcha(true);
             setIsClickCaptcha(true);
             setishow(true);  // show coutndown ra ngoai
             userGetCaptcha({
                 "email": email
             }).then(async (result) => {
                 // console.log(result);
-                if (result.status === 200) {
+                if (result.data.status === 200) {
+                    setLoadingCaptcha(false);
                     console.log("Captcha đã được xử lý thành công!");
                     // viết logic để chuyển giao diện
                 }
             })
-                .catch(err => console.log(err))
+                .catch(err => {
+                    setLoadingCaptcha(false);
+                    console.log(err)
+                })
         }
 
     };
+<<<<<<< HEAD
     const hide = () => {
         setishow(false);
+=======
+    const handleLoginFacebook = async () => {
+        LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+            function (result) {
+                if (result.isCancelled) {
+                    console.log("Login cancelled");
+                } else {
+                    const currentProfile = Profile.getCurrentProfile();
+                    currentProfile.then((profile) => {
+                        if (profile) {
+                            console.log("The current logged user is: " +
+                                profile.name
+                                + ". His profile id is: " +
+                                profile.userID
+                            );
+                            const emailRequest = new GraphRequest(
+                                '/me',
+                                {
+                                    accessToken: currentProfile.accessToken,
+                                    parameters: {
+                                        fields: { string: 'email' }
+                                    },
+                                },
+                                (error, result) => {
+                                    if (error) {
+                                        console.error(error);
+                                    } else {
+                                        // console.log("Email: " + result.email);
+                                        userLoginFacebook({
+                                            "email": result.email,
+                                            "name": profile.name
+                                        }).then(async (result) => {
+                                            // console.log(result)
+                                            if (result.data.success === true) {
+                                                navigation.navigate('Home');
+                                            } else {
+                                            }
+                                        })
+                                            .catch(error => {
+                                                setLoadingLogin(false)
+                                                console.log(error)
+                                            })
+
+                                    }
+                                }
+                            );
+
+                            new GraphRequestManager().addRequest(emailRequest).start();
+                        } else {
+                            console.log("No current profile found.");
+                        }
+                    });
+                }
+            },
+            function (error) {
+                console.log("Login fail with error: " + error);
+            }
+        );
+>>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
     };
     const handleLogin = async () => {
         const captchaRegex = /^\d{6}$/;
         const isCaptchaValid = captchaRegex.test(captchaInput);
 
         if (validateEmail(email)) {
-
             // Thực hiện các tác vụ sau khi captcha hợp lệ
             if (isCaptchaValid) {
+                setLoadingLogin(true)
                 userLogin({
                     "email": email,
                     "captcha": captchaInput
                 })
                     .then(async (result) => {
-                        if (result.data.status == 200) {
-                            navigation.navigate('Home')
+                        if (result.data.status === 200) {
+                            setTimeout(() => {
+                                setLoadingLogin(false);
+                                navigation.navigate('Home');
+                            }, 1000);
                         } else {
+                            setLoadingLogin(false)
                             alert("Mã captcha sai!");
                         }
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        setLoadingLogin(false)
+                        console.log(error)
+                    })
             } else {
                 alert("Captcha không hợp lệ. Vui lòng nhập lại!");
                 // Thông báo lỗi cho người dùng hoặc thực hiện các tác vụ khác khi captcha không hợp lệ
@@ -247,11 +333,32 @@ const Login = () => {
 
                     }}
                 >
+<<<<<<< HEAD
                     get Captcha
 
                 </Text>
             </TouchableOpacity>
                 }
+=======
+                    {loadingCaptcha && (
+                        <View style={styles.spinnerContainer}>
+                            <ActivityIndicator size="large" color="#0000ff" />
+                        </View>
+                    )}
+                    <Text
+                        style={{
+                            color: COLORS.black,
+                            textTransform: "uppercase",
+                            textAlign: "center",
+                            fontSize: 18,
+                            fontWeight: "400"
+                        }}
+                    >
+                        get Captcha
+                    </Text>
+
+                </TouchableOpacity>
+>>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
 
                 <TouchableOpacity
                     onPress={handleLogin}
@@ -266,6 +373,11 @@ const Login = () => {
 
                     }}
                 >
+                    {loadingLogin && (
+                        <View style={styles.spinnerContainer}>
+                            <ActivityIndicator size="large" color="#0000ff" />
+                        </View>
+                    )}
                     <Text
                         style={{
                             color: COLORS.black,
@@ -323,6 +435,7 @@ const Login = () => {
                     flexDirection: 'row', justifyContent: 'space-around', marginTop: 40
                 }}>
                     <TouchableOpacity
+                        onPress={handleLoginFacebook}
                     >
                         <Image source={require('../../assets/logos/facebook.png')} />
                     </TouchableOpacity>
@@ -356,7 +469,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-end',
         minHeight: 100,
-    }
+    },
+    spinnerContainer: {
+        ...StyleSheet.absoluteFillObject, // Để spinner trải dài trên toàn màn hình
+        backgroundColor: 'rgba(255,255,255,0.7)', // Để có một nền mờ (tuỳ chọn)
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 

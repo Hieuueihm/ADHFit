@@ -11,6 +11,7 @@ import com.facebook.soloader.SoLoader;
 import java.util.List;
 import com.oblador.vectoricons.VectorIconsPackage;
 // import com.oblador.vectoricons.VectorIconsPackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
       // example:
       // packages.add(new MyReactNativePackage());
       // packages.add(new VectorIconsPackage());
+      // packages.add(new FBSDKPackage());
       return packages;
     }
 
