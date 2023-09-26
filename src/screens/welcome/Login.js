@@ -4,9 +4,11 @@ import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 import { userGetCaptcha, userLogin } from "../../api/UserAPI.js";
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
+import Timer from "../../components/Timer";
 
 
 const Login = () => {
@@ -17,6 +19,7 @@ const Login = () => {
     const [captchaInput, setCaptchaInput] = useState('');
     const [captcha, setCaptcha] = useState('');
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
+    const [isshow, setishow] = useState(false) /********************************************************** */
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -27,6 +30,7 @@ const Login = () => {
             return;
         } else {
             setIsClickCaptcha(true);
+            setishow(true);  // show coutndown ra ngoai
             userGetCaptcha({
                 "email": email
             }).then(async (result) => {
@@ -40,7 +44,9 @@ const Login = () => {
         }
 
     };
-
+    const hide = () => {
+        setishow(false);
+    };
     const handleLogin = async () => {
         const captchaRegex = /^\d{6}$/;
         const isCaptchaValid = captchaRegex.test(captchaInput);
@@ -96,7 +102,7 @@ const Login = () => {
                         color: COLORS.green,
                         fontSize: 24,
                         fontWeight: 500
-                    }}
+                    }}please
                 >
                     {APP_NAME.name}
                 </Text>
@@ -126,7 +132,7 @@ const Login = () => {
                     }}
                 >
                     <MaterialCommunityIcons
-                        name='email-outline'
+                        name={"email-outline"}
                         size={32}
                         color={isTextInputEmailFocused ? COLORS.green : COLORS.grey}
                         style={{
@@ -149,6 +155,12 @@ const Login = () => {
                         keyboardType="email-address"
                         editable={!isClickCaptcha}
                     />
+                    <View style={{
+                        flex:0.3,
+                        justifyContent:'flex-end',
+                        alignItems:'flex-end'
+                    }}>
+                    </View>
                 </View>
 
 
@@ -186,36 +198,60 @@ const Login = () => {
                         keyboardType="number-pad"
                     />
                 </View>
+                {isshow ?
+                <View
+                style={{
+                    flexDirection:'row',
+                    marginStart:130,
+                    marginBottom:20
+                }}>
+                    <Timer></Timer>
+                    <TouchableOpacity
+            Onpress = {hide}
+            style={{
+                justifyContent:'center',
+                marginLeft:66
+            }}>
+            <MaterialIcon
+            style={{
+                fontSize:35,
+                justifyContent:'center',
+                }}
+            name = {'cancel'}
+            color={'#D9D9D9'}
+            ></MaterialIcon>
 
-                <TouchableOpacity
-                    onPress={handleGetCaptcha}
+        </TouchableOpacity>
+                </View>
+                :   <TouchableOpacity
+                onPress={handleGetCaptcha}
+                style={{
+                    marginTop: 10,
+                    backgroundColor: COLORS.captcha,
+                    padding: 10,
+                    borderRadius: 30,
+                    marginBottom: 27,
+                    marginEnd: 46,
+                    marginStart: 46,
+                    borderColor: COLORS.black,
+                    borderWidth: 1
+                }}
+            >
+                <Text
                     style={{
-                        marginTop: 10,
-                        backgroundColor: COLORS.captcha,
-                        padding: 10,
-                        borderRadius: 30,
-                        marginBottom: 27,
-                        marginEnd: 46,
-                        marginStart: 46,
-                        borderColor: COLORS.black,
-                        borderWidth: 1
+                        color: COLORS.black,
+                        textTransform: "uppercase",
+                        textAlign: "center",
+                        fontSize: 18,
+                        fontWeight: "400"
+
                     }}
                 >
-                    <Text
-                        style={{
-                            color: COLORS.black,
-                            textTransform: "uppercase",
-                            textAlign: "center",
-                            fontSize: 18,
-                            fontWeight: "400"
+                    get Captcha
 
-
-                        }}
-                    >
-                        get Captcha
-                    </Text>
-
-                </TouchableOpacity>
+                </Text>
+            </TouchableOpacity>
+                }
 
                 <TouchableOpacity
                     onPress={handleLogin}
