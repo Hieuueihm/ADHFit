@@ -3,12 +3,21 @@ import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacit
 import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
+<<<<<<< HEAD
+import { userGetCaptcha, userLogin } from "../../api/UserAPI.js";
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+
+import { useNavigation } from '@react-navigation/native';
+import Home from "../home/Home.js";
+import Timer from "../../components/Timer";
+=======
 import { userGetCaptcha, userLogin, userLoginFacebook } from "../../api/UserAPI.js";
 import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
 import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
 
 
+>>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
 
 
 
@@ -19,9 +28,13 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [captchaInput, setCaptchaInput] = useState('');
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
+<<<<<<< HEAD
+    const [isshow, setishow] = useState(false) /********************************************************** */
+=======
     const [loadingCaptcha, setLoadingCaptcha] = useState(false);
     const [loadingLogin, setLoadingLogin] = useState(false)
 
+>>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -33,6 +46,7 @@ const Login = () => {
         } else {
             setLoadingCaptcha(true);
             setIsClickCaptcha(true);
+            setishow(true);  // show coutndown ra ngoai
             userGetCaptcha({
                 "email": email
             }).then(async (result) => {
@@ -50,6 +64,10 @@ const Login = () => {
         }
 
     };
+<<<<<<< HEAD
+    const hide = () => {
+        setishow(false);
+=======
     const handleLoginFacebook = async () => {
         LoginManager.logInWithPermissions(["public_profile", "email"]).then(
             function (result) {
@@ -107,6 +125,7 @@ const Login = () => {
                 console.log("Login fail with error: " + error);
             }
         );
+>>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
     };
     const handleLogin = async () => {
         const captchaRegex = /^\d{6}$/;
@@ -172,7 +191,7 @@ const Login = () => {
                         color: COLORS.green,
                         fontSize: 24,
                         fontWeight: 500
-                    }}
+                    }}please
                 >
                     {APP_NAME.name}
                 </Text>
@@ -202,7 +221,7 @@ const Login = () => {
                     }}
                 >
                     <MaterialCommunityIcons
-                        name='email-outline'
+                        name={"email-outline"}
                         size={32}
                         color={isTextInputEmailFocused ? COLORS.green : COLORS.grey}
                         style={{
@@ -225,6 +244,12 @@ const Login = () => {
                         keyboardType="email-address"
                         editable={!isClickCaptcha}
                     />
+                    <View style={{
+                        flex:0.3,
+                        justifyContent:'flex-end',
+                        alignItems:'flex-end'
+                    }}>
+                    </View>
                 </View>
 
 
@@ -262,21 +287,62 @@ const Login = () => {
                         keyboardType="number-pad"
                     />
                 </View>
+                {isshow ?
+                <View
+                style={{
+                    flexDirection:'row',
+                    marginStart:130,
+                    marginBottom:20
+                }}>
+                    <Timer></Timer>
+                    <TouchableOpacity
+            Onpress = {hide}
+            style={{
+                justifyContent:'center',
+                marginLeft:66
+            }}>
+            <MaterialIcon
+            style={{
+                fontSize:35,
+                justifyContent:'center',
+                }}
+            name = {'cancel'}
+            color={'#D9D9D9'}
+            ></MaterialIcon>
 
-                <TouchableOpacity
-                    onPress={handleGetCaptcha}
+        </TouchableOpacity>
+                </View>
+                :   <TouchableOpacity
+                onPress={handleGetCaptcha}
+                style={{
+                    marginTop: 10,
+                    backgroundColor: COLORS.captcha,
+                    padding: 10,
+                    borderRadius: 30,
+                    marginBottom: 27,
+                    marginEnd: 46,
+                    marginStart: 46,
+                    borderColor: COLORS.black,
+                    borderWidth: 1
+                }}
+            >
+                <Text
                     style={{
-                        marginTop: 10,
-                        backgroundColor: COLORS.captcha,
-                        padding: 10,
-                        borderRadius: 30,
-                        marginBottom: 27,
-                        marginEnd: 46,
-                        marginStart: 46,
-                        borderColor: COLORS.black,
-                        borderWidth: 1
+                        color: COLORS.black,
+                        textTransform: "uppercase",
+                        textAlign: "center",
+                        fontSize: 18,
+                        fontWeight: "400"
+
                     }}
                 >
+<<<<<<< HEAD
+                    get Captcha
+
+                </Text>
+            </TouchableOpacity>
+                }
+=======
                     {loadingCaptcha && (
                         <View style={styles.spinnerContainer}>
                             <ActivityIndicator size="large" color="#0000ff" />
@@ -295,6 +361,7 @@ const Login = () => {
                     </Text>
 
                 </TouchableOpacity>
+>>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
 
                 <TouchableOpacity
                     onPress={handleLogin}
