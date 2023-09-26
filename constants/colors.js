@@ -8,7 +8,8 @@ const COLORS = {
     black: "#000000",
     captcha: "rgba(218, 209, 209, 0.33)",
     signin: "rgba(157, 255, 173, 1)",
-    black29: "rgba(0, 0, 0, 0.29)"
+    black29: "rgba(0, 0, 0, 0.29)",
+    spin: "#cff1ae"
 }
 
 export default COLORS;
