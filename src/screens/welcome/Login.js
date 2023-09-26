@@ -3,21 +3,12 @@ import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacit
 import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
-<<<<<<< HEAD
 import { userGetCaptcha, userLogin } from "../../api/UserAPI.js";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
 import Timer from "../../components/Timer";
-=======
-import { userGetCaptcha, userLogin, userLoginFacebook } from "../../api/UserAPI.js";
-import { useNavigation } from '@react-navigation/native';
-import Home from "../home/Home.js";
-import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
-
-
->>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
 
 
 const Login = () => {
@@ -27,13 +18,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [captchaInput, setCaptchaInput] = useState('');
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
-<<<<<<< HEAD
     const [isshow, setishow] = useState(false) /********************************************************** */
-=======
-    const [loadingCaptcha, setLoadingCaptcha] = useState(false);
-    const [loadingLogin, setLoadingLogin] = useState(false)
-
->>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -63,68 +48,8 @@ const Login = () => {
         }
 
     };
-<<<<<<< HEAD
     const hide = () => {
         setishow(false);
-=======
-    const handleLoginFacebook = async () => {
-        LoginManager.logInWithPermissions(["public_profile", "email"]).then(
-            function (result) {
-                if (result.isCancelled) {
-                    console.log("Login cancelled");
-                } else {
-                    const currentProfile = Profile.getCurrentProfile();
-                    currentProfile.then((profile) => {
-                        if (profile) {
-                            console.log("The current logged user is: " +
-                                profile.name
-                                + ". His profile id is: " +
-                                profile.userID
-                            );
-                            const emailRequest = new GraphRequest(
-                                '/me',
-                                {
-                                    accessToken: currentProfile.accessToken,
-                                    parameters: {
-                                        fields: { string: 'email' }
-                                    },
-                                },
-                                (error, result) => {
-                                    if (error) {
-                                        console.error(error);
-                                    } else {
-                                        // console.log("Email: " + result.email);
-                                        userLoginFacebook({
-                                            "email": result.email,
-                                            "name": profile.name
-                                        }).then(async (result) => {
-                                            // console.log(result)
-                                            if (result.data.success === true) {
-                                                navigation.navigate('Home');
-                                            } else {
-                                            }
-                                        })
-                                            .catch(error => {
-                                                setLoadingLogin(false)
-                                                console.log(error)
-                                            })
-
-                                    }
-                                }
-                            );
-
-                            new GraphRequestManager().addRequest(emailRequest).start();
-                        } else {
-                            console.log("No current profile found.");
-                        }
-                    });
-                }
-            },
-            function (error) {
-                console.log("Login fail with error: " + error);
-            }
-        );
->>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
     };
     const handleLogin = async () => {
         const captchaRegex = /^\d{6}$/;
@@ -333,32 +258,11 @@ const Login = () => {
 
                     }}
                 >
-<<<<<<< HEAD
                     get Captcha
 
                 </Text>
             </TouchableOpacity>
                 }
-=======
-                    {loadingCaptcha && (
-                        <View style={styles.spinnerContainer}>
-                            <ActivityIndicator size="large" color="#0000ff" />
-                        </View>
-                    )}
-                    <Text
-                        style={{
-                            color: COLORS.black,
-                            textTransform: "uppercase",
-                            textAlign: "center",
-                            fontSize: 18,
-                            fontWeight: "400"
-                        }}
-                    >
-                        get Captcha
-                    </Text>
-
-                </TouchableOpacity>
->>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
 
                 <TouchableOpacity
                     onPress={handleLogin}
