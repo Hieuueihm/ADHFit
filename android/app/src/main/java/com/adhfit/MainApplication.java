@@ -37,7 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected String getJSMainModuleName() {
       return "index";
     }
-
+  
     @Override
     protected boolean isNewArchEnabled() {
       return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
@@ -64,5 +64,5 @@ public class MainApplication extends Application implements ReactApplication {
       DefaultNewArchitectureEntryPoint.load();
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
-  }
+  } 
 }
