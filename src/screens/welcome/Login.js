@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert, ActivityIndicator } from "react-native";
 import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
@@ -18,6 +18,7 @@ import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-
 
 
 >>>>>>> aa70d6f7e8107c7db1b7d19e35fe7e3b9e15eb5b
+
 
 
 const Login = () => {
@@ -162,6 +163,7 @@ const Login = () => {
             alert("email không hợp lệ");
         }
     }
+
     return (
         <SafeAreaView
             style={styles.container}
@@ -182,6 +184,7 @@ const Login = () => {
 
                 }}
             >
+
                 <Text
                     style={{
                         marginBottom: 4,
@@ -438,12 +441,6 @@ const Login = () => {
                         onPress={handleLoginFacebook}
                     >
                         <Image source={require('../../assets/logos/facebook.png')} />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Image source={require('../../assets/logos/google.png')} />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Image source={require('../../assets/logos/github.png')} />
                     </TouchableOpacity>
                 </View>
             </View>
