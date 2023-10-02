@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Home from './src/screens/home/Home';
 import WeatherScreen from './src/screens/home/WeatherScreen';
 import Me from './src/screens/me/me';
+import EditInformation from './src/screens/me/editInformation';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
         <Stack.Screen name="Home" component={Home}
           options={{ headerShown: false }}
         /> */}
-        <Stack.Screen name="Me" component={Me} options={{ headerShown: false }}
+        <Stack.Screen name="Me" component={EditInformation} options={{ headerShown: false }}
         />
         {/* <Stack.Screen name="Notifications" component={Notifications} />
       <Stack.Screen name="Profile" component={Profile} />
