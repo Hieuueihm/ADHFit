@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert, ActivityIndicator } from "react-native";
 import { COLORS, APP_NAME } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
-import { userGetCaptcha, userLogin } from "../../api/UserAPI.js";
+
+
+import { userGetCaptcha, userLogin, userLoginFacebook } from "../../api/UserAPI.js";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
 import Timer from "../../components/Timer";
+import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
+
+
 
 
 const Login = () => {
@@ -18,7 +23,9 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [captchaInput, setCaptchaInput] = useState('');
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
-    const [isshow, setishow] = useState(false) /********************************************************** */
+    const [loadingLogin, setLoadingLogin] = useState(false);
+
+
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -28,29 +35,81 @@ const Login = () => {
             Alert.alert('Lỗi email', 'Vui lòng nhập đúng đinh dạng email');
             return;
         } else {
-            setLoadingCaptcha(true);
             setIsClickCaptcha(true);
-            setishow(true);  // show coutndown ra ngoai
             userGetCaptcha({
                 "email": email
             }).then(async (result) => {
                 // console.log(result);
                 if (result.data.status === 200) {
-                    setLoadingCaptcha(false);
                     console.log("Captcha đã được xử lý thành công!");
                     // viết logic để chuyển giao diện
                 }
+
             })
                 .catch(err => {
-                    setLoadingCaptcha(false);
                     console.log(err)
                 })
         }
 
     };
-    const hide = () => {
-        setishow(false);
-    };
+    const handleLoginFacebook = async () => {
+        LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+            function (result) {
+                if (result.isCancelled) {
+                    console.log("Login cancelled");
+                } else {
+                    const currentProfile = Profile.getCurrentProfile();
+                    currentProfile.then((profile) => {
+                        if (profile) {
+                            console.log("The current logged user is: " +
+                                profile.name
+                                + ". His profile id is: " +
+                                profile.userID
+                            );
+                            const emailRequest = new GraphRequest(
+                                '/me',
+                                {
+                                    accessToken: currentProfile.accessToken,
+                                    parameters: {
+                                        fields: { string: 'email' }
+                                    },
+                                },
+                                (error, result) => {
+                                    if (error) {
+                                        console.error(error);
+                                    } else {
+                                        // console.log("Email: " + result.email);
+                                        userLoginFacebook({
+                                            "email": result.email,
+                                            "name": profile.name
+                                        }).then(async (result) => {
+                                            // console.log(result)
+                                            if (result.data.success === true) {
+                                                navigation.navigate('Home');
+                                            } else {
+                                            }
+                                        })
+                                            .catch(error => {
+                                                setLoadingLogin(false)
+                                                console.log(error)
+                                            })
+
+                                    }
+                                }
+                            );
+
+                            new GraphRequestManager().addRequest(emailRequest).start();
+                        } else {
+                            console.log("No current profile found.");
+                        }
+                    });
+                }
+            },
+            function (error) {
+                console.log("Login fail with error: " + error);
+            }
+        );
+    }
     const handleLogin = async () => {
         const captchaRegex = /^\d{6}$/;
         const isCaptchaValid = captchaRegex.test(captchaInput);
@@ -87,6 +146,9 @@ const Login = () => {
             alert("email không hợp lệ");
         }
     }
+    const handleOnTimerEnd = () => {
+        setIsClickCaptcha(false)
+    }
     return (
         <SafeAreaView
             style={styles.container}
@@ -113,7 +175,7 @@ const Login = () => {
                         color: COLORS.green,
                         fontSize: 24,
                         fontWeight: 500
-                    }}please
+                    }} please
                 >
                     {APP_NAME.name}
                 </Text>
@@ -167,9 +229,9 @@ const Login = () => {
                         editable={!isClickCaptcha}
                     />
                     <View style={{
-                        flex:0.3,
-                        justifyContent:'flex-end',
-                        alignItems:'flex-end'
+                        flex: 0.3,
+                        justifyContent: 'flex-end',
+                        alignItems: 'flex-end'
                     }}>
                     </View>
                 </View>
@@ -209,59 +271,60 @@ const Login = () => {
                         keyboardType="number-pad"
                     />
                 </View>
-                {isshow ?
-                <View
-                style={{
-                    flexDirection:'row',
-                    marginStart:130,
-                    marginBottom:20
-                }}>
-                    <Timer></Timer>
-                    <TouchableOpacity
-            Onpress = {hide}
-            style={{
-                justifyContent:'center',
-                marginLeft:66
-            }}>
-            <MaterialIcon
-            style={{
-                fontSize:35,
-                justifyContent:'center',
-                }}
-            name = {'cancel'}
-            color={'#D9D9D9'}
-            ></MaterialIcon>
+                {isClickCaptcha ?
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            marginStart: 135,
+                            marginBottom: 20
+                        }}>
+                        <Timer
+                            onTimerEnd={handleOnTimerEnd}
+                        ></Timer>
+                        <TouchableOpacity
+                            onPress={() => setIsClickCaptcha(false)}
+                            style={{
+                                justifyContent: 'center',
+                                marginLeft: 66
+                            }}>
+                            <MaterialIcon
+                                style={{
+                                    fontSize: 35,
+                                    justifyContent: 'center',
+                                }}
+                                name={'cancel'}
+                                color={'#D9D9D9'}
+                            ></MaterialIcon>
 
-        </TouchableOpacity>
-                </View>
-                :   <TouchableOpacity
-                onPress={handleGetCaptcha}
-                style={{
-                    marginTop: 10,
-                    backgroundColor: COLORS.captcha,
-                    padding: 10,
-                    borderRadius: 30,
-                    marginBottom: 27,
-                    marginEnd: 46,
-                    marginStart: 46,
-                    borderColor: COLORS.black,
-                    borderWidth: 1
-                }}
-            >
-                <Text
-                    style={{
-                        color: COLORS.black,
-                        textTransform: "uppercase",
-                        textAlign: "center",
-                        fontSize: 18,
-                        fontWeight: "400"
+                        </TouchableOpacity>
+                    </View>
+                    : <TouchableOpacity
+                        onPress={handleGetCaptcha}
+                        style={{
+                            marginTop: 10,
+                            backgroundColor: COLORS.captcha,
+                            padding: 10,
+                            borderRadius: 30,
+                            marginBottom: 27,
+                            marginEnd: 46,
+                            marginStart: 46,
+                            borderColor: COLORS.black,
+                            borderWidth: 1
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: COLORS.black,
+                                textTransform: "uppercase",
+                                textAlign: "center",
+                                fontSize: 18,
+                                fontWeight: "400"
 
-                    }}
-                >
-                    get Captcha
-
-                </Text>
-            </TouchableOpacity>
+                            }}
+                        >
+                            get Captcha
+                        </Text>
+                    </TouchableOpacity>
                 }
 
                 <TouchableOpacity
@@ -279,7 +342,7 @@ const Login = () => {
                 >
                     {loadingLogin && (
                         <View style={styles.spinnerContainer}>
-                            <ActivityIndicator size="large" color="#0000ff" />
+                            <ActivityIndicator size="large" color={COLORS.signin} />
                         </View>
                     )}
                     <Text
@@ -342,12 +405,6 @@ const Login = () => {
                         onPress={handleLoginFacebook}
                     >
                         <Image source={require('../../assets/logos/facebook.png')} />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Image source={require('../../assets/logos/google.png')} />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Image source={require('../../assets/logos/github.png')} />
                     </TouchableOpacity>
                 </View>
             </View>
