@@ -491,7 +491,6 @@ const Home = () => {
                             }}></FontAwesome6>
                     </TouchableOpacity>
                 </View>
-                <Taskbar></Taskbar>
             </ImageBackground>
         </SafeAreaView>
     )

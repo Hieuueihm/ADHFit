@@ -10,7 +10,8 @@ import AppWithSplashScreen from './src/screens/welcome/splash/AppWithSplashScree
 import Sleeptracking from './src/screens/home/Sleeptracking';
 import Liinechart from './src/components/Liinechart';
 import Steps from './src/screens/home/Steps';
-import Taskbar from './src/components/Taskbar';
+import Taskbar2 from './src/components/Taskbar2';
+import OnboardingScreen from './src/screens/welcome/onboarding/Onboarding';
 
 
-AppRegistry.registerComponent(appName, () => Home);
+AppRegistry.registerComponent(appName, () => OnboardingScreen);
