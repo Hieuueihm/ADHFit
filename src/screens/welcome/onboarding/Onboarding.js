@@ -27,7 +27,7 @@ const OnboardingScreen = () => (
             {
                 backgroundColor: '#F9FB86',
                 image: <Image source={require('../../../assets/images/strong.png')} />,
-                title: 'Become stronger',
+                title: 'And Become stronger',
                 subtitle: "",
             },
         ]}

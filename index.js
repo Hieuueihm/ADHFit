@@ -9,9 +9,8 @@ import { name as appName } from './app.json';
 import AppWithSplashScreen from './src/screens/welcome/splash/AppWithSplashScreen';
 import Sleeptracking from './src/screens/home/Sleeptracking';
 import Liinechart from './src/components/Liinechart';
-import Steps from './src/screens/home/Steps';
-import Taskbar2 from './src/components/Taskbar2';
 import OnboardingScreen from './src/screens/welcome/onboarding/Onboarding';
+import ScreenWtaskbar from './src/screens/ScreenWtaskbar';
 
 
-AppRegistry.registerComponent(appName, () => OnboardingScreen);
+AppRegistry.registerComponent(appName, () => ScreenWtaskbar);

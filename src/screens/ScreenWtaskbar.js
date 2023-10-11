@@ -4,15 +4,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { View } from 'react-native';
 // Screens
-import Home from '../screens/home/Home';
-import Me from '../screens/me/me';
-
+import Home from './home/Home';
+import Me from './me/me';
 //Screen names
 const homeName = "Home";
 const me = "me";
 
 const Tab = createBottomTabNavigator();
-function Taskbar2() {
+function ScreenWtaskbar() {
     return (
         <NavigationContainer>
             <Tab.Navigator
@@ -58,4 +57,4 @@ function Taskbar2() {
     );
 }
 
-export default Taskbar2;
+export default ScreenWtaskbar;

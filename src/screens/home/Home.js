@@ -5,7 +5,6 @@ import Donutchart from "../../components/Donutchart"
 import LinearGradient from "react-native-linear-gradient"
 import Baarchart from "../../components/Baarchart"
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
-import Taskbar from "../../components/Taskbar"
 
 
 const dataHeart = {
