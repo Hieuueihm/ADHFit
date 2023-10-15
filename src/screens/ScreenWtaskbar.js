@@ -10,6 +10,8 @@ import Me from './me/me';
 const homeName = "Home";
 const me = "me";
 
+
+// Cái screen này cũng ko cần thiết nữa, vì t viết lại cái hàm này trong App.tsx rồi, cái này để test chơi chơi.
 const Tab = createBottomTabNavigator();
 function ScreenWtaskbar() {
     return (

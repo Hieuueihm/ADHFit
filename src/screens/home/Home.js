@@ -1,12 +1,13 @@
 import React from "react"
-import { Text, View, Image, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, ImageBackground } from "react-native"
+import { Text, View, Image, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, ImageBackground, Linking } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Donutchart from "../../components/Donutchart"
 import LinearGradient from "react-native-linear-gradient"
 import Baarchart from "../../components/Baarchart"
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
-
-
+import axios from "axios"
+import Listvideo from "./Listvideo"
+import { useNavigation } from '@react-navigation/native';
 const dataHeart = {
     labels: ["", "", "", "", "", "", "", "", "", "", "", ""],    // Label của trục x trong cái Barchat, nhưng ko có label nên để rỗng
     datasets: [
@@ -16,8 +17,26 @@ const dataHeart = {
     ]
 };
 
+//Chay video tren youtube
+const video1Url = "https://www.youtube.com/watch?v=_kGESn8ArrU";
+const video2Url = "https://www.youtube.com/watch?v=_FbwddBgCL4";
+const openYouTube = async (videoUrl) => {
+    try {
+        const response = await axios.get(videoUrl);
+        if (response.status === 200) {
+            const url = response.request.responseURL;
+            if (url) {
+                return Linking.openURL(url);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 
 const Home = () => {
+    const navigation = useNavigation();
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const currentTime = new Date();
@@ -160,7 +179,37 @@ const Home = () => {
                                     ></Image>
                                 </View>
                             </View>
-                            <Baarchart data={dataHeart} height={80} width={150} backgroundColor="#F3BDBD" Opacity={0} barPercentage={0.2} grid={false}></Baarchart>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    height: 80,
+                                    width: 180,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+                                <Text
+                                    style={{
+                                        color: 'black',
+                                        fontSize: 40,
+                                    }}>131</Text>
+                                <View
+                                    style={{
+                                        height: 80,
+                                        width: 50,
+                                        justifyContent: 'center'
+                                    }}>
+                                    <Image source={require("../../assets/icons/heart2.png")}
+                                        style={{
+                                            height: 30,
+                                            width: 30,
+                                        }}></Image>
+                                    <Text
+                                        style={{
+                                            fontSize: 24,
+                                            color: 'black',
+                                        }}>bpm</Text>
+                                </View>
+                            </View>
                         </TouchableOpacity>
 
                     </View>
@@ -261,6 +310,7 @@ const Home = () => {
                         }}>Video</Text>
                     <TouchableOpacity
                         activeOpacity={0.7}
+                        onPress={() => navigation.navigate('Listvideo')}
                     >
                         <Text
                             style={{
@@ -282,7 +332,7 @@ const Home = () => {
                         flexDirection: 'row',
                     }}>
                     <Image
-                        source={require('../../assets/images/flag.jpg')}
+                        source={require('../../assets/images/runVideo.png')}
                         style={{
                             margin: 5,
                             height: 55,
@@ -357,16 +407,17 @@ const Home = () => {
                                 marginLeft: 25,
                                 marginTop: 5,
                                 fontWeight: 'bold',
-                            }}>Quốc Ca Việt Nam</Text>
+                            }}>How to Run Correctly</Text>
                         <Text
                             style={{
                                 fontSize: 11,
                                 color: 'black',
                                 marginLeft: 25,
-                            }}>Văn Cao</Text>
+                            }}>Global Triathlon Network</Text>
                     </View>
                     <TouchableOpacity
                         activeOpacity={0.7}
+                        onPress={async () => await openYouTube(video1Url)}
                         style={{
                             height: 50,
                             width: 50,
@@ -392,7 +443,7 @@ const Home = () => {
                         flexDirection: 'row',
                     }}>
                     <Image
-                        source={require('../../assets/images/Partly.jpg')}
+                        source={require('../../assets/images/runVideo2.png')}
                         style={{
                             margin: 5,
                             height: 55,
@@ -467,16 +518,18 @@ const Home = () => {
                                 marginLeft: 25,
                                 marginTop: 5,
                                 fontWeight: 'bold',
-                            }}>Quốc Tế Ca</Text>
+                            }}>Video Make You A Faster Runner!
+                        </Text>
                         <Text
                             style={{
                                 fontSize: 11,
                                 color: 'black',
                                 marginLeft: 25,
-                            }}>Liên bang Xô Viết</Text>
+                            }}>Global Triathlon Network</Text>
                     </View>
                     <TouchableOpacity
                         activeOpacity={0.7}
+                        onPress={async () => await openYouTube(video2Url)}
                         style={{
                             height: 50,
                             width: 50,

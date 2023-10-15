@@ -11,6 +11,11 @@ import Sleeptracking from './src/screens/home/Sleeptracking';
 import Liinechart from './src/components/Liinechart';
 import OnboardingScreen from './src/screens/welcome/onboarding/Onboarding';
 import ScreenWtaskbar from './src/screens/ScreenWtaskbar';
+import Heart from './src/screens/home/Heart';
+import Steps from './src/screens/home/Steps';
+import Details from './src/screens/details/Details';
+import Login from './src/screens/welcome/Login';
+import TriangleView from './src/components/TriangleView';
 
 
-AppRegistry.registerComponent(appName, () => ScreenWtaskbar);
+AppRegistry.registerComponent(appName, () => Details);
