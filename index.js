@@ -16,6 +16,6 @@ import Steps from './src/screens/home/Steps';
 import Details from './src/screens/details/Details';
 import Login from './src/screens/welcome/Login';
 import TriangleView from './src/components/TriangleView';
+import Goals from './src/screens/me/Goals'
 
-
-AppRegistry.registerComponent(appName, () => Details);
+AppRegistry.registerComponent(appName, () => Goals);
