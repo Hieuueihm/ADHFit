@@ -3,7 +3,7 @@ import { View, SafeAreaView, Text, Image, Dimensions, TouchableOpacity, ImageBac
 import Svg, { Path } from 'react-native-svg';
 import Entypo from 'react-native-vector-icons/Entypo'
 import Donutchart from '../../components/Donutchart';
-import Rectanchart from './Rectanchart';
+import Rectanchart from '../../components/Rectanchart';
 import BaarChart2 from '../../components/Baarchart2';
 
 const currentTime = new Date();
@@ -37,10 +37,11 @@ const Steps = () => {
                         width: wi,
                         alignItems: 'center'
                     }}
-                >
-                    <Entypo
-                        name='chevron-left'
-                        size={34}></Entypo>
+                >   <TouchableOpacity>
+                        <Entypo
+                            name='chevron-left'
+                            size={34}></Entypo>
+                    </TouchableOpacity>
                     <Text
                         style={{
                             color: 'black',

@@ -403,7 +403,7 @@ const Sleeptracking = () => {
                                 marginTop: 15,
                             }}
                         >Weekly Sleep</Text>
-                        <Liinechart data={dataSleep} backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' Opacity={0}></Liinechart>
+                        <Liinechart height={200} width={300} data={dataSleep} backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' Opacity={0}></Liinechart>
                     </View>
                 </SafeAreaView>
             </ScrollView>
