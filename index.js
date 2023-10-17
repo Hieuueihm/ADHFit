@@ -19,3 +19,4 @@ import TriangleView from './src/components/TriangleView';
 import Goals from './src/screens/me/Goals'
 
 AppRegistry.registerComponent(appName, () => Goals);
+
