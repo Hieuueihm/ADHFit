@@ -10,6 +10,13 @@ import Listvideo from './src/screens/home/Listvideo';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { View } from 'react-native';
+import Details from './src/screens/details/Details';
+import BalancedDiet from './src/screens/details/healthyFood/BalancedDiet';
+import HealthyFood from './src/screens/details/healthyFood/HealthyFood';
+import WeightLoss from './src/screens/details/healthyFood/WeightLoss';
+import Fruit from './src/screens/details/healthyFood/Fruit';
+import ChooseOil from './src/screens/details/healthyFood/ChooseOil';
+import FoodandHeart from './src/screens/details/healthyFood/FoodandHeart';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,6 +38,10 @@ function ScreenWtaskbar() {
             iconName = focused ? 'settings' : 'settings-outline';
             background = focused ? '#BBF246' : 'white';
           }
+          else if (screenName = "Details") {
+            iconName = focused ? 'document-text' : 'document-text-outline';
+            background = focused ? '#BBF246' : 'white';
+          }
           return <View
             style={{
               borderRadius: 20,
@@ -44,6 +55,7 @@ function ScreenWtaskbar() {
         },
       })}>
       <Tab.Screen name={"Home"} component={Home} />
+      <Tab.Screen name={"Details"} component={Details} />
       <Tab.Screen name={"me"} component={Me} />
     </Tab.Navigator>
   );
@@ -64,6 +76,12 @@ function App() {
         {/*  Lam cho an See All o Home thi no hien ra full video */}
         <Stack.Screen name="ScreenWtaskbar" component={ScreenWtaskbar} options={{ headerShown: false }} />
         <Stack.Screen name="Listvideo" component={Listvideo} />
+        <Stack.Screen name="HealthyFood" component={HealthyFood} />
+        <Stack.Screen name="Balanced diet" component={BalancedDiet} />
+        <Stack.Screen name="WeightLoss" component={WeightLoss} />
+        <Stack.Screen name="Snacks" component={Fruit} />
+        <Stack.Screen name="Choose Oil" component={ChooseOil} />
+        <Stack.Screen name="Food and Heart" component={FoodandHeart} />
 
         <Stack.Screen name="Me" component={EditInformation} options={{ headerShown: false }}
         />

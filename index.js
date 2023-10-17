@@ -14,8 +14,14 @@ import ScreenWtaskbar from './src/screens/ScreenWtaskbar';
 import Heart from './src/screens/home/Heart';
 import Steps from './src/screens/home/Steps';
 import Details from './src/screens/details/Details';
+import HealthyFood from './src/screens/details/healthyFood/HealthyFood';
+import BalancedDiet from './src/screens/details/healthyFood/BalancedDiet';
+import WeightLoss from './src/screens/details/healthyFood/WeightLoss';
 import Login from './src/screens/welcome/Login';
-import TriangleView from './src/components/TriangleView';
+import Fruit from './src/screens/details/healthyFood/Fruit';
+import ChooseOil from './src/screens/details/healthyFood/ChooseOil';
+import FoodandHeart from './src/screens/details/healthyFood/FoodandHeart';
 
 
-AppRegistry.registerComponent(appName, () => Details);
+
+AppRegistry.registerComponent(appName, () => App);
