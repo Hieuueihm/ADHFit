@@ -3,9 +3,6 @@ import { View, Text, SafeAreaView, TextInput, Image, ImageBackground, Button, To
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS } from "../../../constants";
 
-<<<<<<< HEAD
-export default function Settings () {
-=======
 export default function Setting () {
 >>>>>>> 5c9a7159903bd3fe3e2af696f4cd06ffe1e6ce7e
     //Change Language
