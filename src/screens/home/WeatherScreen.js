@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, SafeAreaView, TextInput, ImageBackground } from 'react-native'
-import { COLORS } from "../../../constants";
+import { COLORS, ROUTES } from "../../../constants";
 import { TouchableOpacity, ScrollView } from "react-native";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -9,9 +9,11 @@ import { fetchLocations, fetchWeatherForecast } from '../../api/WeatherAPI';
 import UVLine from "./UVLine";
 import Feather from 'react-native-vector-icons/Feather';
 import ParabolaCurve from "./Parabol";
-
+import { useNavigation } from "@react-navigation/native";
 
 export default function WeatherScreen() {
+
+    const navigation = useNavigation();
     const [locations, setLocations] = useState([]);
     const [weather, setWeather] = useState({})
     const [selectedTab, setSelectedTab] = useState('hourly');
@@ -45,8 +47,6 @@ export default function WeatherScreen() {
         fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
             setWeather(data)
         })
-
-
     }, []);
 
     useEffect(() => {
@@ -103,6 +103,9 @@ export default function WeatherScreen() {
                 style={{ flexDirection: "row", marginTop: 24 }}
             >
                 <Ionicon name={"chevron-back"}
+                    onPress={() => {
+                        navigation.navigate(ROUTES.HOME_TAB)
+                    }}
                     style={{
                         fontSize: 30,
                         color: COLORS.black,
@@ -155,9 +158,8 @@ export default function WeatherScreen() {
                         <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>0</Text>
                     </View>
                 </View>
-
-
             </SafeAreaView>
+
 
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                 <Image
@@ -189,8 +191,10 @@ export default function WeatherScreen() {
                         textAlign: 'space-around', // Căn giữa các phần tử
                         marginTop: 8 // Tạo khoảng cách giữa hai dòng văn bản
                     }}>
-                        <Text style={{ color: COLORS.white, fontSize: 16 }}>Max: {forecast?.forecastday[0]?.day?.maxtemp_c}{'\u2103'}          </Text>
-                        <Text style={{ color: COLORS.white, fontSize: 16 }}>Min: {forecast?.forecastday[0]?.day?.mintemp_c}{'\u2103'}</Text>
+                        <Text style={{ color: COLORS.white, fontSize: 16 }}>Max: {forecast?.forecastday[0]?.day?.maxtemp_c}{'\u2103'}
+                        </Text>
+                        <Text style={{ color: COLORS.white, fontSize: 16 }}>Min: {forecast?.forecastday[0]?.day?.mintemp_c}{'\u2103'}
+                        </Text>
                     </View>
                 </View>
             </View>

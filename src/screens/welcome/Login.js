@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert, ActivityIndicator } from "react-native";
-import { COLORS, APP_NAME } from '../../../constants/index';
+import { COLORS, APP_NAME, ROUTES } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 
@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
 import Timer from "../../components/Timer";
 import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
+import { storeItem } from "../../utils/asyncStorage";
 
 
 
@@ -25,6 +26,12 @@ const Login = () => {
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
     const [loadingLogin, setLoadingLogin] = useState(false);
 
+
+    handleClear = () => {
+        setEmail('');
+        setCaptchaInput('');
+        setIsClickCaptcha(false);
+    }
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,7 +92,14 @@ const Login = () => {
                                         }).then(async (result) => {
                                             // console.log(result)
                                             if (result.data.success === true) {
-                                                navigation.navigate('Home');
+                                                storeItem('user_id', result.data._id);
+                                                console.log(result.data.isNewUser)
+                                                if (result.data.isNewUser === true) {
+                                                    navigation.navigate(ROUTES.EDIT_INFORMATION);
+                                                } else {
+                                                    navigation.navigate(ROUTES.HOME);
+
+                                                }
                                             } else {
                                             }
                                         })
@@ -113,37 +127,48 @@ const Login = () => {
     const handleLogin = async () => {
         const captchaRegex = /^\d{6}$/;
         const isCaptchaValid = captchaRegex.test(captchaInput);
-
-        if (validateEmail(email)) {
-            // Thực hiện các tác vụ sau khi captcha hợp lệ
-            if (isCaptchaValid) {
-                setLoadingLogin(true)
-                userLogin({
-                    "email": email,
-                    "captcha": captchaInput
-                })
-                    .then(async (result) => {
-                        if (result.data.status === 200) {
-                            setTimeout(() => {
-                                setLoadingLogin(false);
-                                navigation.navigate('Home');
-                            }, 1000);
-                        } else {
-                            setLoadingLogin(false)
-                            alert("Mã captcha sai!");
-                        }
-                    })
-                    .catch(error => {
-                        setLoadingLogin(false)
-                        console.log(error)
-                    })
-            } else {
-                alert("Captcha không hợp lệ. Vui lòng nhập lại!");
-                // Thông báo lỗi cho người dùng hoặc thực hiện các tác vụ khác khi captcha không hợp lệ
-            }
-
+        if (isClickCaptcha === false) {
+            alert('Vui lòng nhấn nút Captcha');
         } else {
-            alert("email không hợp lệ");
+
+            if (validateEmail(email)) {
+                // Thực hiện các tác vụ sau khi captcha hợp lệ
+                if (isCaptchaValid) {
+                    setLoadingLogin(true)
+                    userLogin({
+                        "email": email,
+                        "captcha": captchaInput
+                    })
+                        .then(async (result) => {
+                            if (result.data.status === 200) {
+                                storeItem('user_id', result.data._id);
+                                setLoadingLogin(false);
+                                if (result.data.isNewUser === true) {
+                                    navigation.navigate(ROUTES.EDIT_INFORMATION, {
+                                        'Login': 'login'
+                                    });
+                                } else {
+                                    navigation.navigate(ROUTES.HOME);
+                                }
+
+                                handleClear()
+                            } else {
+                                setLoadingLogin(false)
+                                alert("Mã captcha sai!");
+                            }
+                        })
+                        .catch(error => {
+                            setLoadingLogin(false)
+                            console.log(error)
+                        })
+                } else {
+                    alert("Captcha không hợp lệ. Vui lòng nhập lại!");
+                    // Thông báo lỗi cho người dùng hoặc thực hiện các tác vụ khác khi captcha không hợp lệ
+                }
+
+            } else {
+                alert("email không hợp lệ");
+            }
         }
     }
     const handleOnTimerEnd = () => {
@@ -217,6 +242,7 @@ const Login = () => {
                         onFocus={() => setIsTextInputEmailFocused(true)}
                         onBlur={() => setIsTextInputEmailFocused(false)}
                         onChangeText={text => setEmail(text)}
+                        value={email}
                         style={{
                             flex: 1,
                             paddingVertical: 0,
@@ -255,7 +281,7 @@ const Login = () => {
                         }}
                     ></MaterialCommunityIcons>
                     <TextInput
-
+                        value={captchaInput}
                         placeholder="Captcha"
                         onFocus={() => setIsTextInputCaptchaFocused(true)}
                         onBlur={() => setIsTextInputCaptchaFocused(false)}
