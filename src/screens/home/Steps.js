@@ -5,6 +5,8 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Donutchart from '../../components/Donutchart';
 import Rectanchart from '../../components/Rectanchart';
 import BaarChart2 from '../../components/Baarchart2';
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../../constants';
 
 const currentTime = new Date();
 const day = currentTime.getDay();          // Thứ trong tuần, nhung tra ve cac gia tri 0-6
@@ -16,6 +18,7 @@ const isHighlightFri = day === 5;
 const isHighlightSat = day === 6;
 const isHighlightSun = day === 0;
 const Steps = () => {
+    const navigation = useNavigation();
 
     const data = [3000, 4000, 600, 2000, 1000, 920, 1200]; // Dữ liệu của biểu đồ
 
@@ -36,8 +39,12 @@ const Steps = () => {
                         height: hei / 12,
                         width: wi,
                         alignItems: 'center'
-                    }}
-                >   <TouchableOpacity>
+                    }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate(ROUTES.HOME_TAB)
+                        }}
+                    >
                         <Entypo
                             name='chevron-left'
                             size={34}></Entypo>
@@ -47,7 +54,7 @@ const Steps = () => {
                             color: 'black',
                             fontSize: 24,
                             marginLeft: 5,
-                        }}>Steps</Text>
+                        }}>Steps & Kcals</Text>
                 </View>
                 <View
                     style={{

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, TextInput, ImageBackground, Image, Button, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, ImageBackground, Image, Button, TouchableOpacity, StyleSheet } from 'react-native'
 import { COLORS, ROUTES } from "../../../constants";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { alignContent } from "react-native-wind/dist/styles/flex/align-content";
@@ -147,18 +147,22 @@ export default function EditInformation({ route }) {
     return (
 
         <View style={{ flex: 1 }}>
+
+            {/*avatar*/}
+
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 40, marginBottom: 20 }}>
                 <TouchableOpacity>
                     <Image source={require('../../assets/images/avatar.png')} style={{ width: 120, height: 120 }} />
                 </TouchableOpacity>
             </View>
 
+
+
+            {/*Many setting*/}
+
             <View style={{ marginHorizontal: 30 }}>
-                <Text style={{ color: COLORS.bgBlack(1), fontSize: 18, marginVertical: 10 }}>Name</Text>
-                <TextInput style={{
-                    backgroundColor: COLORS.bgWhite(0.4), borderRadius: 10, borderWidth: 1,
-                    paddingHorizontal: 20, borderColor: 'rgba(185, 175, 245, 1)', color: COLORS.bgBlack(1),
-                }}
+                <Text style={styles.textTitle}>Name</Text>
+                <TextInput style={styles.TextInputS}
                     value={userName}
                     onChangeText={(text) => { setUserName(text) }}
                     maxLength={40}
@@ -170,14 +174,12 @@ export default function EditInformation({ route }) {
 
             <View style={{ marginHorizontal: 30, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
-                    <Text style={{ color: COLORS.bgBlack(1), fontSize: 18, marginVertical: 10 }}>Birthday</Text>
+                    <Text style={styles.textTitle}>Birthday</Text>
                     <View style={{ position: 'relative' }}>
                         <TextInput
-                            style={{
-                                backgroundColor: COLORS.bgWhite(0.4), borderRadius: 10, borderWidth: 1,
-                                paddingHorizontal: 20, borderColor: 'rgba(185, 175, 245, 1)', color: COLORS.bgBlack(1),
+                            style={[styles.TextInputS, {
                                 width: 160
-                            }}
+                            }]}
                             onChangeText={text => { setSelectedDate(text) }}
                             maxLength={40}
                             placeholder="dd/mm/yyyy"
@@ -195,13 +197,11 @@ export default function EditInformation({ route }) {
                     </View>
                 </View>
                 <View>
-                    <Text style={{ color: COLORS.bgBlack(1), fontSize: 18, marginVertical: 10 }}>Gender</Text>
+                    <Text style={styles.textTitle}>Gender</Text>
                     <DropDownPicker
-                        style={{
-                            backgroundColor: COLORS.bgWhite(0.4), borderRadius: 10, borderWidth: 1,
-                            paddingHorizontal: 20, borderColor: 'rgba(185, 175, 245, 1)', color: COLORS.bgBlack(1),
+                        style={[styles.TextInputS, {
                             width: 160
-                        }}
+                        }]}
                         open={openDropdown}
                         value={valueGender}
                         items={items}
@@ -220,24 +220,23 @@ export default function EditInformation({ route }) {
                     />
                 </View>
             </View>
+            {/*Date picker logic*/}
+
             {
-                isDatePickerVisible ? <CalendarPickerButton hide={hideDatePicker} handleSelectDate={handleSelectDate} maxDatePicker='today' />
+                isDatePickerVisible ? <CalendarPickerButton hide={hideDatePicker} handleSelectDate={handleSelectDate}
+                    maxDatePicker='today' />
                     :
                     (
                         <View>
 
-
                             <View style={{ marginHorizontal: 30, flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <View>
-                                    <Text style={{ color: COLORS.bgBlack(1), fontSize: 18, marginVertical: 10 }}>Height</Text>
+                                    <Text style={styles.textTitle}>Height</Text>
                                     <View style={{ position: 'relative' }}>
                                         <TextInput
-                                            style={{
-                                                backgroundColor: COLORS.bgWhite(0.4), borderRadius: 10, borderWidth: 1,
-                                                paddingHorizontal: 20, borderColor: 'rgba(185, 175, 245, 1)', color:
-                                                    COLORS.bgBlack(1),
+                                            style={[styles.TextInputS, {
                                                 width: 160
-                                            }}
+                                            }]}
                                             onChangeText={text => { setHeight(text) }}
                                             value={height}
                                             maxLength={40}
@@ -247,15 +246,12 @@ export default function EditInformation({ route }) {
                                     </View>
                                 </View>
                                 <View>
-                                    <Text style={{ color: COLORS.bgBlack(1), fontSize: 18, marginVertical: 10 }}>Weight</Text>
+                                    <Text style={styles.textTitle}>Weight</Text>
                                     <View style={{ position: 'relative' }}>
                                         <TextInput
-                                            style={{
-                                                backgroundColor: COLORS.bgWhite(0.4), borderRadius: 10, borderWidth: 1,
-                                                paddingHorizontal: 20, borderColor: 'rgba(185, 175, 245, 1)', color:
-                                                    COLORS.bgBlack(1),
+                                            style={[styles.TextInputS, {
                                                 width: 160
-                                            }}
+                                            }]}
                                             onChangeText={text => { setWeight(text) }}
                                             value={weight}
                                             maxLength={40}
@@ -269,15 +265,10 @@ export default function EditInformation({ route }) {
 
                                 <TouchableOpacity
                                     onPress={handleSave}
-                                    style={{
-                                        marginTop: 30, backgroundColor: 'rgba(0, 122, 255, 0.4)',
-                                        width: 200, height: 50, borderRadius: 20
-                                    }}>
-                                    <Text style={{
-                                        fontSize: 18, textAlign: 'center', paddingTop: 12, color:
-                                            COLORS.bgBlack(0.9), fontWeight: 500
-                                    }}>
-                                        Save</Text>
+                                    style={[styles.touchAble, {
+                                        backgroundColor: 'rgba(0, 122, 255, 0.4)',
+                                    }]}>
+                                    <Text style={styles.textButton}>Save</Text>
                                 </TouchableOpacity>
                                 {
                                     options === 'me'
@@ -285,16 +276,10 @@ export default function EditInformation({ route }) {
                                         null :
                                         <TouchableOpacity
                                             onPress={handleSignOut}
-                                            style={{
-                                                marginTop: 30, backgroundColor: 'rgba(185, 185, 185, 0.6)',
-                                                width: 200, height: 50, borderRadius: 20
-                                            }}>
-                                            <Text style={{
-                                                fontSize: 18, textAlign: 'center', paddingTop: 12, color:
-                                                    COLORS.bgBlack(0.9), fontWeight: 500
-                                            }}>
-                                                Sign Out
-                                            </Text>
+                                            style={[styles.touchAble, {
+                                                backgroundColor: 'rgba(185, 185, 185, 0.6)',
+                                            }]}>
+                                            <Text style={styles.textButton}>Sign Out</Text>
                                         </TouchableOpacity>
                                 }
                             </View>
@@ -305,3 +290,34 @@ export default function EditInformation({ route }) {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    touchAble: {
+        marginTop: 30,
+        width: 200,
+        height: 50,
+        borderRadius: 20
+    },
+    TextInputS: {
+        backgroundColor: COLORS.bgWhite(0.4),
+        borderRadius: 10,
+        borderWidth: 1,
+        paddingHorizontal:
+            20,
+        borderColor: 'rgba(185, 175, 245, 1)',
+        color: COLORS.bgBlack(1),
+    },
+    textButton: {
+        fontSize: 18,
+        textAlign: 'center',
+        paddingTop: 12,
+        color: COLORS.bgBlack(0.9),
+        // fontWeight: 500
+    },
+    textTitle: {
+        color: COLORS.bgBlack(1),
+        fontSize: 18,
+        marginVertical: 10
+
+    }
+})
