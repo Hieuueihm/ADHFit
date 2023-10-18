@@ -13,6 +13,9 @@ import com.oblador.vectoricons.VectorIconsPackage;
 // import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
+
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new DefaultReactNativeHost(this) {

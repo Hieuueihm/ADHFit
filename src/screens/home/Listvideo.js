@@ -3,7 +3,9 @@ import { View, SafeAreaView, Text, Image, Dimensions, TouchableOpacity, ImageBac
 import Svg, { Path } from 'react-native-svg';
 import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
-import axios from "axios"
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+import { ROUTES } from "../../../constants";
 
 //Url cac video
 const video1Url = "https://www.youtube.com/watch?v=_kGESn8ArrU";
@@ -33,6 +35,8 @@ const openYouTube = async (videoUrl) => {
     }
 };
 const Listvideo = () => {
+    const navigation = useNavigation();
+
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
     return (
@@ -51,7 +55,11 @@ const Listvideo = () => {
                         alignItems: 'center'
                     }}
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate(ROUTES.HOME_TAB)
+                        }}
+                    >
                         <Entypo
                             name='chevron-left'
                             size={34}></Entypo>
