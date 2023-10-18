@@ -116,10 +116,10 @@ const Home = () => {
                                 margin: 20,
                                 height: 50,
                                 width: 50,
-                                marginLeft: 26
+                                marginLeft: 15
                             }}>
                         </Image>
-                        <Text style={{ marginTop: 32, marginLeft: -32, fontSize: 18, fontWeight: 'bold' }}>
+                        <Text style={{ marginTop: 32, marginLeft: -18, fontSize: 18, fontWeight: 'bold' }}>
                             {current?.temp_c}{'\u2103'}
                         </Text>
                     </TouchableOpacity>
@@ -296,6 +296,9 @@ const Home = () => {
                             </LinearGradient>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(ROUTES.STEP)
+                            }}
                             activeOpacity={0.7}
                             // Ben phai goc duoi
                             style={{

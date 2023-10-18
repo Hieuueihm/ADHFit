@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, SafeAreaView, TextInput, Image, ImageBackground, Button, TouchableOpacity, StyleSheet, Alert } from "react-native"
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { COLORS } from "../../../constants";
+import { COLORS, ROUTES } from "../../../constants";
+import { useNavigation } from "@react-navigation/native";
 
-export default function Setting () {
+export default function Setting() {
+    const navigation = useNavigation();
     //Change Language
     const [currentLanguage, setCurrentLanguage] = useState('EN'); //setCurrentLanguage: EN
     const toggleLanguage = () => {
@@ -41,12 +43,17 @@ export default function Setting () {
             {/* headerSetting */}
             <View style={styles.header}>
                 <View style={styles.leftHeader}>
-                    <TouchableOpacity>
-                        <MaterialCommunityIcon name="chevron-left" style={styles.leftHeaderIcon}/>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate(ROUTES.ME_TAB);
+                        }
+                        }
+                    >
+                        <MaterialCommunityIcon name="chevron-left" style={styles.leftHeaderIcon} />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.centerHeader}>
-                    <Text style={{fontSize: 22, color: 'black', fontWeight: 'bold'}}>Settings</Text>
+                    <Text style={{ fontSize: 22, color: 'black', fontWeight: 'bold' }}>Settings</Text>
                 </View>
             </View>
 
@@ -57,7 +64,7 @@ export default function Setting () {
                         <Text style={styles.textContainer}>Change Password</Text>
                     </View>
                     <View>
-                         <TouchableOpacity style={styles.rightContainer}>
+                        <TouchableOpacity style={styles.rightContainer}>
                             <Image source={require('../../assets/icons/Private.png')} />
                         </TouchableOpacity>
                     </View>
@@ -67,7 +74,7 @@ export default function Setting () {
                         <Text style={styles.textContainer}>My Subscribtion</Text>
                     </View>
                     <View>
-                         <TouchableOpacity style={styles.rightContainer}>
+                        <TouchableOpacity style={styles.rightContainer}>
                             <Image source={require('../../assets/icons/mySubscribtion.png')} />
                         </TouchableOpacity>
                     </View>
@@ -78,7 +85,7 @@ export default function Setting () {
                     </View>
                     <View>
                         <TouchableOpacity style={styles.rightContainer}>
-                        <MaterialCommunityIcon name="chevron-right" style={{ color: COLORS.bgBlack(1), fontSize: 30 }} />
+                            <MaterialCommunityIcon name="chevron-right" style={{ color: COLORS.bgBlack(1), fontSize: 30 }} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -87,7 +94,7 @@ export default function Setting () {
                         <Text style={styles.textContainer}>Help & Support</Text>
                     </View>
                     <View>
-                         <TouchableOpacity style={styles.rightContainer}>
+                        <TouchableOpacity style={styles.rightContainer}>
                             <MaterialCommunityIcon name="chevron-right" style={{ color: COLORS.bgBlack(1), fontSize: 30 }} />
                         </TouchableOpacity>
                     </View>
@@ -97,12 +104,12 @@ export default function Setting () {
                         <Text style={styles.textContainer}>Language</Text>
                     </View>
                     <View>
-                    <TouchableOpacity style={styles.rightContainer} onPress={toggleLanguage}>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <Text style={{ fontSize: 15 }}>{currentLanguage}</Text>
-                            <MaterialCommunityIcon name="chevron-right" style={{ color: COLORS.bgBlack(1), fontSize: 30 }} />
-                        </View>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.rightContainer} onPress={toggleLanguage}>
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <Text style={{ fontSize: 15 }}>{currentLanguage}</Text>
+                                <MaterialCommunityIcon name="chevron-right" style={{ color: COLORS.bgBlack(1), fontSize: 30 }} />
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.blockContainer}>
@@ -110,7 +117,7 @@ export default function Setting () {
                         <Text style={styles.textContainer}>Logout</Text>
                     </View>
                     <View>
-                         <TouchableOpacity style={styles.rightContainer}>
+                        <TouchableOpacity style={styles.rightContainer}>
                             <Image source={require('../../assets/icons/Logout.png')} />
                         </TouchableOpacity>
                     </View>
@@ -148,8 +155,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     leftHeaderIcon: {
-        color: COLORS.bgBlack(1), 
-        fontSize: 30, 
+        color: COLORS.bgBlack(1),
+        fontSize: 30,
     },
     centerHeader: {
         flex: 2,
@@ -192,8 +199,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 80,
         weight: 343,
         height: 53,
-        paddingHorizontal:20,
-        paddingVertical:15
+        paddingHorizontal: 20,
+        paddingVertical: 15
     },
     textFooter: {
         color: 'black',
