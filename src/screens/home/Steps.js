@@ -22,7 +22,7 @@ const Steps = () => {
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
     return (
-        <SafeAreaView>
+        <View>
             <ImageBackground
                 source={require('../../assets/images/Layer1.png')}
                 style={{
@@ -307,7 +307,7 @@ const Steps = () => {
                     </View>
                 </View>
             </ImageBackground>
-        </SafeAreaView >
+        </View >
     );
 }
 

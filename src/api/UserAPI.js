@@ -47,3 +47,33 @@ export const userLoginFacebook = async (data) => {
 }
 
 
+export const handleGetUserInformation = async (data) => {
+    try {
+        const response = await APIManager('user/getInformation', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error
+    }
+}
+
+export const handleEditInformation = async (data) => {
+    try {
+        const response = await APIManager('user/editInformation', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error
+    }
+}
+

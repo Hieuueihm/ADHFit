@@ -2,6 +2,8 @@ import React from 'react';
 import { View, SafeAreaView, Text, Image, Dimensions, TouchableOpacity, ImageBackground, StyleSheet, ScrollView } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo'
 import Liinechart from '../../components/Liinechart'
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../../constants';
 
 //Data mo phong cai heart
 const dataHeart = {
@@ -15,6 +17,7 @@ const dataHeart = {
 
 // Lay kich thuoc cua cai man hinh thoi
 const Heart = () => {
+    const navigation = useNavigation();
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
 
@@ -35,7 +38,11 @@ const Heart = () => {
                         alignItems: 'center'
                     }}
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate(ROUTES.HOME_TAB)
+                        }}
+                    >
                         <Entypo
                             name='chevron-left'
                             size={34}></Entypo>
