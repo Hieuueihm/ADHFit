@@ -25,6 +25,19 @@ export default function Goals() {
           <View style={styles.contentHeader}>
             <Text style={{ fontSize: 25, color: 'black', fontWeight: 'bold' }}>Goals</Text>
           </View>
+
+          <View >
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(ROUTES.CHANGE_GOALS_SCREEN);
+              }}
+
+              style={{ backgroundColor: '#F5F8FF', padding: 4, borderRadius: 10 }}>
+              <Text style={{ fontWeight: 'bold' }}>Change</Text>
+            </TouchableOpacity>
+          </View>
+
+
         </View>
         {/**BottomHeader*/}
         <View style={styles.bottomHeader}>
@@ -46,50 +59,8 @@ export default function Goals() {
       {/*containerGoals */}
       <View style={styles.container}>
         <View style={styles.contentContainer}>
-          <Text style={styles.text1Container}>Goal Title</Text>
-          <Text style={styles.text2Container}>Healthy life</Text>
-        </View>
-        <View style={styles.contentContainer}>
           <Text style={styles.text1Container}>Reminder</Text>
           <Text style={styles.text2Container}>Every Day</Text>
-        </View>
-        <View style={styles.contentContainer}>
-          <Text style={styles.text1Container}>Maturity Date</Text>
-          <Text style={styles.text2Container}>12-12-2023</Text>
-        </View>
-      </View>
-
-      {/*footerGoals*/}
-      <View style={styles.footer}>
-        {/*TitleFooter*/}
-        <View style={styles.titleFooter}>
-          <Text style={{ fontSize: 23, color: 'black', fontWeight: 'bold' }}>Goal Preview</Text>
-        </View>
-        {/*AddContentFooter*/}
-        <TouchableOpacity style={styles.addContent}>
-          <Image source={require('../../assets/icons/add.png')} style={styles.imageAdd} />
-        </TouchableOpacity>
-        {/*ContentFooter*/}
-        <View style={styles.contentFooter}>
-          {/*contentFooter1*/}
-          <View style={styles.contentFooter1}>
-            <TouchableOpacity style={styles.iconFooter}>
-              <Image source={require('../../assets/icons/heart1.png')} style={styles.imageHeader} />
-            </TouchableOpacity>
-            <View>
-              <Text style={styles.titleFooter1}>Healthy life</Text>
-              <Text style={styles.textFooter}>2500 Steps, 1000 Km, 1000 Kcal</Text>
-            </View>
-          </View>
-          {/*line*/}
-          <Image source={require('../../assets/icons/line.png')} style={styles.line} />
-          {/*contentFooter2*/}
-          <View style={styles.contentFooter2}>
-            <TouchableOpacity>
-              <Image source={require('../../assets/icons/clock1.png')} style={styles.iconClock} />
-            </TouchableOpacity>
-            <Text style={styles.textFooter}>Deadline     11 December 2023</Text>
-          </View>
         </View>
       </View>
     </View>
@@ -126,7 +97,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   contentHeader: {
-    flex: 4,
+    flex: 3,
     alignItems: 'left'
   },
   //bottomHeader
@@ -164,12 +135,13 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    marginVertical: 10,
+    justifyContent: "center",
     backgroundColor: '#F5F8FF',
-    paddingVertical: 15,
+    paddingVertical: 30,
     borderRadius: 15,
     width: 340,
-    height: 72
+    height: 10,
   },
   text1Container: {
     fontSize: 13,
