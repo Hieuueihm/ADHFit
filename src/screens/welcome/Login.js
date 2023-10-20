@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert, ActivityIndicator } from "react-native";
-import { COLORS, APP_NAME } from '../../../constants/index';
+import { COLORS, APP_NAME, ROUTES } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 
@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
 import Timer from "../../components/Timer";
 import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
+import { storeItem } from "../../utils/asyncStorage";
 
 
 
@@ -25,6 +26,12 @@ const Login = () => {
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
     const [loadingLogin, setLoadingLogin] = useState(false);
 
+
+    handleClear = () => {
+        setEmail('');
+        setCaptchaInput('');
+        setIsClickCaptcha(false);
+    }
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,7 +92,14 @@ const Login = () => {
                                         }).then(async (result) => {
                                             // console.log(result)
                                             if (result.data.success === true) {
-                                                navigation.navigate('Home');
+                                                storeItem('user_id', result.data._id);
+                                                console.log(result.data.isNewUser)
+                                                if (result.data.isNewUser === true) {
+                                                    navigation.navigate(ROUTES.EDIT_INFORMATION);
+                                                } else {
+                                                    navigation.navigate(ROUTES.HOME);
+
+                                                }
                                             } else {
                                             }
                                         })
@@ -113,37 +127,48 @@ const Login = () => {
     const handleLogin = async () => {
         const captchaRegex = /^\d{6}$/;
         const isCaptchaValid = captchaRegex.test(captchaInput);
-
-        if (validateEmail(email)) {
-            // Thực hiện các tác vụ sau khi captcha hợp lệ
-            if (isCaptchaValid) {
-                setLoadingLogin(true)
-                userLogin({
-                    "email": email,
-                    "captcha": captchaInput
-                })
-                    .then(async (result) => {
-                        if (result.data.status === 200) {
-                            setTimeout(() => {
-                                setLoadingLogin(false);
-                                navigation.navigate('Home');
-                            }, 1000);
-                        } else {
-                            setLoadingLogin(false)
-                            alert("Mã captcha sai!");
-                        }
-                    })
-                    .catch(error => {
-                        setLoadingLogin(false)
-                        console.log(error)
-                    })
-            } else {
-                alert("Captcha không hợp lệ. Vui lòng nhập lại!");
-                // Thông báo lỗi cho người dùng hoặc thực hiện các tác vụ khác khi captcha không hợp lệ
-            }
-
+        if (isClickCaptcha === false) {
+            alert('Vui lòng nhấn nút Captcha');
         } else {
-            alert("email không hợp lệ");
+
+            if (validateEmail(email)) {
+                // Thực hiện các tác vụ sau khi captcha hợp lệ
+                if (isCaptchaValid) {
+                    setLoadingLogin(true)
+                    userLogin({
+                        "email": email,
+                        "captcha": captchaInput
+                    })
+                        .then(async (result) => {
+                            if (result.data.status === 200) {
+                                storeItem('user_id', result.data._id);
+                                setLoadingLogin(false);
+                                if (result.data.isNewUser === true) {
+                                    navigation.navigate(ROUTES.EDIT_INFORMATION, {
+                                        'Login': 'login'
+                                    });
+                                } else {
+                                    navigation.navigate(ROUTES.HOME);
+                                }
+
+                                handleClear()
+                            } else {
+                                setLoadingLogin(false)
+                                alert("Mã captcha sai!");
+                            }
+                        })
+                        .catch(error => {
+                            setLoadingLogin(false)
+                            console.log(error)
+                        })
+                } else {
+                    alert("Captcha không hợp lệ. Vui lòng nhập lại!");
+                    // Thông báo lỗi cho người dùng hoặc thực hiện các tác vụ khác khi captcha không hợp lệ
+                }
+
+            } else {
+                alert("email không hợp lệ");
+            }
         }
     }
     const handleOnTimerEnd = () => {
@@ -151,13 +176,12 @@ const Login = () => {
     }
     return (
         <SafeAreaView
-            style={styles.container}
-        >
+            style={styles.container}>
+            {/*Logo and Header*/}
             <View style={styles.layoutLogo}>
                 <Image
                     source={require('../../assets/logos/logo.png')}
-                    style={styles.mainLogo}
-                />
+                    style={styles.mainLogo} />
             </View>
 
             <View
@@ -167,43 +191,36 @@ const Login = () => {
                     alignItems: 'center',
                     maxHeight: 80
 
-                }}
-            >
+                }}>
                 <Text
                     style={{
                         marginBottom: 4,
                         color: COLORS.green,
                         fontSize: 24,
                         fontWeight: 500
-                    }} please
-                >
-                    {APP_NAME.name}
-                </Text>
+                    }}>{APP_NAME.name}</Text>
 
                 <Text
                     style={{
                         color: COLORS.grey1
-                    }}
-                >
-                    Please login to your account
-                </Text>
+                    }}>Please login to your account</Text>
             </View>
+
+            {/*Email and Captcha*/}
 
             <View
                 style={{
                     marginTop: 10,
                     paddingHorizontal: 32,
                     paddingEnd: 32
-                }}
-            >
+                }}>
                 <View
                     style={{
                         flexDirection: 'row',
                         borderBottomColor: isTextInputEmailFocused ? COLORS.green1 : COLORS.grey,
                         borderBottomWidth: 2,
                         marginBottom: 25,
-                    }}
-                >
+                    }}>
                     <MaterialCommunityIcons
                         name={"email-outline"}
                         size={32}
@@ -217,6 +234,7 @@ const Login = () => {
                         onFocus={() => setIsTextInputEmailFocused(true)}
                         onBlur={() => setIsTextInputEmailFocused(false)}
                         onChangeText={text => setEmail(text)}
+                        value={email}
                         style={{
                             flex: 1,
                             paddingVertical: 0,
@@ -244,8 +262,7 @@ const Login = () => {
                         borderBottomWidth: 2,
                         marginBottom: 25,
 
-                    }}
-                >
+                    }}>
                     <MaterialCommunityIcons
                         name='lock-outline'
                         size={32}
@@ -255,7 +272,7 @@ const Login = () => {
                         }}
                     ></MaterialCommunityIcons>
                     <TextInput
-
+                        value={captchaInput}
                         placeholder="Captcha"
                         onFocus={() => setIsTextInputCaptchaFocused(true)}
                         onBlur={() => setIsTextInputCaptchaFocused(false)}
@@ -268,64 +285,67 @@ const Login = () => {
                         }}
                         placeholderTextColor={COLORS.grey}
 
-                        keyboardType="number-pad"
-                    />
+                        keyboardType="number-pad" />
+
+
+                    {/*Captcha logic*/}
+
                 </View>
-                {isClickCaptcha ?
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            marginStart: 135,
-                            marginBottom: 20
-                        }}>
-                        <Timer
-                            onTimerEnd={handleOnTimerEnd}
-                        ></Timer>
-                        <TouchableOpacity
-                            onPress={() => setIsClickCaptcha(false)}
+                {
+                    isClickCaptcha ?
+                        <View
                             style={{
-                                justifyContent: 'center',
-                                marginLeft: 66
+                                flexDirection: 'row',
+                                marginStart: 135,
+                                marginBottom: 20
                             }}>
-                            <MaterialIcon
+                            <Timer
+                                onTimerEnd={handleOnTimerEnd}
+                            ></Timer>
+                            <TouchableOpacity
+                                onPress={() => setIsClickCaptcha(false)}
                                 style={{
-                                    fontSize: 35,
                                     justifyContent: 'center',
-                                }}
-                                name={'cancel'}
-                                color={'#D9D9D9'}
-                            ></MaterialIcon>
+                                    marginLeft: 66
+                                }}>
+                                <MaterialIcon
+                                    style={{
+                                        fontSize: 35,
+                                        justifyContent: 'center',
+                                    }}
+                                    name={'cancel'}
+                                    color={'#D9D9D9'}
+                                ></MaterialIcon>
 
-                        </TouchableOpacity>
-                    </View>
-                    : <TouchableOpacity
-                        onPress={handleGetCaptcha}
-                        style={{
-                            marginTop: 10,
-                            backgroundColor: COLORS.captcha,
-                            padding: 10,
-                            borderRadius: 30,
-                            marginBottom: 27,
-                            marginEnd: 46,
-                            marginStart: 46,
-                            borderColor: COLORS.black,
-                            borderWidth: 1
-                        }}
-                    >
-                        <Text
+                            </TouchableOpacity>
+                        </View>
+                        :
+                        <TouchableOpacity
+                            onPress={handleGetCaptcha}
                             style={{
-                                color: COLORS.black,
-                                textTransform: "uppercase",
-                                textAlign: "center",
-                                fontSize: 18,
-                                fontWeight: "400"
+                                marginTop: 10,
+                                backgroundColor: COLORS.captcha,
+                                padding: 10,
+                                borderRadius: 30,
+                                marginBottom: 27,
+                                marginEnd: 46,
+                                marginStart: 46,
+                                borderColor: COLORS.black,
+                                borderWidth: 1
+                            }}>
+                            <Text
+                                style={{
+                                    color: COLORS.black,
+                                    textTransform: "uppercase",
+                                    textAlign: "center",
+                                    fontSize: 18,
+                                    fontWeight: "400"
 
-                            }}
-                        >
-                            get Captcha
-                        </Text>
-                    </TouchableOpacity>
+                                }}>get Captcha</Text>
+                        </TouchableOpacity>
                 }
+
+                {/*Login btn*/}
 
                 <TouchableOpacity
                     onPress={handleLogin}
@@ -338,13 +358,14 @@ const Login = () => {
                         marginEnd: 80,
                         marginStart: 80,
 
-                    }}
-                >
-                    {loadingLogin && (
-                        <View style={styles.spinnerContainer}>
-                            <ActivityIndicator size="large" color={COLORS.signin} />
-                        </View>
-                    )}
+                    }}>
+                    {
+                        loadingLogin && (
+                            <View style={styles.spinnerContainer}>
+                                <ActivityIndicator size="large" color={COLORS.signin} />
+                            </View>
+                        )
+                    }
                     <Text
                         style={{
                             color: COLORS.black,
@@ -354,10 +375,7 @@ const Login = () => {
                             fontWeight: "400"
 
 
-                        }}
-                    >
-                        sign in
-                    </Text>
+                        }}>sign in</Text>
 
                 </TouchableOpacity>
 
@@ -367,8 +385,7 @@ const Login = () => {
                         marginTop: 10,
                         marginLeft: 10,
                         color: COLORS.black29
-                    }}
-                >Email did not receive verification code?</Text>
+                    }}>Email did not receive verification code?</Text>
 
                 <View style={{
                     alignItems: 'center',
@@ -382,10 +399,7 @@ const Login = () => {
                             backgroundColor: 'white',
                             position: 'relative',
                             zIndex: 1
-                        }}
-                    >
-                        OR SIGN IN WITH
-                    </Text>
+                        }}>OR SIGN IN WITH</Text>
                     <View
                         style={{
                             borderBottomWidth: 1,
@@ -394,9 +408,11 @@ const Login = () => {
                             position: 'absolute',
                             top: '70%',
                             zIndex: 0
-                        }}
-                    />
-                </View>
+                        }} /></View>
+
+
+
+                {/*Facebook*/}
 
                 <View style={{
                     flexDirection: 'row', justifyContent: 'space-around', marginTop: 40
@@ -408,8 +424,6 @@ const Login = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-
-
 
         </SafeAreaView >
     )

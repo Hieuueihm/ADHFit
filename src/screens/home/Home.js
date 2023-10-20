@@ -1,5 +1,5 @@
-import React from "react"
-import { Text, View, Image, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, ImageBackground, Linking } from "react-native"
+import React, { useState, useEffect } from "react"
+import { Text, View, Image, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, ImageBackground, Linking, ScrollView } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Donutchart from "../../components/Donutchart"
 import LinearGradient from "react-native-linear-gradient"
@@ -8,6 +8,8 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
 import axios from "axios"
 import Listvideo from "./Listvideo"
 import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from "../../../constants"
+import { fetchWeatherForecast } from "../../api/WeatherAPI"
 const dataHeart = {
     labels: ["", "", "", "", "", "", "", "", "", "", "", ""],    // Label của trục x trong cái Barchat, nhưng ko có label nên để rỗng
     datasets: [
@@ -36,6 +38,8 @@ const openYouTube = async (videoUrl) => {
 
 
 const Home = () => {
+
+
     const navigation = useNavigation();
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -47,8 +51,19 @@ const Home = () => {
     const day = currentTime.getDay();          // Thứ trong tuần, nhưng tra ve cac gia tri 0-6
     const dayName = daysOfWeek[day];           // Chuyen tu du lieu số sang thứ trong tuần
     const monthName = monthsOfYear[month];
+    const [weather, setWeather] = useState({})
+
+
+    useEffect(() => {
+        fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
+            setWeather(data)
+        })
+    }, []);
+    if (weather) {
+        var { current, location, forecast } = weather;
+    }
     return (
-        <SafeAreaView
+        <ScrollView
             style={{
                 flex: 1,
                 backgroundColor: '#FDEEEE'
@@ -90,16 +105,23 @@ const Home = () => {
                             }}>{dayName}, {dayOfmonth} {monthName}</Text>
                     </View>
                     <TouchableOpacity
+                        style={{ flexDirection: 'row' }}
+                        onPress={() => {
+                            navigation.navigate(ROUTES.WEATHER)
+                        }}
                         activeOpacity={0.7}>
                         <Image
                             //tuy tinh hinh thoi tiet ma lay anh thich hop
-                            source={require('../../assets/icons/cloudy.png')}
-                            style={{
+                            source={{ uri: `https:${current?.condition.icon}` }} style={{
                                 margin: 20,
                                 height: 50,
                                 width: 50,
-                                marginLeft: 50
-                            }}></Image>
+                                marginLeft: 15
+                            }}>
+                        </Image>
+                        <Text style={{ marginTop: 32, marginLeft: -18, fontSize: 18, fontWeight: 'bold' }}>
+                            {current?.temp_c}{'\u2103'}
+                        </Text>
                     </TouchableOpacity>
                 </View>
                 <View
@@ -119,6 +141,9 @@ const Home = () => {
                         }}
                     >
                         <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(ROUTES.STEP)
+                            }}
                             activeOpacity={0.7}    // do trong cua cai nut, neu = 1 thi an nut ko bi mo
                             //Goc tren ben trai
                             style={{
@@ -147,7 +172,11 @@ const Home = () => {
                             </View>
                             <Donutchart radius={60} target={7500} spent={4200} text="Steps" colorTarget='#FB3535' colorAmount="#483867" strokeTarget="15" strokeAmount="15" colorText='#483867' fontText={12} />
                         </TouchableOpacity>
+
                         <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(ROUTES.HEART)
+                            }}
                             activeOpacity={0.7}
                             // goc duoi ben trai
                             style={{
@@ -218,6 +247,9 @@ const Home = () => {
                         style={{
                         }}>
                         <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(ROUTES.SLEEPTRACKING)
+                            }}
                             activeOpacity={0.7}
                         // ben phai goc tren
                         >
@@ -264,6 +296,9 @@ const Home = () => {
                             </LinearGradient>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(ROUTES.STEP)
+                            }}
                             activeOpacity={0.7}
                             // Ben phai goc duoi
                             style={{
@@ -310,7 +345,7 @@ const Home = () => {
                         }}>Video</Text>
                     <TouchableOpacity
                         activeOpacity={0.7}
-                        onPress={() => navigation.navigate('Listvideo')}
+                        onPress={() => navigation.navigate(ROUTES.LIST_VIDEO)}
                     >
                         <Text
                             style={{
@@ -323,7 +358,7 @@ const Home = () => {
                 </View>
                 <View
                     style={{
-                        backgroundColor: '#F2E9E9',
+                        backgroundColor: '#FFFFFF',
                         marginTop: 10,
                         marginStart: 10,
                         marginEnd: 10,
@@ -434,8 +469,8 @@ const Home = () => {
 
                 <View   // cai thu 2
                     style={{
-                        backgroundColor: '#F2E9E9',
-                        marginTop: 10,
+                        backgroundColor: '#FFFFFF',
+                        marginTop: 35,
                         marginStart: 10,
                         marginEnd: 10,
                         height: 65,
@@ -544,7 +579,7 @@ const Home = () => {
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
-        </SafeAreaView>
+        </ScrollView>
     )
 }
 export default Home

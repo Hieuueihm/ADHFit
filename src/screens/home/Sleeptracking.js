@@ -3,8 +3,11 @@ import { Text, View, Image, SafeAreaView, Dimensions, TouchableOpacity, ScrollVi
 import Entypo from 'react-native-vector-icons/Entypo'
 import Donutchart from "../../components/Donutchart";
 import Liinechart from "../../components/Liinechart";
+import { useNavigation } from "@react-navigation/native";
+import { ROUTES } from "../../../constants";
 
 const Sleeptracking = () => {
+    const navigation = useNavigation();
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const currentTime = new Date();
@@ -50,6 +53,9 @@ const Sleeptracking = () => {
                             alignItems: 'center'
                         }}>
                         <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(ROUTES.HOME_TAB)
+                            }}
                             activeOpacity={0.8}>
                             <Entypo
                                 name="chevron-left"
@@ -403,7 +409,7 @@ const Sleeptracking = () => {
                                 marginTop: 15,
                             }}
                         >Weekly Sleep</Text>
-                        <Liinechart height={200} width={300} data={dataSleep} backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' Opacity={0}></Liinechart>
+                        <Liinechart height={200} width={300} data={dataSleep} colorLine="#225DF8" backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' Opacity={0}></Liinechart>
                     </View>
                 </SafeAreaView>
             </ScrollView>
