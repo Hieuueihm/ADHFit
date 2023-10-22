@@ -16,6 +16,8 @@ export default function Me() {
     const [height, setHeight] = useState(null);
     const [weight, setWeight] = useState(null);
     const [gender, setGender] = useState(null);
+    const [displayImage, setDisplayImage] = useState('');
+
 
     useEffect(() => {
         const loadData = async () => {
@@ -32,6 +34,9 @@ export default function Me() {
                             setWeight(String(response?.data?.userInfo?.weight));
                             setGmail(response?.data?.userInfo?.email);
                             setGender(response?.data?.userInfo?.gender)
+                            if (response?.data?.userInfo?.avatar != '') {
+                                setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
+                            }
 
 
 
@@ -56,8 +61,17 @@ export default function Me() {
         <View style={{ flex: 1 }}>
             {/*Name and email...*/}
 
-            <View style={{ flexDirection: 'row', marginTop: 30 }}>
-                <Image source={require('../../assets/images/avatar.png')} style={{ marginHorizontal: 20 }} />
+            <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                <Image
+                    source={
+                        displayImage === ''
+                            ?
+                            require('../../assets/images/avatar.png')
+                            :
+                            // require(selectedImage)
+                            { uri: displayImage }
+                    }
+                    style={{ marginHorizontal: 20, height: 58, width: 58, borderRadius: 60 }} />
                 <View style={{ marginVertical: 6, flex: 1 }}>
                     <Text style={{ color: COLORS.black, fontSize: 20, fontWeight: 'bold' }}>{userName}</Text>
                     <Text style={{ color: COLORS.grey, fontWeight: '600' }} >{gmail}</Text>

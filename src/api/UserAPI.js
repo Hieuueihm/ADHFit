@@ -67,7 +67,8 @@ export const handleEditInformation = async (data) => {
         const response = await APIManager('user/editInformation', {
             method: 'POST',
             headers: {
-                'content-type': 'application/json'
+                'Content-Type': 'multipart/form-data',
+
             },
             data: data
         })

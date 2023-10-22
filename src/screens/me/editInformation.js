@@ -11,10 +11,17 @@ import { handleGetUserInformation } from "../../api/UserAPI";
 import { getItem } from "../../utils/asyncStorage";
 import { handleEditInformation } from "../../api/UserAPI";
 
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import Modal from "react-native-modal";
+
 
 export default function EditInformation({ route }) {
 
     const options = route?.params?.options;
+
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
+    const [displayImage, setDisplayImage] = useState('');
 
     const navigation = useNavigation();
     const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
@@ -44,7 +51,10 @@ export default function EditInformation({ route }) {
                             setHeight(String(response?.data?.userInfo?.height));
                             setWeight(String(response?.data?.userInfo?.weight));
                             setValueGender(response?.data?.userInfo?.gender);
-                            setSelectedDate(response?.data?.userInfo?.dateOfBirth)
+                            setSelectedDate(response?.data?.userInfo?.dateOfBirth);
+                            if (response?.data?.userInfo?.avatar != '') {
+                                setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
+                            }
                         }
                     }
                 )
@@ -97,14 +107,25 @@ export default function EditInformation({ route }) {
         // xử lý xem đã nhập đủ thông tin hay chưa
         validateDataInput();
         const user_id = await getItem('user_id');
-        handleEditInformation({
-            'user_id': user_id,
-            'name': userName,
-            'dateOfBirth': selectedDate,
-            'gender': valueGender,
-            'height': height,
-            'weight': weight
-        })
+        const formData = new FormData();
+        if (selectedImage !== '') {
+
+            formData.append('avatar',
+                {
+                    uri: selectedImage?.uri,
+                    type: selectedImage?.type,
+                    name: selectedImage?.fileName
+                }
+            );
+        }
+        console.log(selectedImage)
+        formData.append('user_id', user_id)
+        formData.append('name', userName);
+        formData.append('dateOfBirth', selectedDate)
+        formData.append('gender', valueGender)
+        formData.append('height', height)
+        formData.append('weight', weight)
+        handleEditInformation(formData)
             .then((result) => {
                 if (result.data.success === true) {
                     alert('Lưu thông tin thành công');
@@ -144,6 +165,47 @@ export default function EditInformation({ route }) {
         setSelectedDate(handleCleanDate(date))
         hideDatePicker();
     }
+
+    const openImagePicker = (type) => {
+        const options = {
+            strorageOptions: {
+                mediaType: 'photo',
+                path: 'image'
+            },
+            includeBase64: true
+        }
+        if (type === 'album') {
+            launchImageLibrary(options, response => {
+                if (response.assets[0]) {
+                    setSelectedImage(response?.assets[0])
+                    setDisplayImage(response?.assets[0]?.uri)
+                }
+                // if (response.didCancel) {
+                //     console.log('User cancelled image picker');
+                // } else if (response.error) {
+                //     console.log('ImagePicker Error: ', response.error);
+                // } else {
+                //     console.log('Image Base64 String: ', response.assets[0]?.base64);
+                // }
+                toggleModal()
+            });
+        } else if (type === 'camera') {
+            launchCamera(options, response => {
+                // if (response.didCancel) {
+                //     console.log('User cancelled camera picker');
+                // } else if (response.error) {
+                //     console.log('CameraPicker Error: ', response.error);
+                // } else {
+                //     console.log('Image Base64 String: ', response.assets[0]?.base64);
+                // }
+            });
+        }
+    };
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+
+    }
     return (
 
         <View style={{ flex: 1 }}>
@@ -151,13 +213,45 @@ export default function EditInformation({ route }) {
             {/*avatar*/}
 
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 40, marginBottom: 20 }}>
-                <TouchableOpacity>
-                    <Image source={require('../../assets/images/avatar.png')} style={{ width: 120, height: 120 }} />
+                <TouchableOpacity onPress={toggleModal}>
+                    <Image source={
+                        displayImage === ''
+                            ?
+                            require('../../assets/images/avatar.png')
+                            :
+                            // require(selectedImage)
+                            { uri: displayImage }
+                    }
+                        style={displayImage === ''
+                            ?
+                            { width: 120, height: 120 }
+                            :
+                            {
+                                width: 120,
+                                height: 120,
+                                borderRadius: 60,
+                                overflow: 'hidden'
+                            }
+                        } />
                 </TouchableOpacity>
             </View>
-
-
-
+            <View>
+                <Modal isVisible={isModalVisible}>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => openImagePicker('album')}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>Album</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => openImagePicker('camera')}
+                            style={styles.button} >
+                            <Text style={styles.buttonText}>Take picture</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={toggleModal}>
+                            <Text style={[styles.buttonText, { color: 'red' }]}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            </View>
             {/*Many setting*/}
 
             <View style={{ marginHorizontal: 30 }}>
@@ -319,5 +413,23 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginVertical: 10
 
-    }
+    },
+    button: {
+        backgroundColor: COLORS.bgWhite(0.96),
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: 'black',
+        padding: 10,
+        marginBottom: 2,
+        width: 230,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'black',
+        fontSize: 16,
+    },
+
+
+
+
 })
