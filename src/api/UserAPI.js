@@ -78,3 +78,18 @@ export const handleEditInformation = async (data) => {
     }
 }
 
+export const handleUpdateTarget = async (data) => {
+    try {
+        const response = await APIManager('user/updateTarget', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error
+    }
+}
+

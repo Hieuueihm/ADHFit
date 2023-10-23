@@ -1,19 +1,26 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, SafeAreaView, TextInput, Image, ImageBackground, Button, TouchableOpacity, StyleSheet, Alert, ScrollView, TouchableWithoutFeedback } from "react-native"
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { ROUTES } from "../../../constants";
 import TickCheckbox from "../../components/Checkbox";
 import LinearGradient from "react-native-linear-gradient";
 import SwitchButton from "../../components/Switch";
+import { getItem } from "../../utils/asyncStorage";
+import { handleUpdateTarget } from "../../api/UserAPI";
 
 
 export default function ChangeGoalsScreen() {
+    const navigation = useNavigation();
     const [currentScreen, setCurrentScreen] = useState(1);
     const [scollViewHeight, setScrollViewHeight] = useState(0);
     const [selectedStep, setSelectedStep] = useState(null);
     const buttonText = currentScreen === 3 ? "Done" : "Next";
-    ; let stepsArray = [];
+    const [selectedStartTime, setSelectedStartTime] = useState(null);
+    let stepsArray = [];
+    const [isReminder, setIsRemider] = useState(false);
+    const [reminderTime, setReminderTime] = useState(null);
+    const [selectedDate, setSelectedDate] = useState([]);
     for (let i = 1000; i <= 30000; i += 100) {
         stepsArray.push(i)
     }
@@ -22,15 +29,49 @@ export default function ChangeGoalsScreen() {
     for (let i = 0; i <= 480; i += 1) {
         timeArray.push(i);
     }
-    const handleClick = () => {
-        if (currentScreen < 3) {
-            setCurrentScreen(currentScreen + 1);
-        } else {
-            setCurrentScreen(1);
+    const handleClick = async () => {
+        if (currentScreen === 1 && selectedStep === null) {
+            alert('Choose one target step');
         }
+        else if (currentScreen === 2 && selectedDate.length == 0) {
+            alert('Choose one day');
+        } else if (currentScreen === 3 && selectedStartTime === null) {
+            alert('Choose start time');
+        }
+        else {
+            if (currentScreen < 3) {
+                setCurrentScreen(currentScreen + 1);
+            } else {
+                const user_id = await getItem('user_id')
+                handleUpdateTarget({
+                    'user_id': user_id,
+                    'targetStep': selectedStep,
+                    'reminderDay': selectedDate,
+                    'dailyStartTime': selectedStartTime,
+                    'isReminder': isReminder,
+                    'reminderTime': reminderTime
+
+                }).then((result) => {
+                    if (result?.data?.success === true) {
+                        navigation.navigate(ROUTES.GOALS_SCREEN);
+                        alert('Cap nhat thong tin thanh cong');
+                    }
+                })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            }
+        }
+
+
         //    console.log(screens[currentScreen - 1])
     };
     const backHandleClick = () => {
+        if (currentScreen !== 1) {
+            setCurrentScreen(currentScreen - 1);
+        } else {
+            navigation.navigate(ROUTES.GOALS_SCREEN)
+        }
 
     }
     const handleStepPress = (step) => {
@@ -42,6 +83,19 @@ export default function ChangeGoalsScreen() {
         'Period',
         'Start time'
     ]
+    const handleClickRatio = (day) => {
+        setSelectedDate(prevDates => [...prevDates, day]);
+    }
+    const removeDateFromSelected = (dateToRemove) => {
+        setSelectedDate(prevDates => prevDates.filter(date => date !== dateToRemove));
+
+    }
+    const handleOnPress = (enable) => {
+        setIsRemider(enable);
+    }
+    const handleSetRemiderTime = (time) => {
+        setReminderTime("8");
+    }
     const screens = [
         <>
             <View style={[styles.rowContainer, {
@@ -75,6 +129,7 @@ export default function ChangeGoalsScreen() {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     height: 60,
+                                    fontWeight: isSelected ? 'bold' : 400,
                                     backgroundColor: isSelected ? '#81ACFF' : '#ccc',
                                 }}>
                                 <Text>{step}</Text>
@@ -110,13 +165,13 @@ export default function ChangeGoalsScreen() {
                 <Text style={{ fontSize: 16, color: '#81ACFF' }}>Sun</Text>
             </View>
             <View style={[styles.centerPosition]}>
-                <TickCheckbox />
-                <TickCheckbox />
-                <TickCheckbox />
-                <TickCheckbox />
-                <TickCheckbox />
-                <TickCheckbox />
-                <TickCheckbox />
+                <TickCheckbox day='Mon' handleClickRatio={handleClickRatio} handleUncheckRatio={removeDateFromSelected} selectedDate={selectedDate} />
+                <TickCheckbox day='Tue' handleClickRatio={handleClickRatio} handleUncheckRatio={removeDateFromSelected} selectedDate={selectedDate} />
+                <TickCheckbox day='Wed' handleClickRatio={handleClickRatio} handleUncheckRatio={removeDateFromSelected} selectedDate={selectedDate} />
+                <TickCheckbox day='Thu' handleClickRatio={handleClickRatio} handleUncheckRatio={removeDateFromSelected} selectedDate={selectedDate} />
+                <TickCheckbox day='Fri' handleClickRatio={handleClickRatio} handleUncheckRatio={removeDateFromSelected} selectedDate={selectedDate} />
+                <TickCheckbox day='Sat' handleClickRatio={handleClickRatio} handleUncheckRatio={removeDateFromSelected} selectedDate={selectedDate} />
+                <TickCheckbox day='Sun' handleClickRatio={handleClickRatio} handleUncheckRatio={removeDateFromSelected} selectedDate={selectedDate} />
             </View>
             <Image source={require("../../assets/images/changegoal2.png")}
                 style={{
@@ -153,13 +208,13 @@ export default function ChangeGoalsScreen() {
                         marginTop: 12,
                     }}>
                     {timeArray.map((time, index) => {
-                        const isSelected = selectedStep === time;
+                        const isSelected = selectedStartTime === time;
                         const displayValue = time % 24; // Sử dụng modulo 24 để lặp lại giá trị từ 0 đến 23
                         return (
 
                             <TouchableWithoutFeedback
                                 key={index}
-                                onPress={() => handleStepPress(time)}
+                                onPress={() => setSelectedStartTime(time)}
                             >
                                 <View
                                     style={{
@@ -187,12 +242,12 @@ export default function ChangeGoalsScreen() {
                 }}></Image>
             <View style={[styles.bottomSetting,]}>
                 <Text style={[styles.textBottom]}>Training remainder</Text>
-                <SwitchButton />
+                <SwitchButton handleOnPress={handleOnPress} />
             </View>
             <View style={[styles.bottomSetting,]}>
                 <Text style={[styles.textBottom]}>Reminder time</Text>
                 <Text style={{ fontSize: 16, marginLeft: 75, }}>8:00</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleSetRemiderTime}>
                     <MaterialCommunityIcon name="chevron-right" size={32}></MaterialCommunityIcon>
                 </TouchableOpacity>
             </View>
