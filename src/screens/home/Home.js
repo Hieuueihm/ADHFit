@@ -10,6 +10,9 @@ import Listvideo from "./Listvideo"
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from "../../../constants"
 import { fetchWeatherForecast } from "../../api/WeatherAPI"
+import { handleGetUserInformation } from "../../api/UserAPI"
+import { getItem } from "../../utils/asyncStorage"
+
 const dataHeart = {
     labels: ["", "", "", "", "", "", "", "", "", "", "", ""],    // Label của trục x trong cái Barchat, nhưng ko có label nên để rỗng
     datasets: [
@@ -53,15 +56,58 @@ const Home = () => {
     const monthName = monthsOfYear[month];
     const [weather, setWeather] = useState({})
 
+    const [displayImage, setDisplayImage] = useState('');
+    const [currentScreenTopRight, setCurrentScreenTopRight] = useState(0)
+
+
 
     useEffect(() => {
         fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
             setWeather(data)
         })
+        const loadData = async () => {
+            let userId = await getItem('user_id');
+
+            handleGetUserInformation({
+                "user_id": userId
+            })
+                .then(
+                    (response) => {
+                        if (response.data.success === true) {
+                            if (response?.data?.userInfo?.avatar != '') {
+                                setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
+                            }
+                        }
+                    }
+                )
+                .catch(error => {
+                    console.log(error)
+                })
+
+        }
+
+        loadData();
+
     }, []);
     if (weather) {
         var { current, location, forecast } = weather;
     }
+    const screensTopRight = [
+        <>
+            <Image
+                //tuy tinh hinh thoi tiet ma lay anh thich hop
+                source={{ uri: `https:${current?.condition.icon}` }} style={{
+                    margin: 20,
+                    height: 50,
+                    width: 50,
+                    marginLeft: 25
+                }}>
+            </Image>
+            <Text style={{ marginTop: 32, marginLeft: -18, fontSize: 18, fontWeight: 'bold' }}>
+                {current?.temp_c}{'\u2103'}
+            </Text>
+        </>
+    ]
     return (
         <ScrollView
             style={{
@@ -78,12 +124,18 @@ const Home = () => {
                         alignItems: 'center'
                     }}>
                     <Image
-                        source={require('../../assets/icons/avatar.png')}
+                        source={
+                            displayImage == ''
+                                ?
+                                require('../../assets/images/avatar.png')
+                                :
+                                { uri: displayImage }
+                        }
                         style={{
                             borderRadius: 30,
                             width: 60,
                             height: 60,
-                            marginStart: 5
+                            marginStart: 10
                         }}
                     ></Image>
                     <View
@@ -110,18 +162,10 @@ const Home = () => {
                             navigation.navigate(ROUTES.WEATHER)
                         }}
                         activeOpacity={0.7}>
-                        <Image
-                            //tuy tinh hinh thoi tiet ma lay anh thich hop
-                            source={{ uri: `https:${current?.condition.icon}` }} style={{
-                                margin: 20,
-                                height: 50,
-                                width: 50,
-                                marginLeft: 15
-                            }}>
-                        </Image>
-                        <Text style={{ marginTop: 32, marginLeft: -18, fontSize: 18, fontWeight: 'bold' }}>
-                            {current?.temp_c}{'\u2103'}
-                        </Text>
+                        {
+                            screensTopRight[currentScreenTopRight]
+                        }
+
                     </TouchableOpacity>
                 </View>
                 <View

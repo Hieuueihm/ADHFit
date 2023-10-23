@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { View } from 'react-native';
 import Details from './src/screens/details/Details';
 import BalancedDiet from './src/screens/details/healthyFood/BalancedDiet';
-import HealthyFood from './src/screens/details/healthyFood/HealthyFood';
+import HealthyFood from './src/screens/details/healthyFood/HealthyFood1';
 import WeightLoss from './src/screens/details/healthyFood/WeightLoss';
 import Fruit from './src/screens/details/healthyFood/Fruit';
 import ChooseOil from './src/screens/details/healthyFood/ChooseOil';
