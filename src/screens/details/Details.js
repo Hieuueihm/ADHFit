@@ -1,20 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, SafeAreaView, Dimensions, ScrollView } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo'
+import { useNavigation } from '@react-navigation/native';
 
 const Details = () => {
     //const navigation = useNavigation(); 
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
     return (
-        <SafeAreaView style={{ height: hei, width: wi,}}>
-            <View style={{ flexDirection: 'row', height: hei / 12, width: wi, alignItems: 'center', backgroundColor: '#DAD1D1'}}>
-                <Text style={{ color: 'black', fontSize: 24, marginLeft: 20,}}>Details and Tips</Text>
+        <SafeAreaView style={{ height: hei, width: wi, }}>
+            <View style={{ flexDirection: 'row', height: hei / 12, width: wi, alignItems: 'center', backgroundColor: '#DAD1D1' }}>
+                <Text style={{ color: 'black', fontSize: 24, marginLeft: 20, }}>Details and Tips</Text>
                 <Image source={require("../../assets/images/avatar.png")} style={{ width: 45, height: 45, marginLeft: 130, }}></Image>
             </View>
             <ImageBackground source={require("../../assets/images/Layer1.png")} style={{ height: hei, width: wi, }}>
                 <ScrollView>
                     <View style={styles.ScrollView}>
-   {/* BloodPressure */}<View style={styles.triangleCorner}></View>
+                        {/* BloodPressure */}<View style={styles.triangleCorner}></View>
                         <View style={styles.triangleCornerLayer}></View>
                         <View style={styles.triangleCorner1}>
                             <Image source={require("../../assets/icons/bloodPressure.png")} style={styles.iconRight}></Image>
@@ -23,31 +25,31 @@ const Details = () => {
                                 <Image source={require("../../assets/icons/arrowBlack.png")} style={styles.image}></Image>
                             </TouchableOpacity>
                         </View>
-      {/* BloodSugar */}<View style={{...styles.commonStyle, top: 205, width: 350, height: 100, borderRightWidth: 50, borderTopWidth: 80, borderTopColor: 'gray' }}></View>
-                        <View style={{...styles.commonStyle, top: 207, width: 347, height: 100, borderRightWidth: 47, borderTopWidth: 75, borderTopColor: 'white'}}></View>
-                        <View style={{...styles.commonStyle, top: 200, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#FD97E6' }}>
+                        {/* BloodSugar */}<View style={{ ...styles.commonStyle, top: 205, width: 350, height: 100, borderRightWidth: 50, borderTopWidth: 80, borderTopColor: 'gray' }}></View>
+                        <View style={{ ...styles.commonStyle, top: 207, width: 347, height: 100, borderRightWidth: 47, borderTopWidth: 75, borderTopColor: 'white' }}></View>
+                        <View style={{ ...styles.commonStyle, top: 200, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#FD97E6' }}>
                             <Image source={require("../../assets/icons/sugarBlood.png")} style={styles.iconRight}></Image>
                             <Text style={styles.text}>Blood Sugar</Text>
                             <TouchableOpacity style={styles.iconBack}>
                                 <Image source={require("../../assets/icons/arrowBlack.png")} style={styles.image}></Image>
                             </TouchableOpacity>
                         </View>
-       {/* WeightBMI */}<View style={{...styles.commonStyle, top: 355, width: 350, height: 100, borderRightWidth: 50, borderTopWidth: 80, borderTopColor: 'gray'}}></View>
-                        <View style={{...styles.commonStyle, top: 357, width: 347, height: 100, borderRightWidth: 47, borderTopWidth: 75, borderTopColor: 'white' }}></View>
-                        <View style={{...styles.commonStyle, top: 350, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#7EFC7C' }}>
+                        {/* WeightBMI */}<View style={{ ...styles.commonStyle, top: 355, width: 350, height: 100, borderRightWidth: 50, borderTopWidth: 80, borderTopColor: 'gray' }}></View>
+                        <View style={{ ...styles.commonStyle, top: 357, width: 347, height: 100, borderRightWidth: 47, borderTopWidth: 75, borderTopColor: 'white' }}></View>
+                        <View style={{ ...styles.commonStyle, top: 350, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#7EFC7C' }}>
                             <Image source={require("../../assets/icons/scale.png")} style={styles.iconRight}></Image>
                             <Text style={styles.text}>Weight and BMI</Text>
                             <TouchableOpacity style={styles.iconBack}>
                                 <Image source={require("../../assets/icons/arrowBlack.png")} style={styles.image}></Image>
                             </TouchableOpacity>
                         </View>
- {/* HealthyNutrition*/}<View style={{...styles.commonStyle, top: 505, width: 350, height: 100, borderRightWidth: 50, borderTopWidth: 80, borderTopColor: 'gray' }}></View>
-                        <View style={{...styles.commonStyle, top: 507, width: 347, height: 100, borderRightWidth: 47, borderTopWidth: 75, borderTopColor: 'white' }}></View>
-                        <View style={{...styles.commonStyle, top: 500, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#CFD230' }}>
+                        {/* HealthyNutrition*/}<View style={{ ...styles.commonStyle, top: 505, width: 350, height: 100, borderRightWidth: 50, borderTopWidth: 80, borderTopColor: 'gray' }}></View>
+                        <View style={{ ...styles.commonStyle, top: 507, width: 347, height: 100, borderRightWidth: 47, borderTopWidth: 75, borderTopColor: 'white' }}></View>
+                        <View style={{ ...styles.commonStyle, top: 500, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#CFD230' }}>
                             <Image source={require("../../assets/icons/healthyFood.png")} style={styles.iconRight}></Image>
                             <Text style={styles.text}>Healthy Nutrition</Text>
                             <TouchableOpacity style={styles.iconBack}>
-                                <Image source={require("../../assets/icons/arrowBlack.png")}style={styles.image}></Image>
+                                <Image source={require("../../assets/icons/arrowBlack.png")} style={styles.image}></Image>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingTop: 20,
         backgroundColor: '#ecf0f1',
-    }, 
+    },
     triangleCorner: {
         position: 'absolute',
         top: 55,
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 80,
         borderRightColor: 'transparent',
         borderTopColor: 'gray'
-    }, 
+    },
     triangleCorner1: {
         position: 'absolute',
         top: 50,
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 90,
         borderRightColor: 'transparent',
         borderTopColor: '#8BCEFF'
-    }, 
+    },
     triangleCornerLayer: {
         position: 'absolute',
         top: 57,
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
     },
     image: {
         height: 20,
-        width: 20,  
+        width: 20,
     },
     iconRight: {
         height: 40,
@@ -138,6 +140,6 @@ const styles = StyleSheet.create({
     iconBack: {
         position: 'relative',
         bottom: 145,
-        left: 260, 
+        left: 260,
     },
 });

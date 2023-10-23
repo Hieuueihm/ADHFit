@@ -50,9 +50,10 @@ const Listvideo = () => {
                 <View
                     style={{
                         flexDirection: 'row',
-                        height: hei / 12,
+                        height: hei / 14,
                         width: wi,
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        //    backgroundColor: 'yellow'
                     }}
                 >
                     <TouchableOpacity
@@ -73,7 +74,16 @@ const Listvideo = () => {
                 </View>
                 <ScrollView>
                     <View
-                        style={styles.box}>
+                        style={{
+                            backgroundColor: '#FFFFFF',
+                            marginTop: 5,
+                            marginBottom: 5,
+                            marginStart: 10,
+                            marginEnd: 10,
+                            height: 65,
+                            borderRadius: 15,
+                            flexDirection: 'row',
+                        }}>
                         <Image
                             source={require('../../assets/images/runVideo.png')}
                             style={styles.videoImage}>
@@ -928,8 +938,9 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     box: {
-        backgroundColor: '#F2E9E9',
+        backgroundColor: '#FFFFFF',
         marginTop: 20,
+        marginBottom: 5,
         marginStart: 10,
         marginEnd: 10,
         height: 65,

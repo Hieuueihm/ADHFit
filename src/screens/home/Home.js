@@ -402,7 +402,7 @@ const Home = () => {
                 </View>
                 <View
                     style={{
-                        backgroundColor: '#F2E9E9',
+                        backgroundColor: '#FFFFFF',
                         marginTop: 10,
                         marginStart: 10,
                         marginEnd: 10,
@@ -513,8 +513,8 @@ const Home = () => {
 
                 <View   // cai thu 2
                     style={{
-                        backgroundColor: '#F2E9E9',
-                        marginTop: 10,
+                        backgroundColor: '#FFFFFF',
+                        marginTop: 35,
                         marginStart: 10,
                         marginEnd: 10,
                         height: 65,

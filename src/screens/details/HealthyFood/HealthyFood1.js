@@ -4,11 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 
 const HealthyFood = () => {
     const navigation = useNavigation();
-    const text1="What is balanced diet?";
-    const text2="What is intermittent fasting?";
-    const text3="Healthy snack alternatives";
-    const text4="How to choose healthy cooking oil?";
-    const text5="Diet and heart health";
+    const text1 = "What is balanced diet?";
+    const text2 = "What is intermittent fasting?";
+    const text3 = "Healthy snack alternatives";
+    const text4 = "How to choose healthy cooking oil?";
+    const text5 = "Diet and heart health";
     const image1 = require("../../../assets/images/post1HealthyFood.jpg");
     const image2 = require("../../../assets/images/post2HealthyFood.jpg");
     const image3 = require("../../../assets/images/post3HealthyFood.jpg");
@@ -16,8 +16,8 @@ const HealthyFood = () => {
     const image5 = require("../../../assets/images/post5HealthyFood.jpg");
     return (
         <SafeAreaView>
-            <ImageBackground source={require("../../../assets/images/Layer1.png")}style={{height: Dimensions.get("window").height,width: Dimensions.get("window").width,}}>
-                <View style={{height: Dimensions.get("window").height, width: Dimensions.get("window").width, alignItems: 'center'}}>
+            <ImageBackground source={require("../../../assets/images/Layer1.png")} style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, }}>
+                <View style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, alignItems: 'center' }}>
 
                     <TouchableOpacity
                         onPress={() => navigation.navigate("text1")}
@@ -32,7 +32,7 @@ const HealthyFood = () => {
                         <Text style={styles.text}>{text2}</Text>
                         <Image source={image2} style={styles.image}></Image>
                     </TouchableOpacity>
-                    
+
                     <TouchableOpacity
                         onPress={() => navigation.navigate("text3")}
                         activeOpacity={0.7} style={styles.container}>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         color: 'black',
         fontWeight: 'bold',
         marginLeft: 25,
-        whiteSpace: 'normal', 
+        whiteSpace: 'normal',
         wordWrap: 'break-word'
     },
     image: {

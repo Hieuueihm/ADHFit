@@ -41,9 +41,7 @@ const Steps = () => {
                         alignItems: 'center'
                     }}>
                     <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate(ROUTES.HOME_TAB)
-                        }}
+                        onPress={() => navigation.navigate(ROUTES.HOME_TAB)}
                     >
                         <Entypo
                             name='chevron-left'
