@@ -7,7 +7,7 @@ import Login from '../screens/welcome/Login';
 // import { SplashScreen } from '../screens/welcome/splash/SplashScreen';
 import SplashScreen from 'react-native-splash-screen';
 import Home from '../screens/home/Home';
-import EditInformation from '../screens/me/editInformation';
+import EditInformation from '../screens/me/EditInformation';
 import { TabNavigations } from './TabNavigations';
 import { COLORS, ROUTES } from '../../constants/index';
 import Listvideo from '../screens/home/Listvideo';

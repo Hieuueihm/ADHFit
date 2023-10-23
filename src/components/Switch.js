@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { View, Switch, StyleSheet } from 'react-native';
 
-const SwitchButton = () => {
+const SwitchButton = (props) => {
     const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const toggleSwitch = () => {
+        setIsEnabled(previousState => !previousState);
+        props?.handleOnPress(!isEnabled)
+    }
 
     return (
         <View style={styles.container}>

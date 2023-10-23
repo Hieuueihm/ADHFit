@@ -46,7 +46,7 @@ export default function EditInformation({ route }) {
             })
                 .then(
                     (response) => {
-                        if (response.data.success === true) {
+                        if (response?.data?.success === true) {
                             setUserName(response?.data?.userInfo?.name);
                             setHeight(String(response?.data?.userInfo?.height));
                             setWeight(String(response?.data?.userInfo?.weight));
