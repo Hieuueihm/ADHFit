@@ -9,4 +9,12 @@ import AppNavigations from './src/navigations/AppNavigations';
 import App from './App';
 import TickCheckbox from './src/components/Checkbox';
 
+import { PermissionsAndroid } from 'react-native';
+import { Notifications } from 'react-native-notifications';
+
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
+Notifications.registerRemoteNotifications();
+
+
 AppRegistry.registerComponent(appName, () => App);
