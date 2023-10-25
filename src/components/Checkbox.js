@@ -11,17 +11,20 @@ const TickCheckbox = (props) => {
 
     useEffect(() => {
         if (isChecked) {
-            props?.handleClickRatio(props?.day);
-            setPrev(true);
+            if (props.handleClickRatio) {
+                props?.handleClickRatio(props?.day);
+                setPrev(true);
+            }
         } else if (!isChecked && prev) {
-            props?.handleUncheckRatio(props?.day);
-            setPrev(false);
+            if (props.handleUncheckRatio) {
+                props?.handleUncheckRatio(props?.day);
+                setPrev(false);
+            }
         }
     }, [isChecked]);
 
     useEffect(() => {
         if (props?.selectedDate.includes(props?.day)) {
-            console.log(props?.selectedDate)
             setIsChecked(true);
         }
     }, [])
