@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { ROUTES } from './constants';
 ;
 import ChangeGoalsScreen from './src/screens/me/ChangeGoalsScreen';
-import Me from './src/screens/me/Me';
+import Me from './src/screens/me/me';
 import Goals from './src/screens/me/Goals';
 const Stack = createNativeStackNavigator();
 
