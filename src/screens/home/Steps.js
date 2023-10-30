@@ -7,6 +7,9 @@ import Rectanchart from '../../components/Rectanchart';
 import BaarChart2 from '../../components/Baarchart2';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../../constants';
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux"
+
 
 const currentTime = new Date();
 const day = currentTime.getDay();          // Thứ trong tuần, nhung tra ve cac gia tri 0-6
@@ -24,6 +27,8 @@ const Steps = () => {
 
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
+    const stylesLightDark = useSelector((state) => state.settings.styles);
+    const { t } = useTranslation();
     return (
         <View>
             <ImageBackground
@@ -31,7 +36,7 @@ const Steps = () => {
                 style={{
                     height: Dimensions.get("window").height,
                     width: Dimensions.get("window").width,
-                    alignItems: 'center'
+                    alignItems: 'center',...stylesLightDark.background
                 }}>
                 <View
                     style={{
@@ -51,8 +56,8 @@ const Steps = () => {
                         style={{
                             color: 'black',
                             fontSize: 24,
-                            marginLeft: 5,
-                        }}>Steps & Kcals</Text>
+                            marginLeft: 5,...stylesLightDark.text
+                        }}>{t('stepsKcals')}</Text>
                 </View>
                 <View
                     style={{
@@ -73,7 +78,7 @@ const Steps = () => {
                     }}>
                         <Text
                             style={{
-                                fontSize: 11,
+                                fontSize: 12,
                                 color: 'white',
                                 fontFamily: 'Montserrat-Regular',
                             }}>Goal:5000</Text>
@@ -86,7 +91,7 @@ const Steps = () => {
                             marginTop: 20,
                             //    backgroundColor: 'green',
                         }}>
-                        <Donutchart radius={81.6} target={5000} spent={4204} text="Steps" colorTarget='#d2dee4' colorAmount="#3263ff" strokeTarget="17" strokeAmount="17" colorText='black' fontText={12}>
+                        <Donutchart radius={81.6} target={5000} spent={4204} text="Steps" colorTarget='#d2dee4' colorAmount="#3263ff" strokeTarget="17" strokeAmount="17" colorText='black' fontText={15}>
                         </Donutchart>
                         <Image
                             source={require('../../assets/icons/run.png')}
@@ -179,25 +184,25 @@ const Steps = () => {
                             style={{
                                 backgroundColor: '#FFB1AC',
                                 position: 'absolute',
-                                fontSize: 11,
+                                fontSize: 15,
                                 top: 80,
-                                left: 24,
+                                left: 15,
                             }}>100 kcal</Text>
                         <Text
                             style={{
                                 backgroundColor: '#FFB1AC',
                                 position: 'absolute',
-                                fontSize: 11,
+                                fontSize: 15,
                                 top: 110,
-                                left: 145,
+                                left: 140,
                             }}>1.2km</Text>
                         <Text
                             style={{
                                 backgroundColor: '#FFB1AC',
                                 position: 'absolute',
-                                fontSize: 11,
+                                fontSize: 15,
                                 top: 80,
-                                left: 266,
+                                left: 260,
                             }}>1.3h</Text>
                     </View>
                 </View>
@@ -223,7 +228,7 @@ const Steps = () => {
                             style={{
                                 fontSize: 18,
                                 backgroundColor: '#FFB1AC'
-                            }}>Current progress</Text>
+                            }}>{t('currentProgress')}</Text>
                         <TouchableOpacity
                             activeOpacity={0.7}
                             style={{
@@ -312,7 +317,7 @@ const Steps = () => {
                     </View>
                 </View>
             </ImageBackground>
-        </View >
+        </View>
     );
 }
 
