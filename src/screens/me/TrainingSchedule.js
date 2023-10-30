@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Text, View, Image, TouchableOpacity, ImageBackground, StyleSheet, } from "react-native";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { alignSelf } from "react-native-wind/dist/styles/flex/align-self";
 import { format, addDays } from 'date-fns';
 
 const TrainingSchedule = () => {
     const currentTime = new Date();
-    const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     currentTime.setUTCHours(currentTime.getUTCHours());
     const year = currentTime.getFullYear();     // năm
@@ -31,22 +30,15 @@ const TrainingSchedule = () => {
         }
     }, [day]);
     const [currentDate, setCurrentDate] = useState(new Date());
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentDate(new Date());
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
+    const startDate = new Date(currentDate);
+    startDate.setDate(currentDate.getDate() - currentDate.getDay());
 
     const daysOfMonth = [];
-    for (let i = 0; i < 7; i++) {
-        const date = addDays(currentDate, i);
-        daysOfMonth.push(format(date, 'd'));
-    }
     const dayNames = [];
+
     for (let i = 0; i < 7; i++) {
-        const date = addDays(currentDate, i);
+        const date = addDays(startDate, i);
+        daysOfMonth.push(format(date, 'd'));
         dayNames.push(daysOfWeek[date.getDay()]);
     }
 
@@ -92,7 +84,7 @@ const TrainingSchedule = () => {
                 <Text style={styles.bluetext}>{year} - {month + 1}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', flex: 1, marginVertical: 5, }}>
                     {daysOfWeek.map((day, index) => (
-                        <View key={index} style={[styles.day, { borderColor: dayNames[index] === dayName ? 'blue' : 'transparent', }]}>
+                        <View key={index} style={[styles.day, { borderColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent', }]}>
                             <Text style={styles.bluetext}>{day}</Text>
                             <View style={styles.circle}>
                                 <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
