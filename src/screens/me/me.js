@@ -4,9 +4,10 @@ import { COLORS, ROUTES } from "../../../constants";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SwitchButton from "../../components/Switch";
 import { getItem } from "../../utils/asyncStorage";
-import { handleGetUserInformation } from "../../api/UserAPI";
+import { handleGetUserInformation, handleUpdateReceiveNotification } from "../../api/UserAPI";
 import { useNavigation } from "@react-navigation/native";
 import { removeItem } from "../../utils/asyncStorage";
+import { handleLogout } from "../../api/UserAPI";
 
 export default function Me() {
 
@@ -17,11 +18,14 @@ export default function Me() {
     const [weight, setWeight] = useState(null);
     const [gender, setGender] = useState(null);
     const [displayImage, setDisplayImage] = useState('');
+    const [isReceiveNotification, setIsRecieveNotification] = useState(false);
+    const [userId, setUserId] = useState(null);
 
 
     useEffect(() => {
         const loadData = async () => {
             let userId = await getItem('user_id');
+            setUserId(userId)
 
             handleGetUserInformation({
                 "user_id": userId
@@ -34,6 +38,7 @@ export default function Me() {
                             setWeight(String(response?.data?.userInfo?.weight));
                             setGmail(response?.data?.userInfo?.email);
                             setGender(response?.data?.userInfo?.gender)
+                            setIsRecieveNotification(response?.data?.userInfo?.isReceiveNotification)
                             if (response?.data?.userInfo?.avatar != '') {
                                 setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
                             }
@@ -51,12 +56,30 @@ export default function Me() {
         loadData();
     }, []);
 
+    useEffect(() => {
+        handleUpdateReceiveNotification({
+            "user_id": userId,
+            "isReceiveNotification": isReceiveNotification
+        })
+    }, [isReceiveNotification])
+
     const handleEditButton = () => {
         navigation.navigate(ROUTES.EDIT_INFORMATION, {
             'options': 'me'
         });
     }
-
+    const handleOnPress = (en) => {
+        setIsRecieveNotification(en)
+    }
+    const handleLogoutBtn = () => {
+        handleLogout({
+            user_id: userId,
+            fcmtoken: ''
+        }).then((response) => {
+            removeItem('user_id');
+            navigation.navigate(ROUTES.LOGIN)
+        })
+    }
     return (
         <View style={{ flex: 1 }}>
             {/*Name and email...*/}
@@ -136,7 +159,7 @@ export default function Me() {
                     <Text style={styles.TextRow}>Pop-up Notification</Text>
 
                     <View>
-                        <SwitchButton />
+                        <SwitchButton handleOnPress={handleOnPress} updateStateSwitch={isReceiveNotification} />
                     </View>
                 </View>
                 <View style={styles.ViewRowContainer}>
@@ -167,10 +190,7 @@ export default function Me() {
             {/*Sign Out btn*/}
 
             <TouchableOpacity
-                onPress={() => {
-                    removeItem('user_id');
-                    navigation.navigate(ROUTES.LOGIN)
-                }}
+                onPress={handleLogoutBtn}
             >
                 <View
                     style={{

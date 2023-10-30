@@ -13,6 +13,8 @@ import Home from "../home/Home.js";
 import Timer from "../../components/Timer";
 import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
 import { storeItem } from "../../utils/asyncStorage";
+import messaging from '@react-native-firebase/messaging';
+
 
 
 
@@ -25,7 +27,16 @@ const Login = () => {
     const [captchaInput, setCaptchaInput] = useState('');
     const [isClickCaptcha, setIsClickCaptcha] = useState(false)
     const [loadingLogin, setLoadingLogin] = useState(false);
+    const [fcmToken, setFCMToken] = useState(null);
 
+    useEffect(() => {
+        const getFCMToken = async () => {
+            const fcmtoken1 = await messaging().getToken()
+            setFCMToken(fcmtoken1)
+        }
+
+        getFCMToken()
+    }, [])
 
     handleClear = () => {
         setEmail('');
@@ -59,6 +70,7 @@ const Login = () => {
         }
 
     };
+
     const handleLoginFacebook = async () => {
         LoginManager.logInWithPermissions(["public_profile", "email"]).then(
             function (result) {
@@ -88,7 +100,8 @@ const Login = () => {
                                         // console.log("Email: " + result.email);
                                         userLoginFacebook({
                                             "email": result.email,
-                                            "name": profile.name
+                                            "name": profile.name,
+                                            "fcmtoken": fcmToken
                                         }).then(async (result) => {
                                             // console.log(result)
                                             if (result.data.success === true) {
@@ -137,7 +150,8 @@ const Login = () => {
                     setLoadingLogin(true)
                     userLogin({
                         "email": email,
-                        "captcha": captchaInput
+                        "captcha": captchaInput,
+                        "fcmtoken": fcmToken
                     })
                         .then(async (result) => {
                             if (result.data.status === 200) {
@@ -174,6 +188,7 @@ const Login = () => {
     const handleOnTimerEnd = () => {
         setIsClickCaptcha(false)
     }
+
     return (
         <SafeAreaView
             style={styles.container}>

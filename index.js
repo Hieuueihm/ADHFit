@@ -7,13 +7,17 @@ import { AppRegistry } from 'react-native';
 import { name as appName } from './app.json';
 import AppNavigations from './src/navigations/AppNavigations';
 import App from './App';
-import TickCheckbox from './src/components/Checkbox';
-import TrainingSchedule from './src/screens/me/TrainingSchedule';
-import CalendarPickerButton from './src/components/CalendarPickerButton';
-import Sport from './src/screens/sports/Sport';
-import RunningOutDoor from './src/screens/sports/RunningOutDoors';
-import Waitime from './src/screens/sports/Waitime';
-import Home from './src/screens/home/Home';
+
+import { PermissionsAndroid } from 'react-native';
+import { Notifications } from 'react-native-notifications';
+
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
+Notifications.registerRemoteNotifications();
 
 
+<<<<<<< HEAD
 AppRegistry.registerComponent(appName, () => TrainingSchedule);
+=======
+AppRegistry.registerComponent(appName, () => App);
+>>>>>>> dc79f15846c5e11906fce894477dcbd75657a4b0
