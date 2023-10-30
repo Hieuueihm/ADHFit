@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, SafeAreaView, TextInput, Image, ImageBackground, Button, TouchableOpacity, StyleSheet, Alert, ScrollView, TouchableWithoutFeedback } from "react-native"
+import { View, Text, SafeAreaView, TextInput, Image, ImageBackground, Button, TouchableOpacity, StyleSheet, Alert, ScrollView, TouchableWithoutFeedback, Dimensions } from "react-native"
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { ROUTES } from "../../../constants";
@@ -8,6 +8,7 @@ import LinearGradient from "react-native-linear-gradient";
 import SwitchButton from "../../components/Switch";
 import { getItem } from "../../utils/asyncStorage";
 import { handleUpdateTarget } from "../../api/UserAPI";
+import Modal from 'react-native-modal';
 
 
 export default function ChangeGoalsScreen() {
@@ -21,6 +22,15 @@ export default function ChangeGoalsScreen() {
     const [isReminder, setIsRemider] = useState(false);
     const [reminderTime, setReminderTime] = useState(null);
     const [selectedDate, setSelectedDate] = useState([]);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [isTextInputHourFocused, setIsTextInputHourFocused] = useState(false);
+    const [isTextInputMinutesFocused, setIsTextInputMinutesFocused] = useState(false);
+    const [hour, setHour] = useState('');
+    const [Minutes, setMinutes] = useState('');
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
+
     for (let i = 1000; i <= 30000; i += 100) {
         stepsArray.push(i)
     }
@@ -195,7 +205,7 @@ export default function ChangeGoalsScreen() {
             <LinearGradient
                 start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} colors={['rgba(255,255,255, 0.5)', '#DCDCDC', 'rgba(255,255,255, 0.5)']}
                 style={{
-                    height: 200,
+                    height: 150,
                     width: 300,
                     alignSelf: 'center'
                 }}>
@@ -233,21 +243,136 @@ export default function ChangeGoalsScreen() {
                     )}
                 </ScrollView>
             </LinearGradient>
+            <Modal isVisible={isModalVisible} style={styles.modalBox}>
+                <View style={styles.settime}>
+                    <Text style={styles.textModal}>Reminder Time</Text>
+                    <Image source={require("../../assets/icons/clock1.png")}
+                        style={{ height: 100, width: 100, margin: 10, }}></Image>
+                    <View
+                        style={{
+                            marginTop: 10,
+                            paddingHorizontal: 32,
+                            paddingEnd: 32,
+                            width: 270,
+                        }}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                borderBottomColor: isTextInputHourFocused ? "#81ACFF" : "yellow",
+                                borderBottomWidth: 2,
+                                marginBottom: 25,
+                            }}>
+                            <TextInput
+                                placeholder="Hour, examaple :13"
+                                onFocus={() => setIsTextInputHourFocused(true)}
+                                onBlur={() => setIsTextInputHourFocused(false)}
+                                onChangeText={hour => {
+                                    // Kiểm tra xem giá trị nhập vào có nằm trong khoảng từ 0 đến 24 không
+                                    const isValidHour = /^(0?[0-9]|1[0-9]|2[0-3])$/.test(hour) && parseInt(hour, 10) >= 0 && parseInt(hour, 10) <= 23;
+
+                                    // Nếu giá trị hợp lệ, cập nhật state hour, ngược lại, không làm gì cả
+                                    if (isValidHour) {
+                                        setHour(hour);
+                                    }
+                                    else {
+                                        setHour('');
+                                    }
+                                }}
+                                value={hour}
+                                style={{
+                                    flex: 1,
+                                    paddingVertical: 0,
+                                    color: 'black',
+                                    paddingLeft: 5
+
+                                }}
+                                placeholderTextColor={"#C3C3C3"}
+                                keyboardType="number-pad"
+                            />
+                            <View style={{
+                                flex: 0.3,
+                                justifyContent: 'flex-end',
+                                alignItems: 'flex-end'
+                            }}>
+                            </View>
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            marginTop: 10,
+                            paddingHorizontal: 32,
+                            paddingEnd: 32,
+                            width: 270,
+                        }}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                borderBottomColor: isTextInputMinutesFocused ? "#81ACFF" : "yellow",
+                                borderBottomWidth: 2,
+                                marginBottom: 25,
+                            }}>
+                            <TextInput
+                                placeholder="Minutes, examaple : 35"
+                                onFocus={() => setIsTextInputMinutesFocused(true)}
+                                onBlur={() => setIsTextInputMinutesFocused(false)}
+                                onChangeText={minutes => {
+                                    const isValidMinutes = /^[0-5]?[0-9]$/.test(minutes) && parseInt(minutes, 10) >= 0 && parseInt(minutes, 10) <= 59;
+
+                                    if (isValidMinutes) {
+                                        setMinutes(minutes);
+                                    } else {
+                                        // Nếu giá trị không hợp lệ, reset giá trị của minutes về rỗng
+                                        setMinutes('');
+                                    }
+                                }}
+                                value={Minutes}
+                                style={{
+                                    flex: 1,
+                                    paddingVertical: 0,
+                                    color: 'black',
+                                    paddingLeft: 5
+
+                                }}
+                                placeholderTextColor={"#C3C3C3"}
+                                keyboardType="number-pad"
+                            //   editable={!isClickCaptcha}
+                            />
+                            <View style={{
+                                flex: 0.3,
+                                justifyContent: 'flex-end',
+                                alignItems: 'flex-end'
+                            }}>
+                            </View>
+                        </View>
+                    </View>
+                    <TouchableOpacity
+                        onPress={toggleModal}>
+                        <Text style={styles.textModal}>Confirm</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
             <Image source={require("../../assets/images/changegoal3.png")}
                 style={{
                     margin: 20,
-                    height: 150,
-                    width: 150,
+                    height: 100,
+                    width: 120,
                     alignSelf: 'center'
-                }}></Image>
+                }}>
+            </Image>
             <View style={[styles.bottomSetting,]}>
                 <Text style={[styles.textBottom]}>Training remainder</Text>
                 <SwitchButton handleOnPress={handleOnPress} />
             </View>
             <View style={[styles.bottomSetting,]}>
                 <Text style={[styles.textBottom]}>Reminder time</Text>
-                <Text style={{ fontSize: 16, marginLeft: 75, }}>8:00</Text>
-                <TouchableOpacity onPress={handleSetRemiderTime}>
+                {
+                    (hour && Minutes) ? (
+                        <Text style={{ fontSize: 16, marginLeft: 60, }}>{hour}:{Minutes}</Text>
+                    ) : (
+                        <Text style={{ fontSize: 16, marginLeft: 60, }}>Time</Text>
+                    )
+                }
+                <TouchableOpacity onPress={toggleModal}>
                     <MaterialCommunityIcon name="chevron-right" size={32}></MaterialCommunityIcon>
                 </TouchableOpacity>
             </View>
@@ -331,12 +456,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     centerPosition: {
-        height: 50,
+        flex: 0.25,
         position: "relative",
-        bottom: 170,
+        bottom: Dimensions.get("screen").height * 120 / 800,
         flexDirection: "row",
         alignItems: 'center',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
     },
     bottomSetting: {
         height: 45,
@@ -351,4 +476,23 @@ const styles = StyleSheet.create({
         marginRight: 120,
         fontWeight: '600'
     },
+    settime: {
+        flex: 1,
+        backgroundColor: 'white',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        borderRadius: 20,
+        alignItems: 'center',
+    },
+    modalBox: {
+        flex: 0.7,
+        //    marginTop: 400,
+        //    margin: 0,
+    },
+    textModal: {
+        fontSize: 16,
+        fontWeight: '800',
+        margin: 15,
+    },
+
 })
