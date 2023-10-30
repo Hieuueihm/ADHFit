@@ -93,3 +93,17 @@ export const handleUpdateTarget = async (data) => {
     }
 }
 
+export const handleUpdateReceiveNotification = async (data) => {
+    try {
+        const response = await APIManager('user/updateNotification', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error
+    }
+}
