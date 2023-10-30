@@ -16,4 +16,4 @@ import Waitime from './src/screens/sports/Waitime';
 import Home from './src/screens/home/Home';
 
 
-AppRegistry.registerComponent(appName, () => Sport);
+AppRegistry.registerComponent(appName, () => TrainingSchedule);

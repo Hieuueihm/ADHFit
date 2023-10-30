@@ -3,11 +3,11 @@ import { Text, View, Image, TouchableOpacity, ImageBackground, StyleSheet, } fro
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { alignSelf } from "react-native-wind/dist/styles/flex/align-self";
-
+import { format, addDays } from 'date-fns';
 
 const TrainingSchedule = () => {
     const currentTime = new Date();
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     currentTime.setUTCHours(currentTime.getUTCHours());
     const year = currentTime.getFullYear();     // năm
@@ -15,14 +15,6 @@ const TrainingSchedule = () => {
     const dayOfmonth = currentTime.getDate();  // ngày trong tháng
     const day = currentTime.getDay();          // Thứ trong tuần, nhung tra ve cac gia tri 0-6
     const dayName = daysOfWeek[day];           // Chuyen tu du lieu số sang thứ trong tuần
-    const monthName = monthsOfYear[month];
-    const isHighlightMon = day === 1;
-    const isHighlightTue = day === 2;
-    const isHighlightWed = day === 3;
-    const isHighlightThur = day === 4;
-    const isHighlightFri = day === 5;
-    const isHighlightSat = day === 6;
-    const isHighlightSun = day === 0;
 
     const [dayCheck, setDayCheck] = useState(0);
     const Cumulative = 0;    // gia su cai nay = 0
@@ -38,6 +30,25 @@ const TrainingSchedule = () => {
             setDayCheck(0);
         }
     }, [day]);
+    const [currentDate, setCurrentDate] = useState(new Date());
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentDate(new Date());
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const daysOfMonth = [];
+    for (let i = 0; i < 7; i++) {
+        const date = addDays(currentDate, i);
+        daysOfMonth.push(format(date, 'd'));
+    }
+    const dayNames = [];
+    for (let i = 0; i < 7; i++) {
+        const date = addDays(currentDate, i);
+        dayNames.push(daysOfWeek[date.getDay()]);
+    }
 
     return (
         <View style={styles.container}>
@@ -80,48 +91,14 @@ const TrainingSchedule = () => {
             <View style={styles.calender}>
                 <Text style={styles.bluetext}>{year} - {month + 1}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', flex: 1, marginVertical: 5, }}>
-                    <View style={[styles.day, { borderColor: isHighlightMon ? 'blue' : 'transparent', }]}>
-                        <Text style={styles.bluetext}>Mon</Text>
-                        <View style={styles.circle}>
-                            <Text style={styles.bluetext}>23</Text>
+                    {daysOfWeek.map((day, index) => (
+                        <View key={index} style={[styles.day, { borderColor: dayNames[index] === dayName ? 'blue' : 'transparent', }]}>
+                            <Text style={styles.bluetext}>{day}</Text>
+                            <View style={styles.circle}>
+                                <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
+                            </View>
                         </View>
-                    </View>
-                    <View style={[styles.day, { borderColor: isHighlightTue ? 'blue' : 'transparent', }]}>
-                        <Text style={styles.bluetext}>Tue</Text>
-                        <View style={styles.circle}>
-                            <Text style={styles.bluetext}>24</Text>
-                        </View>
-                    </View>
-                    <View style={[styles.day, { borderColor: isHighlightWed ? 'blue' : 'transparent', }]}>
-                        <Text style={styles.bluetext}>Wed</Text>
-                        <View style={styles.circle}>
-                            <Text style={styles.bluetext}>25</Text>
-                        </View>
-                    </View>
-                    <View style={[styles.day, { borderColor: isHighlightThur ? 'blue' : 'transparent', }]}>
-                        <Text style={styles.bluetext}>Thu</Text>
-                        <View style={styles.circle}>
-                            <Text style={styles.bluetext}>26</Text>
-                        </View>
-                    </View>
-                    <View style={[styles.day, { borderColor: isHighlightFri ? 'blue' : 'transparent', }]}>
-                        <Text style={styles.bluetext}>Fri</Text>
-                        <View style={styles.circle}>
-                            <Text style={styles.bluetext}>27</Text>
-                        </View>
-                    </View>
-                    <View style={[styles.day, { borderColor: isHighlightSat ? 'blue' : 'transparent', }]}>
-                        <Text style={styles.bluetext}>Sat</Text>
-                        <View style={styles.circle}>
-                            <Text style={styles.bluetext}>28</Text>
-                        </View>
-                    </View>
-                    <View style={[styles.day, { borderColor: isHighlightSun ? 'blue' : 'transparent', }]}>
-                        <Text style={styles.bluetext}>Sun</Text>
-                        <View style={styles.circle}>
-                            <Text style={styles.bluetext}>29</Text>
-                        </View>
-                    </View>
+                    ))}
                 </View>
             </View>
             <View style={styles.attitude}>
