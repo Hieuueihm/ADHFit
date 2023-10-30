@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ROUTES } from '../../constants';
 import Home from '../screens/home/Home';
-import Me from '../screens/me/me';
+import Me from '../screens/me/Me';
 import { View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';

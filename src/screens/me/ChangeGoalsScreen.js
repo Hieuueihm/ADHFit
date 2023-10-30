@@ -40,6 +40,7 @@ export default function ChangeGoalsScreen() {
         timeArray.push(i);
     }
     const handleClick = async () => {
+        console.log(currentScreen)
         if (currentScreen === 1 && selectedStep === null) {
             alert('Choose one target step');
         }
@@ -51,20 +52,22 @@ export default function ChangeGoalsScreen() {
         else {
             if (currentScreen < 3) {
                 setCurrentScreen(currentScreen + 1);
-            } else {
+            } else if (currentScreen === 3) {
                 const user_id = await getItem('user_id')
+                let temp_reminder_time = hour + ":" + Minutes;
+                console.log(temp_reminder_time)
                 handleUpdateTarget({
                     'user_id': user_id,
                     'targetStep': selectedStep,
                     'reminderDay': selectedDate,
                     'dailyStartTime': selectedStartTime,
                     'isReminder': isReminder,
-                    'reminderTime': reminderTime
+                    'reminderTime': temp_reminder_time
 
                 }).then((result) => {
                     if (result?.data?.success === true) {
-                        navigation.navigate(ROUTES.GOALS_SCREEN);
                         alert('Cap nhat thong tin thanh cong');
+                        navigation.navigate(ROUTES.GOALS_SCREEN);
                     }
                 })
                     .catch(err => {
@@ -272,6 +275,7 @@ export default function ChangeGoalsScreen() {
 
                                     // Nếu giá trị hợp lệ, cập nhật state hour, ngược lại, không làm gì cả
                                     if (isValidHour) {
+
                                         setHour(hour);
                                     }
                                     else {

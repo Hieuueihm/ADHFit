@@ -7,6 +7,7 @@ import { getItem } from "../../utils/asyncStorage";
 import { handleGetUserInformation, handleUpdateReceiveNotification } from "../../api/UserAPI";
 import { useNavigation } from "@react-navigation/native";
 import { removeItem } from "../../utils/asyncStorage";
+import { handleLogout } from "../../api/UserAPI";
 
 export default function Me() {
 
@@ -69,6 +70,15 @@ export default function Me() {
     }
     const handleOnPress = (en) => {
         setIsRecieveNotification(en)
+    }
+    const handleLogoutBtn = () => {
+        handleLogout({
+            user_id: userId,
+            fcmtoken: ''
+        }).then((response) => {
+            removeItem('user_id');
+            navigation.navigate(ROUTES.LOGIN)
+        })
     }
     return (
         <View style={{ flex: 1 }}>
@@ -180,10 +190,7 @@ export default function Me() {
             {/*Sign Out btn*/}
 
             <TouchableOpacity
-                onPress={() => {
-                    removeItem('user_id');
-                    navigation.navigate(ROUTES.LOGIN)
-                }}
+                onPress={handleLogoutBtn}
             >
                 <View
                     style={{
