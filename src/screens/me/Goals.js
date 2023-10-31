@@ -3,10 +3,15 @@ import { View, Text, SafeAreaView, TextInput, Image, ImageBackground, Button, To
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from "@react-navigation/native";
 import { ROUTES } from "../../../constants";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux"
 
 
 export default function Goals() {
   const navigation = useNavigation();
+  const stylesLightDark = useSelector((state) => state.settings.styles);
+  const { t } = useTranslation();
+
   return (
     <View style={styles.background}>
       {/**headerGoals*/}
@@ -23,7 +28,7 @@ export default function Goals() {
             </TouchableOpacity>
           </View>
           <View style={styles.contentHeader}>
-            <Text style={{ fontSize: 25, color: 'black', fontWeight: 'bold' }}>Goals</Text>
+            <Text style={{ fontSize: 25, color: 'black', fontWeight: 'bold' }}>{t('goals')}</Text>
           </View>
 
           <View >
@@ -33,7 +38,7 @@ export default function Goals() {
               }}
 
               style={{ backgroundColor: '#F5F8FF', padding: 4, borderRadius: 10 }}>
-              <Text style={{ fontWeight: 'bold' }}>Change</Text>
+              <Text style={{ fontWeight: 'bold' }}>{t('change')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -59,8 +64,8 @@ export default function Goals() {
       {/*containerGoals */}
       <View style={styles.container}>
         <View style={styles.contentContainer}>
-          <Text style={styles.text1Container}>Reminder</Text>
-          <Text style={styles.text2Container}>Every Day</Text>
+          <Text style={styles.text1Container}>{t('reminder')}</Text>
+          <Text style={styles.text2Container}>{t('everyDay')}</Text>
         </View>
       </View>
     </View>

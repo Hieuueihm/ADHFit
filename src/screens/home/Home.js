@@ -12,6 +12,10 @@ import { ROUTES } from "../../../constants"
 import { fetchWeatherForecast } from "../../api/WeatherAPI"
 import { handleGetUserInformation } from "../../api/UserAPI"
 import { getItem } from "../../utils/asyncStorage"
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux"
+
+
 
 const dataHeart = {
     labels: ["", "", "", "", "", "", "", "", "", "", "", ""],    // Label của trục x trong cái Barchat, nhưng ko có label nên để rỗng
@@ -44,8 +48,8 @@ const Home = () => {
 
 
     const navigation = useNavigation();
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const monthsOfYear = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
     const currentTime = new Date();
     currentTime.setUTCHours(currentTime.getUTCHours());
     const year = currentTime.getFullYear();     // năm
@@ -58,8 +62,8 @@ const Home = () => {
 
     const [displayImage, setDisplayImage] = useState('');
     const [currentScreenTopRight, setCurrentScreenTopRight] = useState(0)
-
-
+    const stylesLightDark = useSelector((state) => state.settings.styles);
+    const { t } = useTranslation();
 
     useEffect(() => {
         fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
@@ -103,17 +107,14 @@ const Home = () => {
                     marginLeft: 25
                 }}>
             </Image>
-            <Text style={{ marginTop: 32, marginLeft: -18, fontSize: 18, fontWeight: 'bold' }}>
+            <Text style={{ marginTop: 32, marginLeft: -18, fontSize: 18, fontWeight: 'bold',...stylesLightDark.text }}>
                 {current?.temp_c}{'\u2103'}
             </Text>
         </>
     ]
     return (
         <ScrollView
-            style={{
-                flex: 1,
-                backgroundColor: '#FDEEEE'
-            }}>
+            style={{ flex: 1, backgroundColor: '#FDEEEE',...stylesLightDark.background }}>
             <ImageBackground
                 source={require("../../assets/images/Layer1.png")}>
                 <View
@@ -145,16 +146,8 @@ const Home = () => {
                             marginStart: 10,
                             marginEnd: 20
                         }}>
-                        <Text
-                            style={{
-                                color: '#7F7F7F',
-                                fontSize: 14
-                            }}>Hello!</Text>
-                        <Text
-                            style={{
-                                color: '#000000',
-                                fontSize: 18
-                            }}>{dayName}, {dayOfmonth} {monthName}</Text>
+                        <Text style={{  color: '#7F7F7F', fontSize: 14,...stylesLightDark.text }}>{t('hello')}</Text>
+                        <Text style={{ color: '#000000', fontSize: 18,...stylesLightDark.text }}>{t(dayName)}, {t(dayOfmonth)} {t(monthName)}</Text>
                     </View>
                     <TouchableOpacity
                         style={{ flexDirection: 'row' }}
@@ -177,13 +170,7 @@ const Home = () => {
                         marginLeft: 5,
                         // backgroundColor:'yellow'
                     }}>
-                    <View
-                        // ben trai
-                        style={{
-                            //   flex:0.6,
-                            flexDirection: 'column'
-                        }}
-                    >
+                    <View style={{ flexDirection: 'column'}}>
                         <TouchableOpacity
                             onPress={() => {
                                 navigation.navigate(ROUTES.STEP)
@@ -203,16 +190,10 @@ const Home = () => {
                                     height: 75,
                                     flexDirection: 'row'
                                 }}>
-                                <Text
-                                    style={styles.title}
-                                >Steps</Text>
-                                <View
-                                    style={styles.smallcircle}
-                                >
-                                    <Image source={require('../../assets/icons/jogging.png')}
-                                        style={styles.icon}
-                                    ></Image>
-                                </View>
+                                <Text style={styles.title}>{t('steps')}</Text>
+                                <View style={styles.smallcircle}>
+                                    <Image source={require('../../assets/icons/jogging.png')} style={styles.icon}></Image>
+                                </View>  
                             </View>
                             <Donutchart radius={60} target={7500} spent={4200} text="Steps" colorTarget='#FB3535' colorAmount="#483867" strokeTarget="15" strokeAmount="15" colorText='#483867' fontText={12} />
                         </TouchableOpacity>
@@ -230,26 +211,10 @@ const Home = () => {
                                 backgroundColor: '#F3BDBD',
                                 margin: 5
                             }}>
-                            <View
-                                style={{
-                                    width: 180,
-                                    height: 70,
-                                    flexDirection: 'row'
-                                }}>
-                                <Text
-                                    style={styles.title}
-                                >Heart</Text>
-                                <View
-                                    style={styles.smallcircle}
-                                >
-                                    <Image source={require('../../assets/icons/heart-attack.png')}
-                                        style={{
-                                            width: 35,
-                                            height: 35,
-                                            marginTop: 11,
-                                            marginStart: 8
-                                        }}
-                                    ></Image>
+                            <View style={{width: 180,height: 70,flexDirection: 'row'}}>
+                                <Text style={styles.title}>{t('heart')}</Text>
+                                <View style={styles.smallcircle}>
+                                    <Image source={require('../../assets/icons/heart-attack.png')}style={styles.icon}></Image>
                                 </View>
                             </View>
                             <View
@@ -260,27 +225,15 @@ const Home = () => {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}>
-                                <Text
-                                    style={{
-                                        color: 'black',
-                                        fontSize: 40,
-                                    }}>131</Text>
+                                <Text style={{ color: 'black', fontSize: 40, }}>131</Text>
                                 <View
                                     style={{
                                         height: 80,
                                         width: 50,
                                         justifyContent: 'center'
                                     }}>
-                                    <Image source={require("../../assets/icons/heart2.png")}
-                                        style={{
-                                            height: 30,
-                                            width: 30,
-                                        }}></Image>
-                                    <Text
-                                        style={{
-                                            fontSize: 24,
-                                            color: 'black',
-                                        }}>bpm</Text>
+                                    <Image source={require("../../assets/icons/heart2.png")}style={{ height: 30, width: 30,}}></Image>
+                                    <Text style={{ fontSize: 24, color: 'black', }}>bpm</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
@@ -307,26 +260,10 @@ const Home = () => {
                                 }}
                             >
 
-                                <View
-                                    style={{
-                                        width: 180,
-                                        height: 75,
-                                        flexDirection: 'row'
-                                    }}>
-                                    <Text
-                                        style={{
-                                            fontSize: 24,
-                                            color: '#FFFFFF',
-                                            marginTop: 20,
-                                            marginStart: 15,
-                                        }}
-                                    >Sleep</Text>
-                                    <View
-                                        style={styles.smallcircle}
-                                    >
-                                        <Image source={require('../../assets/icons/moon.png')}
-                                            style={styles.icon}
-                                        ></Image>
+                                <View style={{ width: 180,  flexDirection: 'row' }}>
+                                    <Text style={{...styles.title, color: "white"}}>{t('sleep')}</Text>
+                                    <View style={styles.smallcircle}>
+                                        <Image source={require('../../assets/icons/moon.png')}  style={styles.icon} ></Image>
                                     </View>
                                 </View>
                                 <Text
@@ -352,52 +289,31 @@ const Home = () => {
                                 borderRadius: 15,
                                 backgroundColor: '#AFFF9B'
                             }}>
-                            <View
-                                style={{
-                                    width: 180,
-                                    height: 75,
-                                    flexDirection: 'row'
-                                }}>
-                                <Text
-                                    style={styles.title}
-                                >Kcals</Text>
-                                <View
-                                    style={styles.smallcircle}
-                                >
-                                    <Image source={require('../../assets/icons/kcal.png')}
-                                        style={styles.icon}
-                                    ></Image>
+                            <View style={{width: 180, height: 75, flexDirection: 'row' }}>
+                                <Text style={styles.title} >Kcals</Text>
+                                <View style={styles.smallcircle} >
+                                    <Image source={require('../../assets/icons/kcal.png')}style={styles.icon}></Image>
                                 </View>
                             </View>
                             <Donutchart radius={50} target={500} spent={375} text="Kcals" colorTarget='#D9D9D9' colorAmount="#63665A" strokeTarget="15" strokeAmount="15" colorText='#63665A' fontText={12} />
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View
-                    //dong video vs see all
-                    style={{
-                        flexDirection: 'row',
-                        marginTop: 15,
+                
 
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: 14,
-                            marginStart: 12,
-                            fontWeight: "bold",
-                        }}>Video</Text>
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => navigation.navigate(ROUTES.LIST_VIDEO)}
-                    >
+                {/* See All */}
+                <View style={{ flexDirection: 'row', marginTop: 15, }} >
+                    <Text style={{ flex: 1, fontSize: 14, marginStart: 12,fontWeight: "bold",...stylesLightDark.text}}>Video</Text>
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate(ROUTES.LIST_VIDEO)}>
                         <Text
                             style={{
                                 fontSize: 14,
-                                marginStart: 287,
+                                
                                 color: 'red',
+                                textAlign: 'right',
+                                marginRight: 15,
                                 fontWeight: 'bold'
-                            }}>See All</Text>
+                            }}>{t('seeAll')}</Text>
                     </TouchableOpacity>
                 </View>
                 <View
@@ -476,7 +392,7 @@ const Home = () => {
                                         fontSize: 12,
                                         marginLeft: 5,
                                         color: 'black',
-                                    }}>Premium</Text>
+                                    }}>{t('premium')}</Text>
                             </TouchableOpacity>
                         </View>
                         <Text
@@ -587,7 +503,7 @@ const Home = () => {
                                         fontSize: 12,
                                         marginLeft: 5,
                                         color: 'black',
-                                    }}>Premium</Text>
+                                    }}>{t('premium')}</Text>
                             </TouchableOpacity>
                         </View>
                         <Text
@@ -632,22 +548,26 @@ const styles = StyleSheet.create({
     icon: {
         height: 35,
         width: 35,
-        marginLeft: 9,
-        marginTop: 8,
+        marginLeft: 10,
     },
     title: {
+        flex: 5,
         fontSize: 24,
         color: 'black',
         marginTop: 20,
         marginStart: 15,
     },
     smallcircle: {
+        flex: 3,
         backgroundColor: '#483867',
-        marginStart: 50,
-        marginTop: 15,
+        
         height: 50,
         width: 50,
         borderRadius: 25,
+        justifyContent: 'center',
+        marginRight: 10,
+        marginTop: 10,
+        marginLeft: 10,
     },
     music: {
 

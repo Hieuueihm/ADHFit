@@ -17,6 +17,8 @@ import Heart from '../screens/home/Heart';
 import WeatherScreen from '../screens/home/WeatherScreen';
 import Goals from '../screens/me/Goals';
 import Setting from '../screens/me/Settings';
+import { Provider } from 'react-redux';
+import store from '../../redux/store';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +54,7 @@ export default function AppNavigations() {
     }
     if (showOnboarding === true) {
         return (
+            <Provider store={store}>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName={ROUTES.ONBOARDING}>
                     <Stack.Screen name={ROUTES.ONBOARDING} component={OnboardingScreen} />
@@ -78,13 +81,15 @@ export default function AppNavigations() {
                     <Stack.Screen name={ROUTES.SETTINGS_SCREEN} component={Setting} options={{ headerShown: false }} />
 
                 </Stack.Navigator>
-
+            
             </NavigationContainer>
+            </Provider>
 
 
         )
     } else {
         return (
+            <Provider store={store}>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName={ROUTES.SPLASH}>
                     <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{ headerShown: false }} />
@@ -114,6 +119,7 @@ export default function AppNavigations() {
 
                 </Stack.Navigator>
             </NavigationContainer>
+            </Provider>
         )
     }
 
