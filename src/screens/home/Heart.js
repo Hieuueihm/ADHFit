@@ -4,6 +4,8 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Liinechart from '../../components/Liinechart'
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../../constants';
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux"
 
 //Data mo phong cai heart
 const dataHeart = {
@@ -20,6 +22,8 @@ const Heart = () => {
     const navigation = useNavigation();
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
+    const { t } = useTranslation();
+    const stylesLightDark = useSelector((state) => state.settings.styles);
 
     return (
         <SafeAreaView>
@@ -28,7 +32,7 @@ const Heart = () => {
                 style={{
                     height: Dimensions.get("window").height,
                     width: Dimensions.get("window").width,
-                    alignItems: 'center'
+                    alignItems: 'center',...stylesLightDark.background
                 }}>
                 <View
                     style={{
@@ -52,7 +56,7 @@ const Heart = () => {
                             color: 'black',
                             fontSize: 24,
                             marginLeft: 5,
-                        }}>Heart</Text>
+                        }}>{t('heart')}</Text>
                 </View>
                 <View
                     style={{
@@ -76,7 +80,7 @@ const Heart = () => {
                             fontSize: 20,
                             color: 'white',
                             marginLeft: 20,
-                        }}>Heart Health</Text>
+                        }}>{t('heartHealth')}</Text>
                     <TouchableOpacity
                         activeOpacity={0.7}
                         style={{
@@ -92,7 +96,7 @@ const Heart = () => {
                             style={{
                                 fontSize: 16,
                                 color: 'black',
-                            }}>Measure</Text>
+                            }}>{t('measure')}</Text>
 
                     </TouchableOpacity>
                 </View>
@@ -137,7 +141,7 @@ const Heart = () => {
                             fontSize: 20,
                             color: 'white',
                             marginLeft: 15,
-                        }}>Oxygen in blood</Text>
+                        }}>{t('oxygenInBlood')}</Text>
                     <TouchableOpacity
                         activeOpacity={0.7}
                         style={{
@@ -153,7 +157,7 @@ const Heart = () => {
                             style={{
                                 fontSize: 16,
                                 color: 'black',
-                            }}>Measure</Text>
+                            }}>{t('measure')}</Text>
 
                     </TouchableOpacity>
                 </View>

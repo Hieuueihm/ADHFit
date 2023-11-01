@@ -5,11 +5,12 @@ import Donutchart from "../../components/Donutchart";
 import Liinechart from "../../components/Liinechart";
 import { useNavigation } from "@react-navigation/native";
 import { ROUTES } from "../../../constants";
+import { useTranslation } from "react-i18next";
 
 const Sleeptracking = () => {
     const navigation = useNavigation();
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const monthsOfYear = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
     const currentTime = new Date();
     currentTime.setUTCHours(currentTime.getUTCHours());
     const year = currentTime.getFullYear();     // năm
@@ -18,6 +19,7 @@ const Sleeptracking = () => {
     const day = currentTime.getDay();          // Thứ trong tuần, nhung tra ve cac gia tri 0-6
     const dayName = daysOfWeek[day];           // Chuyen tu du lieu số sang thứ trong tuần
     const monthName = monthsOfYear[month];
+    const { t } = useTranslation();
 
     // du lieu ve cai ngu
     const dataSleep = {
@@ -78,12 +80,12 @@ const Sleeptracking = () => {
                                     color: 'white',
                                     fontSize: 24,
                                     margin: 5
-                                }}>Today, {dayName}</Text>
+                                }}>{t('today')}, {t(dayName)}</Text>
                             <Text
                                 style={{
                                     color: '#8D8D8D',
                                     fontSize: 16,
-                                }}>{dayOfmonth} {monthName} {year} </Text>
+                                }}>{t(dayOfmonth)} {t(monthName)} {t(year)} </Text>
                         </View>
                         <TouchableOpacity
                             activeOpacity={0.7}
@@ -132,7 +134,7 @@ const Sleeptracking = () => {
                             //fontText là font chữ của cái text đấy.
                             ><Donutchart radius={25} target={8} spent={5} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                             ></Donutchart>
-                                <Text style={styles.item}>Mon</Text>
+                                <Text style={styles.item}>{t('mon')}</Text>
                             </View>
                             <View
                                 style={{
@@ -141,7 +143,7 @@ const Sleeptracking = () => {
                                 }}
                             ><Donutchart radius={25} target={8} spent={3} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                             ></Donutchart>
-                                <Text style={styles.item}>Tue</Text>
+                                <Text style={styles.item}>{t('tue')}</Text>
                             </View>
                             <View
                                 style={{
@@ -150,7 +152,7 @@ const Sleeptracking = () => {
                                 }}
                             ><Donutchart radius={25} target={8} spent={6} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                             ></Donutchart>
-                                <Text style={styles.item}>Wed</Text>
+                                <Text style={styles.item}>{t('wed')}</Text>
                             </View>
                             <View
                                 style={{
@@ -159,7 +161,7 @@ const Sleeptracking = () => {
                                 }}
                             ><Donutchart radius={25} target={8} spent={4} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                             ></Donutchart>
-                                <Text style={styles.item}>Thur</Text>
+                                <Text style={styles.item}>{t('thu')}</Text>
                             </View>
                             <View
                                 style={{
@@ -168,7 +170,7 @@ const Sleeptracking = () => {
                                 }}
                             ><Donutchart radius={25} target={8} spent={1} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                             ></Donutchart>
-                                <Text style={styles.item}>Fri</Text>
+                                <Text style={styles.item}>{t('fri')}</Text>
                             </View>
                             <View
                                 style={{
@@ -177,7 +179,7 @@ const Sleeptracking = () => {
                                 }}
                             ><Donutchart radius={25} target={8} spent={7} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                             ></Donutchart>
-                                <Text style={styles.item}>Sat</Text>
+                                <Text style={styles.item}>{t('sat')}</Text>
                             </View>
                             <View
                                 style={{
@@ -186,7 +188,7 @@ const Sleeptracking = () => {
                                 }}
                             ><Donutchart radius={25} target={8} spent={2} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                             ></Donutchart>
-                                <Text style={styles.item}>Sun</Text>
+                                <Text style={styles.item}>{t('sun')}</Text>
                             </View>
                         </ScrollView>
                     </View>
@@ -217,11 +219,10 @@ const Sleeptracking = () => {
                                 style={{
                                     color: 'white',
                                     marginLeft: 15,
-                                    marginTop: 8,
+                                    marginRight: 50,
+                                    marginTop: 10,
                                 }}
-                            >Average{'\n'}
-                                sleep time{'\n'}
-                                this week</Text>
+                            >{t('averageSleepTimeThisWeek')}</Text>
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -232,19 +233,8 @@ const Sleeptracking = () => {
                                     //   backgroundColor:'white'
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        fontSize: 38,
-                                        fontWeight: 'bold',
-                                        color: 'white',
-                                    }}>6.2</Text>
-                                <Text
-                                    style={{
-                                        fontSize: 12,
-                                        color: 'white',
-                                        marginLeft: 20
-                                    }}>hour{'\n'}
-                                    per day</Text>
+                                <Text style={{ fontSize: 38, fontWeight: 'bold', color: 'white'}}>6.2</Text>
+                                <Text style={{fontSize: 12, color: 'white',marginLeft: 10, marginRight:15 }}>{t('hoursPerDay')}</Text>
                             </View>
                         </View>
                         <View
@@ -265,7 +255,7 @@ const Sleeptracking = () => {
                                     color: 'white',
                                     fontSize: 14,
                                 }}
-                            >Quality</Text>
+                            >{t('quality')}</Text>
                             <Donutchart radius={50} target={100} spent={67} text="%" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="20" strokeAmount="20" colorText='#FFFFFF' fontText={20}
                             ></Donutchart>
                         </View>
@@ -285,7 +275,7 @@ const Sleeptracking = () => {
                                 marginLeft: 15,
                                 fontSize: 16,
                             }}
-                        >Last sleep information</Text>
+                        >{t('lastSleepInformation')}</Text>
                         <View
                             style={{
                                 width: 350,
@@ -314,8 +304,7 @@ const Sleeptracking = () => {
                                 }}>
                                     {/*Cai nay la Time sleep, truyen Time sleep vao Text */}
                                     <Text style={styles.bigTextinLastSleep}>6h52</Text>
-                                    <Text style={styles.smallTextinLastSleep}
-                                    >Time in sleep</Text>
+                                    <Text style={styles.smallTextinLastSleep}>{t('timeInSleep')}</Text>
 
                                     {/* Cai nay la cai Wake up time  */}
                                 </View>
@@ -335,8 +324,7 @@ const Sleeptracking = () => {
                                     marginStart: 12,
                                 }}>
                                     <Text style={styles.bigTextinLastSleep}>07:12 AM</Text>
-                                    <Text style={styles.smallTextinLastSleep}
-                                    >Wake up time</Text>
+                                    <Text style={styles.smallTextinLastSleep}>{t('wakeUpTime')}</Text>
                                 </View>
                             </View>
 
@@ -364,8 +352,7 @@ const Sleeptracking = () => {
                                 }}>
                                     {/*Cai nay la Time sleep, truyen Time sleep vao Text */}
                                     <Text style={styles.bigTextinLastSleep}>7h23m</Text>
-                                    <Text style={styles.smallTextinLastSleep}
-                                    >Went to bed</Text>
+                                    <Text style={styles.smallTextinLastSleep}>{t('wentToBed')}</Text>
                                 </View>
                                 <Image
                                     source={require('../../assets/icons/zzz.png')}
@@ -382,8 +369,7 @@ const Sleeptracking = () => {
                                     marginStart: 12,
                                 }}>
                                     <Text style={styles.bigTextinLastSleep}>25 min</Text>
-                                    <Text style={styles.smallTextinLastSleep}
-                                    >Fell as sleep</Text>
+                                    <Text style={styles.smallTextinLastSleep}>{t('fellAsSleep')}</Text>
                                 </View>
                             </View>
                         </View>
@@ -408,7 +394,7 @@ const Sleeptracking = () => {
                                 marginLeft: 20,
                                 marginTop: 15,
                             }}
-                        >Weekly Sleep</Text>
+                        >{t('weeklySleep')}</Text>
                         <Liinechart height={200} width={300} data={dataSleep} colorLine="#225DF8" backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' Opacity={0}></Liinechart>
                     </View>
                 </SafeAreaView>
@@ -428,7 +414,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#FFFFFF',
         marginHorizontal: 20, // Khoảng cách giữa các item ngang
-        marginLeft: 40,
+        marginLeft: 35,
         marginBottom: 5
     },
     smallTextinLastSleep: {
