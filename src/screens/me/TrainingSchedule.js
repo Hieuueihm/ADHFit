@@ -3,6 +3,8 @@ import { Text, View, Image, TouchableOpacity, ImageBackground, StyleSheet, } fro
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { format, addDays } from 'date-fns';
+import Donutchart from "../../components/Donutchart";
+import Entypo from "react-native-vector-icons/Entypo"
 
 const TrainingSchedule = () => {
     const currentTime = new Date();
@@ -19,12 +21,17 @@ const TrainingSchedule = () => {
     const Cumulative = 0;    // gia su cai nay = 0
     const totalNumber = 0;
     const targerComplete = 0;
+    const stepNumber = 0;
+    const distance = 0;
+    const target = 100; // mục tiêu chạy
+    const amount = 55; // thực hiện đc bao nhiêu
+    const percent = (amount / target * 100).toFixed(2);  // % ở donut
 
     useEffect(() => {
-        // Giả sử thứ 3 5 t7 chủ nhât là ngày tập
-        if (day === 2 || day === 4 || day === 5 || day === 6) {
+        // Giả sử thứ 3 5 t6 t7 là ngày tập
+        if (day === 0 || day === 4 || day === 5 || day === 6) {
             setDayCheck(1);
-        } else if (day === 0 || day === 1 || day === 3) {
+        } else if (day === 2 || day === 1 || day === 3) {
             // Ngày nghỉ
             setDayCheck(0);
         }
@@ -58,6 +65,7 @@ const TrainingSchedule = () => {
                     </View>
                     <View style={styles.boxInfor}>
                         <View style={styles.detailInfor}>
+                            {/* Tích lũy */}
                             <Text style={styles.inforText1}>Cumulative{'\n'}</Text>
                             <View style={styles.detailInfor2}>
                                 <Text style={styles.inforText2}>{Cumulative}</Text>
@@ -65,12 +73,14 @@ const TrainingSchedule = () => {
                             </View>
                         </View>
                         <View style={styles.detailInfor}>
+                            {/* Tổng bước chạy trong tuần */}
                             <Text style={styles.inforText1}>Total number of step this week</Text>
                             <View style={styles.detailInfor2}>
                                 <Text style={styles.inforText2}>{totalNumber}</Text>
                             </View>
                         </View>
                         <View style={styles.detailInfor}>
+                            {/* Mục tiêu đã hoàn thành */}
                             <Text style={styles.inforText1}>Target completed</Text>
                             <View style={styles.detailInfor2}>
                                 <Text style={styles.inforText2}>{targerComplete}</Text>
@@ -84,10 +94,12 @@ const TrainingSchedule = () => {
                 <Text style={styles.bluetext}>{year} - {month + 1}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', flex: 1, marginVertical: 5, }}>
                     {daysOfWeek.map((day, index) => (
-                        <View key={index} style={[styles.day, { borderColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent', }]}>
+                        <View key={index} style={[styles.day, {
+                            borderColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent',
+                        }]}>
                             <Text style={styles.bluetext}>{day}</Text>
-                            <View style={styles.circle}>
-                                <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
+                            <View style={[styles.circle, { backgroundColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent' }]}>
+                                <Text style={[styles.bluetext, { color: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'white' : 'blue' }]}>{daysOfMonth[index]}</Text>
                             </View>
                         </View>
                     ))}
@@ -96,19 +108,51 @@ const TrainingSchedule = () => {
             <View style={styles.attitude}>
                 {
                     dayCheck ? (
-                        // Tập thì in ảnh này
-                        <Image source={require("../../assets/images/training1.png")} style={styles.image}></Image>
+                        // Tập thì la cai nay
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
+                            <View style={[styles.practiceRowView,]}>
+                                <View style={styles.halfPractice}>
+                                    <View style={{
+                                        height: 45, width: 45, borderRadius: 22.5, backgroundColor: '#81acff'
+                                        , alignItems: 'center', justifyContent: 'center'
+                                    }}>
+                                        <Image source={require("../../assets/icons/shoe.png")} style={{
+                                            height: 36,
+                                            width: 36,
+                                        }}></Image>
+                                    </View>
+                                    <View style={{ width: 120, height: 45, marginLeft: 8, }}>
+                                        <Text style={{ fontSize: 18, }}>Step number {'\n'}
+                                            {stepNumber}</Text>
+                                    </View>
+                                </View>
+                                <View style={[styles.halfPractice, { alignItems: 'flex-start', marginTop: 50, }]}>
+                                    <View style={{
+                                        height: 45, width: 45, borderRadius: 22.5, backgroundColor: '#49F16E',
+                                        justifyContent: 'center', alignItems: 'center'
+                                    }}>
+                                        <Entypo name="location" size={30} color={"white"}></Entypo>
+                                    </View>
+                                    <View style={{ width: 120, height: 45, marginLeft: 8, }}>
+                                        <Text style={{ fontSize: 18, }}>Distance {'\n'}
+                                            {distance} km</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={styles.practiceRowView}>
+                                <Donutchart radius={60} target={target} spent={percent} text="%" colorTarget='#FBDA85' colorAmount="#FCA21C" strokeTarget="15" strokeAmount="15" colorText='#FCA21C' fontText={20} />
+                            </View>
+
+                        </View>
+
+                        // Cho nay khi off
                     ) : (
-                        <Image source={require("../../assets/images/training2.png")} style={styles.image}></Image>
-                    )
-                }
-                <Image source={require("../../assets/images/training3.png")} style={{ width: 200, marginTop: -30, }}></Image>
-                {
-                    dayCheck ? (
-                        //Tập thì in dòng text này
-                        <Text style={styles.bluetext}>Let's practice hard today</Text>
-                    ) : (
-                        <Text style={styles.bluetext}>Today is your day of ohh</Text>
+                        <View>
+                            <Image source={require("../../assets/images/training2.png")} style={styles.image}></Image>
+                            <Image source={require("../../assets/images/training3.png")} style={{ width: 200, marginTop: -30, }}></Image>
+                            <Text style={styles.bluetext}>Today is your day of ohh</Text>
+                        </View>
+
                     )
                 }
             </View>
@@ -197,7 +241,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     attitude: {
-        flex: 0.4,
+        flex: 0.5,
         //    backgroundColor: 'orange',
         alignItems: 'center',
         justifyContent: 'center'
@@ -206,5 +250,18 @@ const styles = StyleSheet.create({
         height: 180,
         width: 180,
         alignSelf: 'center'
+    },
+    practiceRowView: {
+        flex: 0.5,
+        //    backgroundColor: 'green',
+        //    justifyContent: 'center',
+        //    alignSelf: 'flex-start'
+    },
+    halfPractice: {
+        flex: 0.5,
+        flexDirection: 'row',
+        //    backgroundColor: 'blue',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
     }
 })
