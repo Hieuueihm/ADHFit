@@ -1,7 +1,14 @@
 import React from "react";
 import { View, Text, Image, ImageBackground, StyleSheet } from "react-native";
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
+import { useNavigation } from '@react-navigation/native';
+import RunningOutDoor from "./RunningOutDoors";
+import { ROUTES } from "../../../constants";
 const Waitime = () => {
+    const navigation = useNavigation();
+    setTimeout(() => {
+        navigation.navigate(ROUTES.RUNNINGOUTDOOR);
+    }, 5500);
     return (
         <View style={styles.container}>
             <CountdownCircleTimer

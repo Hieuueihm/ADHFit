@@ -4,8 +4,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import SwitchButton from "../../components/Switch";
-
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from "../../../constants";
 const ViewSetting = () => {
+    const navigation = useNavigation();
     // ngay tap.
     const isSun = true;
     const isMon = false;
@@ -24,7 +26,8 @@ const ViewSetting = () => {
     return (
         <View style={styles.container}>
             <View style={styles.Header}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => { navigation.navigate(ROUTES.SPORT_TAB) }}>
                     <MaterialCommunityIcons name="chevron-left" size={32}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <View style={{ flex: 0.9 }}>

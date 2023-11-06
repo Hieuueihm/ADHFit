@@ -1,24 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, SafeAreaView, Dimensions, ScrollView } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo'
 import { useNavigation } from '@react-navigation/native';
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux"
+import { ROUTES } from '../../../constants';
 
 const Details = () => {
-    const navigation = useNavigation(); 
+    const navigation = useNavigation();
+    //const navigation = useNavigation(); 
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
-    const stylesLightDark = useSelector((state) => state.settings.styles);
-    const { t } = useTranslation();
-
     return (
         <SafeAreaView style={{ height: hei, width: wi, }}>
-            <View style={{ flexDirection: 'row', height: hei / 12, width: wi, alignItems: 'center', backgroundColor: '#DAD1D1',...stylesLightDark.background }}>
-                <Text style={{ color: 'black', fontSize: 24, marginLeft: 20,fontWeight:"bold",...stylesLightDark.text }}>Details and Tips</Text>
+            <View style={{ flexDirection: 'row', height: hei / 12, width: wi, alignItems: 'center', backgroundColor: '#DAD1D1' }}>
+                <Text style={{ color: 'black', fontSize: 24, marginLeft: 20, }}>Details and Tips</Text>
                 <Image source={require("../../assets/images/avatar.png")} style={{ width: 45, height: 45, marginLeft: 130, }}></Image>
             </View>
-            <ImageBackground source={require("../../assets/images/Layer1.png")} style={{ height: hei, width: wi,...stylesLightDark.background}}>
+            <ImageBackground source={require("../../assets/images/Layer1.png")} style={{ height: hei, width: wi, }}>
                 <ScrollView>
                     <View style={styles.ScrollView}>
                         {/* BloodPressure */}<View style={styles.triangleCorner}></View>
@@ -26,7 +22,8 @@ const Details = () => {
                         <View style={styles.triangleCorner1}>
                             <Image source={require("../../assets/icons/bloodPressure.png")} style={styles.iconRight}></Image>
                             <Text style={styles.text}>Blood Pressure</Text>
-                            <TouchableOpacity style={styles.iconBack}>
+                            <TouchableOpacity style={styles.iconBack}
+                                onPress={() => { navigation.navigate(ROUTES.BloodPresssure) }}>
                                 <Image source={require("../../assets/icons/arrowBlack.png")} style={styles.image}></Image>
                             </TouchableOpacity>
                         </View>
@@ -35,7 +32,8 @@ const Details = () => {
                         <View style={{ ...styles.commonStyle, top: 200, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#FD97E6' }}>
                             <Image source={require("../../assets/icons/sugarBlood.png")} style={styles.iconRight}></Image>
                             <Text style={styles.text}>Blood Sugar</Text>
-                            <TouchableOpacity style={styles.iconBack}>
+                            <TouchableOpacity style={styles.iconBack}
+                                onPress={() => { navigation.navigate(ROUTES.BloodSugar) }}>
                                 <Image source={require("../../assets/icons/arrowBlack.png")} style={styles.image}></Image>
                             </TouchableOpacity>
                         </View>
@@ -44,7 +42,8 @@ const Details = () => {
                         <View style={{ ...styles.commonStyle, top: 350, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#7EFC7C' }}>
                             <Image source={require("../../assets/icons/scale.png")} style={styles.iconRight}></Image>
                             <Text style={styles.text}>Weight and BMI</Text>
-                            <TouchableOpacity style={styles.iconBack}>
+                            <TouchableOpacity style={styles.iconBack}
+                                onPress={() => { navigation.navigate(ROUTES.BodyWeight) }}>
                                 <Image source={require("../../assets/icons/arrowBlack.png")} style={styles.image}></Image>
                             </TouchableOpacity>
                         </View>
@@ -53,7 +52,8 @@ const Details = () => {
                         <View style={{ ...styles.commonStyle, top: 500, width: 130, borderRightWidth: 50, borderTopWidth: 90, borderTopColor: '#CFD230' }}>
                             <Image source={require("../../assets/icons/healthyFood.png")} style={styles.iconRight}></Image>
                             <Text style={styles.text}>Healthy Nutrition</Text>
-                            <TouchableOpacity style={styles.iconBack}>
+                            <TouchableOpacity style={styles.iconBack}
+                                onPress={() => { navigation.navigate(ROUTES.HealthyFood) }}>
                                 <Image source={require("../../assets/icons/arrowBlack.png")} style={styles.image}></Image>
                             </TouchableOpacity>
                         </View>

@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { View, Image, Text, ImageBackground, TouchableWithoutFeedback, TouchableOpacity, StyleSheet } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../../constants';
 
 const RunningOutDoor = () => {
+    const navigation = useNavigation();
     const distance = 0.00;
     const [currentScreen, setCurrentScreen] = useState(1);
     const [islock, setIsLock] = useState(false);
@@ -65,7 +68,8 @@ const RunningOutDoor = () => {
                 <View style={styles.detailButton}>
                     <TouchableOpacity
                         activeOpacity={0.7}
-                        disabled={islock}>
+                        disabled={islock}
+                        onPress={() => { navigation.navigate(ROUTES.SPORT_TAB) }}>
                         <View style={styles.miniButton}>
                             <Image source={require("../../assets/icons/map.png")} style={{ height: 50, width: 50, borderRadius: 25, }}></Image>
                         </View>
@@ -92,9 +96,10 @@ const RunningOutDoor = () => {
             <View style={styles.convenientButton}>
                 <View style={styles.detailButton}>
                     <TouchableOpacity
-                        activeOpacity={0.7}>
-                        <View style={styles.miniButton}
-                            disabled={islock}>
+                        activeOpacity={0.7}
+                        disabled={islock}
+                        onPress={() => { navigation.navigate(ROUTES.SPORT_TAB) }}>
+                        <View style={styles.miniButton} >
                             <Image source={require("../../assets/icons/map.png")} style={{ height: 50, width: 50, borderRadius: 25, }}></Image>
                         </View>
                     </TouchableOpacity>

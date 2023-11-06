@@ -4,15 +4,23 @@ import MapView, { Marker, Overlay, } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../../constants';
 
 const Sport = () => {
+    const navigation = useNavigation();
     /* cái bản đồ l này làm cho mọi thứ khác muốn render đè lên phải dùng absolute nếu ko là lỗi đấy.
     Nên giải pháp của t là cho 1 cái container ở ngoài trước, xong cho Map vào xong cái View chứa nút bấm các thứ(1 cái container khác)
     đè lên trên vs postion = absolute.
     */
     const lastKm = 0.00;       // Giả sử đây là quãng đường đi được.
     const [currentLocation, setCurrentLocation] = useState(null);
+    const [isWaitime, setIsWaitime] = useState(false);
+    const clickGo = () => {
+        setIsWaitime(true);
+        console.log(isWaitime);
+    }
 
     useEffect(() => {
         const watchID = Geolocation.watchPosition(
@@ -30,7 +38,7 @@ const Sport = () => {
             },
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 }
         );
-        console.log(currentLocation);
+        //    console.log(currentLocation);
         return () => Geolocation.clearWatch(watchID);
     }, []);
 
@@ -69,7 +77,8 @@ const Sport = () => {
             <View style={styles.overLay}>
                 <View style={styles.halfView}>
                     <View style={styles.rowView}>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate(ROUTES.WEATHER) }}>
                             <View style={{
                                 flexDirection: 'row', backgroundColor: 'white',
                                 borderRadius: 20, height: 40, width: 150, alignItems: 'center',
@@ -82,7 +91,8 @@ const Sport = () => {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate(ROUTES.HEART) }}>
                             <View style={{
                                 flexDirection: 'row',
                                 height: 40, width: 110, backgroundColor: 'white', borderRadius: 20,
@@ -107,13 +117,23 @@ const Sport = () => {
                 </View>
                 <View style={styles.halfView}>
                     <View style={[styles.rowView, { flex: 0.35, marginTop: 80, }]}>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate(ROUTES.ViewSetting) }}>
                             <View style={[styles.miniButton, { marginLeft: 60, }]}>
                                 <MaterialCommunityIcons name='target' size={32}></MaterialCommunityIcons>
 
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                // chỗ này bị j ấy lúc thì ko hiện running outdoor đc lúc thì ko hiện bấm giờ đc.
+                                if (isWaitime === false) {
+                                    navigation.navigate(ROUTES.Waittime);
+                                    setIsWaitime(true);
+                                } else if (isWaitime === true) {
+                                    navigation.navigate(ROUTES.RUNNINGOUTDOOR);
+                                }
+                            }}>
                             <View style={[styles.goButton]}>
                                 <Text style={[styles.bigText, { fontSize: 40, }]}>GO</Text>
                             </View>
