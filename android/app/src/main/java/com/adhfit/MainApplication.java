@@ -14,7 +14,8 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
-
+import com.reactnativecommunity.geolocation.GeolocationPackage;
+  
 
 public class MainApplication extends Application implements ReactApplication {
 

@@ -2,18 +2,23 @@ import React from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, SafeAreaView, Dimensions, ScrollView } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux"
 
 const Details = () => {
-    //const navigation = useNavigation(); 
+    const navigation = useNavigation(); 
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
+    const stylesLightDark = useSelector((state) => state.settings.styles);
+    const { t } = useTranslation();
+
     return (
         <SafeAreaView style={{ height: hei, width: wi, }}>
-            <View style={{ flexDirection: 'row', height: hei / 12, width: wi, alignItems: 'center', backgroundColor: '#DAD1D1' }}>
-                <Text style={{ color: 'black', fontSize: 24, marginLeft: 20, }}>Details and Tips</Text>
+            <View style={{ flexDirection: 'row', height: hei / 12, width: wi, alignItems: 'center', backgroundColor: '#DAD1D1',...stylesLightDark.background }}>
+                <Text style={{ color: 'black', fontSize: 24, marginLeft: 20,fontWeight:"bold",...stylesLightDark.text }}>Details and Tips</Text>
                 <Image source={require("../../assets/images/avatar.png")} style={{ width: 45, height: 45, marginLeft: 130, }}></Image>
             </View>
-            <ImageBackground source={require("../../assets/images/Layer1.png")} style={{ height: hei, width: wi, }}>
+            <ImageBackground source={require("../../assets/images/Layer1.png")} style={{ height: hei, width: wi,...stylesLightDark.background}}>
                 <ScrollView>
                     <View style={styles.ScrollView}>
                         {/* BloodPressure */}<View style={styles.triangleCorner}></View>

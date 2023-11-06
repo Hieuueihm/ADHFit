@@ -3,18 +3,24 @@ import { View, Text, SafeAreaView, TextInput, Image, ImageBackground, Button, To
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS, ROUTES } from "../../../constants";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from 'react-redux'
+import i18n from '../../../redux/languages/i18n';
+import { changeLanguage } from '../../../redux/action/actions';
+import { useTranslation } from "react-i18next";
+
 
 export default function Setting() {
     const navigation = useNavigation();
     //Change Language
-    const [currentLanguage, setCurrentLanguage] = useState('EN'); //setCurrentLanguage: EN
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const currentLanguage = useSelector((state) => state.language.currentLanguage);
+    const stylesLightDark = useSelector((state) => state.settings.styles);
+
     const toggleLanguage = () => {
-        //Process....
-        if (currentLanguage === 'EN') {
-            setCurrentLanguage('VN');
-        } else {
-            setCurrentLanguage('EN');
-        }
+        const newLanguage = currentLanguage === 'EN' ? 'VN' : 'EN';
+        dispatch(changeLanguage(newLanguage));
+        i18n.changeLanguage(newLanguage);
     };
 
     //Deactivate Account
@@ -39,7 +45,7 @@ export default function Setting() {
     };
 
     return (
-        <View style={styles.background}>
+        <View style={{ ...styles.background, ...stylesLightDark.background }}>
             {/* headerSetting */}
             <View style={styles.header}>
                 <View style={styles.leftHeader}>
@@ -53,7 +59,7 @@ export default function Setting() {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.centerHeader}>
-                    <Text style={{ fontSize: 22, color: 'black', fontWeight: 'bold' }}>Settings</Text>
+                    <Text style={{ fontSize: 22, ...stylesLightDark.text, fontWeight: 'bold' }}>{t('settings')}</Text>
                 </View>
             </View>
 
@@ -61,17 +67,7 @@ export default function Setting() {
             <View styles={styles.container}>
                 <View style={styles.blockContainer}>
                     <View style={styles.leftContainer}>
-                        <Text style={styles.textContainer}>Change Password</Text>
-                    </View>
-                    <View>
-                        <TouchableOpacity style={styles.rightContainer}>
-                            <Image source={require('../../assets/icons/Private.png')} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.blockContainer}>
-                    <View style={styles.leftContainer}>
-                        <Text style={styles.textContainer}>My Subscribtion</Text>
+                        <Text style={styles.textContainer}>{t('mySubscription')}</Text>
                     </View>
                     <View>
                         <TouchableOpacity style={styles.rightContainer}>
@@ -81,7 +77,7 @@ export default function Setting() {
                 </View>
                 <View style={styles.blockContainer}>
                     <View style={styles.leftContainer}>
-                        <Text style={styles.textContainer}>Terms and conditions</Text>
+                        <Text style={styles.textContainer}>{t('termsAndConditions')}</Text>
                     </View>
                     <View>
                         <TouchableOpacity style={styles.rightContainer}>
@@ -91,7 +87,7 @@ export default function Setting() {
                 </View>
                 <View style={styles.blockContainer}>
                     <View style={styles.leftContainer}>
-                        <Text style={styles.textContainer}>Help & Support</Text>
+                        <Text style={styles.textContainer}>{t('helpSupport')}</Text>
                     </View>
                     <View>
                         <TouchableOpacity style={styles.rightContainer}>
@@ -101,7 +97,7 @@ export default function Setting() {
                 </View>
                 <View style={styles.blockContainer}>
                     <View style={styles.leftContainer}>
-                        <Text style={styles.textContainer}>Language</Text>
+                        <Text style={styles.textContainer}>{t('language')}</Text>
                     </View>
                     <View>
                         <TouchableOpacity style={styles.rightContainer} onPress={toggleLanguage}>
@@ -112,23 +108,13 @@ export default function Setting() {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.blockContainer}>
-                    <View style={styles.leftContainer}>
-                        <Text style={styles.textContainer}>Logout</Text>
-                    </View>
-                    <View>
-                        <TouchableOpacity style={styles.rightContainer}>
-                            <Image source={require('../../assets/icons/Logout.png')} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
             </View>
 
             {/* footerSetting */}
             <View style={styles.footer}>
                 <TouchableOpacity onPress={handleDeactivateAccount}>
                     <View style={styles.blockFooter}>
-                        <Text style={styles.textFooter}>Deactivate Account</Text>
+                        <Text style={styles.textFooter}>{t('deactivateAccount')}</Text>
                     </View>
                 </TouchableOpacity>
             </View>

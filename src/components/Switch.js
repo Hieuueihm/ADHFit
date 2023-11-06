@@ -3,12 +3,12 @@ import { View, Switch, StyleSheet } from 'react-native';
 
 const SwitchButton = (props) => {
     const [isEnabled, setIsEnabled] = useState(false);
+    const [handleUpdateState, setHandleUpdateState] = useState(false);
 
-    useEffect(() => {
-        if (props.updateStateSwitch) {
-            setIsEnabled(props.updateStateSwitch)
-        }
-    }, [props?.updateStateSwitch])
+    if (props.updateStateSwitch && handleUpdateState == false) {
+        setIsEnabled(props.updateStateSwitch)
+        setHandleUpdateState(true);
+    }
     const toggleSwitch = () => {
         setIsEnabled(previousState => !previousState);
         if (props.handleOnPress) {

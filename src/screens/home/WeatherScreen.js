@@ -115,7 +115,7 @@ export default function WeatherScreen() {
                             opacity: 1,
                         }} />
                 </TouchableOpacity>
-                <View style={{ flexDirection: "row", marginLeft: 80 }}>
+                <View style={{ flexDirection: "row", marginLeft: 90 }}>
                     <MaterialCommunityIcon name={"map-marker-outline"}
                         style={{
                             fontSize: 30,
@@ -132,30 +132,6 @@ export default function WeatherScreen() {
 
                         }} />
 
-                </View>
-                <View style={{ position: 'relative' }}>
-                    <Ionicon name={"notifications-outline"}
-                        style={{
-                            fontSize: 30,
-                            color: COLORS.white,
-                            opacity: 1,
-                            flex: 1,
-                            marginLeft: 90
-
-                        }} />
-                    <View style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        width: 12,
-                        height: 12,
-                        borderRadius: 6,
-                        backgroundColor: 'red',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>0</Text>
-                    </View>
                 </View>
             </SafeAreaView>
 

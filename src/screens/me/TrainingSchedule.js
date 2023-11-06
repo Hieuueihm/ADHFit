@@ -5,8 +5,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { format, addDays } from 'date-fns';
 import Donutchart from "../../components/Donutchart";
 import Entypo from "react-native-vector-icons/Entypo"
+import { handleGetUserInformation } from "../../api/UserAPI";
+import { getItem } from "../../utils/asyncStorage";
+
 
 const TrainingSchedule = () => {
+    const [userId, setUserId] = useState(null);
     const currentTime = new Date();
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -17,7 +21,6 @@ const TrainingSchedule = () => {
     const day = currentTime.getDay();          // Thứ trong tuần, nhung tra ve cac gia tri 0-6
     const dayName = daysOfWeek[day];           // Chuyen tu du lieu số sang thứ trong tuần
 
-    const [dayCheck, setDayCheck] = useState(0);
     const Cumulative = 0;    // gia su cai nay = 0
     const totalNumber = 0;
     const targerComplete = 0;
@@ -27,17 +30,33 @@ const TrainingSchedule = () => {
     const amount = 55; // thực hiện đc bao nhiêu
     const percent = (amount / target * 100).toFixed(2);  // % ở donut
 
-    useEffect(() => {
-        // Giả sử thứ 3 5 t6 t7 là ngày tập
-        if (day === 0 || day === 4 || day === 5 || day === 6) {
-            setDayCheck(1);
-        } else if (day === 2 || day === 1 || day === 3) {
-            // Ngày nghỉ
-            setDayCheck(0);
-        }
-    }, [day]);
+
     const [currentDate, setCurrentDate] = useState(new Date());
     const startDate = new Date(currentDate);
+    const [reminderDay, setReminderDay] = useState([]);
+
+
+    const loadData = async () => {
+        let user_id = await getItem('user_id');
+        setUserId(user_id)
+        handleGetUserInformation({
+            'user_id': user_id
+        })
+            .then(response => {
+                if (response?.data?.userInfo?.reminderDay) {
+                    //    console.log(response?.data?.userInfo?.reminderDay)
+                    setReminderDay(response?.data?.userInfo?.reminderDay);
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    }
+    useEffect(() => {
+        loadData();
+    }, [])
+
     startDate.setDate(currentDate.getDate() - currentDate.getDay());
 
     const daysOfMonth = [];
@@ -55,7 +74,7 @@ const TrainingSchedule = () => {
                 style={styles.imagebg}>
                 <View style={{ flex: 1, backgroundColor: 'rgba(129,172,255, 0.6)', }}>
                     <View style={styles.rowContainer}>
-                        <TouchableOpacity>
+                        <TouchableOpacity style={{ marginHorizontal: -20 }}>
                             <MaterialCommunityIcon name="chevron-left" style={styles.iconHeader} />
                         </TouchableOpacity>
                         <Text style={styles.textHeader}>Training Schedule</Text>
@@ -93,68 +112,84 @@ const TrainingSchedule = () => {
             <View style={styles.calender}>
                 <Text style={styles.bluetext}>{year} - {month + 1}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', flex: 1, marginVertical: 5, }}>
-                    {daysOfWeek.map((day, index) => (
-                        <View key={index} style={[styles.day, {
-                            borderColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent',
-                        }]}>
-                            <Text style={styles.bluetext}>{day}</Text>
-                            <View style={[styles.circle, { backgroundColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent' }]}>
-                                <Text style={[styles.bluetext, { color: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'white' : 'blue' }]}>{daysOfMonth[index]}</Text>
+                    {daysOfWeek.map((day, index) => {
+                        const isReminderDay = reminderDay.includes(day);
+                        return (
+                            <View key={index} style={[styles.day, { borderColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent', }]}>
+                                <Text style={styles.bluetext}>{day}</Text>
+                                {
+                                    isReminderDay
+                                        ?
+                                        <>
+                                            <View style={[styles.circleBg, { backgroundColor: 'blue' }]}>
+                                                <Text style={[styles.bluetext, { color: "white" }]}>{daysOfMonth[index]}</Text>
+                                            </View>
+                                        </>
+                                        :
+                                        <>
+                                            <View style={[styles.circle]}>
+                                                <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
+                                            </View>
+                                        </>
+                                }
                             </View>
-                        </View>
-                    ))}
+                        )
+                    })}
                 </View>
             </View>
             <View style={styles.attitude}>
                 {
-                    dayCheck ? (
-                        // Tập thì la cai nay
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
-                            <View style={[styles.practiceRowView,]}>
-                                <View style={styles.halfPractice}>
-                                    <View style={{
-                                        height: 45, width: 45, borderRadius: 22.5, backgroundColor: '#81acff'
-                                        , alignItems: 'center', justifyContent: 'center'
-                                    }}>
-                                        <Image source={require("../../assets/icons/shoe.png")} style={{
-                                            height: 36,
-                                            width: 36,
-                                        }}></Image>
+                    reminderDay.includes(dayName)
+                        ?
+                        <>
+                            {/* Tập thì la cai nay */}
+                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
+                                <View style={[styles.practiceRowView,]}>
+                                    <View style={styles.halfPractice}>
+                                        <View style={{
+                                            height: 45, width: 45, borderRadius: 22.5, backgroundColor: '#81acff'
+                                            , alignItems: 'center', justifyContent: 'center'
+                                        }}>
+                                            <Image source={require("../../assets/icons/shoe.png")} style={{
+                                                height: 36,
+                                                width: 36,
+                                            }}></Image>
+                                        </View>
+                                        <View style={{ width: 120, height: 45, marginLeft: 8, }}>
+                                            <Text style={{ fontSize: 18, }}>Step number {'\n'}
+                                                {stepNumber}</Text>
+                                        </View>
                                     </View>
-                                    <View style={{ width: 120, height: 45, marginLeft: 8, }}>
-                                        <Text style={{ fontSize: 18, }}>Step number {'\n'}
-                                            {stepNumber}</Text>
+                                    <View style={[styles.halfPractice, { alignItems: 'flex-start', marginTop: 50, }]}>
+                                        <View style={{
+                                            height: 45, width: 45, borderRadius: 22.5, backgroundColor: '#49F16E',
+                                            justifyContent: 'center', alignItems: 'center'
+                                        }}>
+                                            <Entypo name="location" size={30} color={"white"}></Entypo>
+                                        </View>
+                                        <View style={{ width: 120, height: 45, marginLeft: 8, }}>
+                                            <Text style={{ fontSize: 18, }}>Distance {'\n'}
+                                                {distance} km</Text>
+                                        </View>
                                     </View>
                                 </View>
-                                <View style={[styles.halfPractice, { alignItems: 'flex-start', marginTop: 50, }]}>
-                                    <View style={{
-                                        height: 45, width: 45, borderRadius: 22.5, backgroundColor: '#49F16E',
-                                        justifyContent: 'center', alignItems: 'center'
-                                    }}>
-                                        <Entypo name="location" size={30} color={"white"}></Entypo>
-                                    </View>
-                                    <View style={{ width: 120, height: 45, marginLeft: 8, }}>
-                                        <Text style={{ fontSize: 18, }}>Distance {'\n'}
-                                            {distance} km</Text>
-                                    </View>
+                                <View style={styles.practiceRowView}>
+                                    <Donutchart radius={60} target={target} spent={percent} text="%" colorTarget='#FBDA85' colorAmount="#FCA21C" strokeTarget="15" strokeAmount="15" colorText='#FCA21C' fontText={20} />
                                 </View>
+
                             </View>
-                            <View style={styles.practiceRowView}>
-                                <Donutchart radius={60} target={target} spent={percent} text="%" colorTarget='#FBDA85' colorAmount="#FCA21C" strokeTarget="15" strokeAmount="15" colorText='#FCA21C' fontText={20} />
+                        </>
+                        :
+                        <>
+                            <View>
+                                <Image source={require("../../assets/images/training2.png")} style={styles.image}></Image>
+                                <Image source={require("../../assets/images/training3.png")} style={{ width: 200, marginTop: -30, }}></Image>
+                                <Text style={styles.bluetext}>Today is your day of ohh</Text>
                             </View>
+                        </>
 
-                        </View>
-
-                        // Cho nay khi off
-                    ) : (
-                        <View>
-                            <Image source={require("../../assets/images/training2.png")} style={styles.image}></Image>
-                            <Image source={require("../../assets/images/training3.png")} style={{ width: 200, marginTop: -30, }}></Image>
-                            <Text style={styles.bluetext}>Today is your day of ohh</Text>
-                        </View>
-
-                    )
                 }
+
             </View>
         </View >
     )
@@ -213,7 +248,7 @@ const styles = StyleSheet.create({
     },
     calender: {
         marginVertical: 5,
-        height: 200,
+        height: 150,
         //backgroundColor: 'blue',
         borderBottomWidth: 2,
         borderColor: '#ccc'
@@ -236,9 +271,22 @@ const styles = StyleSheet.create({
         borderColor: 'blue',
         //    backgroundColor: 'blue',
         alignSelf: 'center',
-        marginTop: 40,
+        marginTop: 30,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    circleBg: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: 'blue',
+        //    backgroundColor: 'blue',
+        alignSelf: 'center',
+        marginTop: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'yellow'
     },
     attitude: {
         flex: 0.5,

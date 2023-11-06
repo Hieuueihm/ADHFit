@@ -141,6 +141,8 @@ dependencies {
 
     implementation project(':react-native-notifications')
     implementation 'com.google.firebase:firebase-core:16.0.0'
+       implementation project(':react-native-community-geolocation')
+
 
 
 

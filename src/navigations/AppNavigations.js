@@ -7,7 +7,7 @@ import Login from '../screens/welcome/Login';
 // import { SplashScreen } from '../screens/welcome/splash/SplashScreen';
 import SplashScreen from 'react-native-splash-screen';
 import Home from '../screens/home/Home';
-import EditInformation from '../screens/me/editInformation';
+import EditInformation from '../screens/me/EditInformation';
 import { TabNavigations } from './TabNavigations';
 import { COLORS, ROUTES } from '../../constants/index';
 import Listvideo from '../screens/home/Listvideo';
@@ -17,6 +17,8 @@ import Heart from '../screens/home/Heart';
 import WeatherScreen from '../screens/home/WeatherScreen';
 import Goals from '../screens/me/Goals';
 import Setting from '../screens/me/Settings';
+import { Provider } from 'react-redux';
+import store from '../../redux/store';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,68 +54,70 @@ export default function AppNavigations() {
     }
     if (showOnboarding === true) {
         return (
-            <NavigationContainer>
-                <Stack.Navigator initialRouteName={ROUTES.ONBOARDING}>
-                    <Stack.Screen name={ROUTES.ONBOARDING} component={OnboardingScreen} />
-                    <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} options={{ headerShown: false }} />
+            <Provider store={store}>
+                <NavigationContainer independent={true}>
+                    <Stack.Navigator initialRouteName={ROUTES.ONBOARDING}>
+                        <Stack.Screen name={ROUTES.ONBOARDING} component={OnboardingScreen} />
+                        <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} options={{ headerShown: false }} />
 
-                    <Stack.Screen name={ROUTES.EDIT_INFORMATION} component={EditInformation} options={({ route }) => ({
-                        title: 'Chỉnh sửa thông tin',
-                        headerStyle: {
-                            backgroundColor: COLORS.bgWheather1,
-                        },
-                        headerTintColor: 'white',
-                        headerTitleStyle: {
-                            fontWeight: 'bold',
-                        },
-                        headerShown: route?.params?.options === 'me'
-                    })} />
-                    <Stack.Screen name={ROUTES.LIST_VIDEO} component={Listvideo} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.STEP} component={Steps} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.SLEEPTRACKING} component={Sleeptracking} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HEART} component={Heart} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.WEATHER} component={WeatherScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.GOALS_SCREEN} component={Goals} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.SETTINGS_SCREEN} component={Setting} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.EDIT_INFORMATION} component={EditInformation} options={({ route }) => ({
+                            title: 'Chỉnh sửa thông tin',
+                            headerStyle: {
+                                backgroundColor: COLORS.bgWheather1,
+                            },
+                            headerTintColor: 'white',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                            headerShown: route?.params?.options === 'me'
+                        })} />
+                        <Stack.Screen name={ROUTES.LIST_VIDEO} component={Listvideo} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.STEP} component={Steps} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.SLEEPTRACKING} component={Sleeptracking} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HEART} component={Heart} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.WEATHER} component={WeatherScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.GOALS_SCREEN} component={Goals} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.SETTINGS_SCREEN} component={Setting} options={{ headerShown: false }} />
 
-                </Stack.Navigator>
+                    </Stack.Navigator>
 
-            </NavigationContainer>
+                </NavigationContainer>
+            </Provider>
 
 
         )
     } else {
         return (
-            <NavigationContainer>
-                <Stack.Navigator initialRouteName={ROUTES.SPLASH}>
-                    <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} options={{ headerShown: false }} />
+            <Provider store={store}>
+                <NavigationContainer independent={true}>
+                    <Stack.Navigator initialRouteName={ROUTES.SPLASH}>
+                        <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} options={{ headerShown: false }} />
 
-                    <Stack.Screen name={ROUTES.EDIT_INFORMATION} component={EditInformation} options={({ route }) => ({
-                        title: 'Chỉnh sửa thông tin',
-                        headerStyle: {
-                            backgroundColor: COLORS.bgWheather1,
-                        },
-                        headerTintColor: 'white',
-                        headerTitleStyle: {
-                            fontWeight: 'bold',
-                        },
-                        headerShown: route?.params?.options === 'me'
-                    })} />
-                    <Stack.Screen name={ROUTES.LIST_VIDEO} component={Listvideo} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.STEP} component={Steps} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.SLEEPTRACKING} component={Sleeptracking} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HEART} component={Heart} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.WEATHER} component={WeatherScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.GOALS_SCREEN} component={Goals} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.SETTINGS_SCREEN} component={Setting} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.EDIT_INFORMATION} component={EditInformation} options={({ route }) => ({
+                            title: 'Chỉnh sửa thông tin',
+                            headerStyle: {
+                                backgroundColor: COLORS.bgWheather1,
+                            },
+                            headerTintColor: 'white',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                            headerShown: route?.params?.options === 'me'
+                        })} />
+                        <Stack.Screen name={ROUTES.LIST_VIDEO} component={Listvideo} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.STEP} component={Steps} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.SLEEPTRACKING} component={Sleeptracking} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HEART} component={Heart} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.WEATHER} component={WeatherScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.GOALS_SCREEN} component={Goals} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.SETTINGS_SCREEN} component={Setting} options={{ headerShown: false }} />
 
 
-
-
-                </Stack.Navigator>
-            </NavigationContainer>
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </Provider>
         )
     }
 

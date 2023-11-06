@@ -8,9 +8,11 @@ import { handleGetUserInformation, handleUpdateReceiveNotification } from "../..
 import { useNavigation } from "@react-navigation/native";
 import { removeItem } from "../../utils/asyncStorage";
 import { handleLogout } from "../../api/UserAPI";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import SwitchLightDark from "../../../redux/reducer/switchLightDark";
 
-export default function Me() {
-
+export default function Me({ route }) {
     const navigation = useNavigation()
     const [userName, setUserName] = useState(null);
     const [gmail, setGmail] = useState(null);
@@ -20,48 +22,49 @@ export default function Me() {
     const [displayImage, setDisplayImage] = useState('');
     const [isReceiveNotification, setIsRecieveNotification] = useState(false);
     const [userId, setUserId] = useState(null);
-
-
-    useEffect(() => {
-        const loadData = async () => {
-            let userId = await getItem('user_id');
-            setUserId(userId)
-
-            handleGetUserInformation({
-                "user_id": userId
-            })
-                .then(
-                    (response) => {
-                        if (response.data.success === true) {
-                            setUserName(response?.data?.userInfo?.name);
-                            setHeight(String(response?.data?.userInfo?.height));
-                            setWeight(String(response?.data?.userInfo?.weight));
-                            setGmail(response?.data?.userInfo?.email);
-                            setGender(response?.data?.userInfo?.gender)
-                            setIsRecieveNotification(response?.data?.userInfo?.isReceiveNotification)
-                            if (response?.data?.userInfo?.avatar != '') {
-                                setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
-                            }
+    const { t } = useTranslation();
+    const stylesLightDark = useSelector((state) => state.settings.styles);
 
 
 
+    const loadData = async () => {
+        let userId = await getItem('user_id');
+        setUserId(userId)
+
+        handleGetUserInformation({
+            "user_id": userId
+        })
+            .then(
+                (response) => {
+                    if (response.data.success === true) {
+                        setUserName(response?.data?.userInfo?.name);
+                        setHeight(String(response?.data?.userInfo?.height));
+                        setWeight(String(response?.data?.userInfo?.weight));
+                        setGmail(response?.data?.userInfo?.email);
+                        setGender(response?.data?.userInfo?.gender)
+                        setIsRecieveNotification(response?.data?.userInfo?.isReceiveNotification)
+                        if (response?.data?.userInfo?.avatar != '') {
+                            setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
                         }
-                    }
-                )
-                .catch(error => {
-                    console.log(error)
-                })
 
-        }
-        loadData();
+
+
+                    }
+                }
+            )
+            .catch(error => {
+                console.log(error)
+            })
+
+    }
+
+    if (route?.params?.options == 'RECALL') {
+        loadData()
+    }
+    useEffect(() => {
+        loadData()
     }, []);
 
-    useEffect(() => {
-        handleUpdateReceiveNotification({
-            "user_id": userId,
-            "isReceiveNotification": isReceiveNotification
-        })
-    }, [isReceiveNotification])
 
     const handleEditButton = () => {
         navigation.navigate(ROUTES.EDIT_INFORMATION, {
@@ -70,6 +73,10 @@ export default function Me() {
     }
     const handleOnPress = (en) => {
         setIsRecieveNotification(en)
+        handleUpdateReceiveNotification({
+            "user_id": userId,
+            "isReceiveNotification": !isReceiveNotification
+        })
     }
     const handleLogoutBtn = () => {
         handleLogout({
@@ -80,8 +87,9 @@ export default function Me() {
             navigation.navigate(ROUTES.LOGIN)
         })
     }
+    console.log(isReceiveNotification)
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ ...stylesLightDark.background, flex: 1 }}>
             {/*Name and email...*/}
 
             <View style={{ flexDirection: 'row', marginTop: 20 }}>
@@ -108,7 +116,7 @@ export default function Me() {
                         borderRadius: 30, marginRight: 30
 
                     }}>
-                    <Text style={{ color: COLORS.bgWhite(1), fontWeight: 600, fontSize: 16 }}>Edit</Text>
+                    <Text style={{ color: COLORS.bgWhite(1), fontWeight: 600, fontSize: 16 }}>{t('edit')}</Text>
                 </TouchableOpacity>
             </View>
 
@@ -119,21 +127,21 @@ export default function Me() {
                 <View style={styles.rectangleViewContainer}>
                     <View style={styles.rectanglePositionText}>
                         <Text style={styles.rectangleTextStyle}>{height} cm</Text>
-                        <Text style={{ color: COLORS.grey }}>Height</Text>
+                        <Text style={{ color: COLORS.grey }}>{t('height')}</Text>
                     </View>
                 </View>
 
                 <View style={styles.rectangleViewContainer}>
                     <View style={styles.rectanglePositionText}>
                         <Text style={styles.rectangleTextStyle}>{weight} kg</Text>
-                        <Text style={{ color: COLORS.grey }}>Weight</Text>
+                        <Text style={{ color: COLORS.grey }}>{t('weight')}</Text>
                     </View>
                 </View>
 
                 <View style={styles.rectangleViewContainer}>
                     <View style={styles.rectanglePositionText}>
                         <Text style={styles.rectangleTextStyle}>{gender}</Text>
-                        <Text style={{ color: COLORS.grey }}>Gender</Text>
+                        <Text style={{ color: COLORS.grey }}>{t('gender')}</Text>
                     </View>
                 </View>
             </View>
@@ -143,7 +151,7 @@ export default function Me() {
             <View style={{ paddingTop: 30 }}>
                 <View style={styles.ViewRowContainer}>
                     <Image source={require('../../assets/icons/goal.png')} />
-                    <Text style={styles.TextRow}>Goals</Text>
+                    <Text style={styles.TextRow}>{t('goals')}</Text>
 
                     <TouchableOpacity
                         onPress={() => {
@@ -156,7 +164,7 @@ export default function Me() {
                 </View>
                 <View style={styles.ViewRowContainer}>
                     <Image source={require('../../assets/icons/notification.png')} />
-                    <Text style={styles.TextRow}>Pop-up Notification</Text>
+                    <Text style={styles.TextRow}>{t('popUpNotification')}</Text>
 
                     <View>
                         <SwitchButton handleOnPress={handleOnPress} updateStateSwitch={isReceiveNotification} />
@@ -164,15 +172,13 @@ export default function Me() {
                 </View>
                 <View style={styles.ViewRowContainer}>
                     <Image source={require('../../assets/icons/lightdark.png')} />
-                    <Text style={styles.TextRow}>Light/dark mode</Text>
-
-                    <View>
-                        <SwitchButton />
-                    </View>
+                    <Text style={styles.TextRow}>{t('lightDarkMode')}</Text>
+                    <View style={{ marginTop: 10 }}><SwitchLightDark style={{ marginTop: 100 }} /></View>
                 </View>
+
                 <View style={styles.ViewRowContainer}>
                     <Image source={require('../../assets/icons/setting.png')} />
-                    <Text style={styles.TextRow}>Settings</Text>
+                    <Text style={styles.TextRow}>{t('settings')}</Text>
 
                     <TouchableOpacity
 
@@ -194,14 +200,14 @@ export default function Me() {
             >
                 <View
                     style={{
-                        alignItems: 'center', backgroundColor: COLORS.bgBlack(0.2), marginHorizontal: 30, borderRadius: 20,
+                        alignItems: 'center', backgroundColor: "#87CEFF", marginHorizontal: 30, borderRadius: 20,
                         height: 60, marginVertical: 20, justifyContent: 'center'
                     }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Sign Out</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{t('signOut')}</Text>
                 </View>
             </TouchableOpacity>
 
-        </View >
+        </View>
     )
 }
 
@@ -225,12 +231,17 @@ const styles = StyleSheet.create({
     },
     ViewRowContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 30,
-        paddingBottom: 20
+        backgroundColor: 'white',
+        borderRadius: 20,
+        marginVertical: 8,
+        marginHorizontal: 12,
+        weight: 343,
+        height: 70,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
     },
     TextRow: {
-        marginTop: 5,
+        marginTop: 12,
         flex: 1,
         marginHorizontal: 20,
         fontSize: 18,
@@ -238,9 +249,11 @@ const styles = StyleSheet.create({
         color: COLORS.bgBlack(1)
     },
     iconRight: {
+        flex: 1,
         color: COLORS.bgBlack(1),
         fontSize: 30,
-        marginTop: 3
+        marginTop: 10,
+
     }
 
 })
