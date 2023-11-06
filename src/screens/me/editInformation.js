@@ -129,9 +129,9 @@ export default function EditInformation({ route }) {
             .then((result) => {
                 if (result.data.success === true) {
                     alert('Lưu thông tin thành công');
-                    setTimeout(() => {
-                        navigation.navigate(ROUTES.HOME);
-                    }, 200)
+                    navigation.navigate(ROUTES.ME_TAB, {
+                        'options': 'RECALL'
+                    });
                 }
             })
             .catch(error => {
@@ -241,10 +241,6 @@ export default function EditInformation({ route }) {
                         <TouchableOpacity onPress={() => openImagePicker('album')}
                             style={styles.button}>
                             <Text style={styles.buttonText}>Album</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => openImagePicker('camera')}
-                            style={styles.button} >
-                            <Text style={styles.buttonText}>Take picture</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={toggleModal}>
                             <Text style={[styles.buttonText, { color: 'red' }]}>Cancel</Text>

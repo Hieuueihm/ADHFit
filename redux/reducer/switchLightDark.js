@@ -15,7 +15,6 @@ const SwitchLightDark = () => {
             dispatch(setLightMode());
         }
     };
-    console.log("Current mode:", mode);
     return (
         <View style={styles.container}>
             <Switch
