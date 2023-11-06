@@ -3,8 +3,12 @@ import { Text, View, Image, TouchableOpacity, ImageBackground, StyleSheet, } fro
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { format, addDays } from 'date-fns';
+import { handleGetUserInformation } from "../../api/UserAPI";
+import { getItem } from "../../utils/asyncStorage";
+
 
 const TrainingSchedule = () => {
+    const [userId, setUserId] = useState(null);
     const currentTime = new Date();
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -15,22 +19,35 @@ const TrainingSchedule = () => {
     const day = currentTime.getDay();          // Thứ trong tuần, nhung tra ve cac gia tri 0-6
     const dayName = daysOfWeek[day];           // Chuyen tu du lieu số sang thứ trong tuần
 
-    const [dayCheck, setDayCheck] = useState(0);
     const Cumulative = 0;    // gia su cai nay = 0
     const totalNumber = 0;
     const targerComplete = 0;
-
-    useEffect(() => {
-        // Giả sử thứ 3 5 t7 chủ nhât là ngày tập
-        if (day === 2 || day === 4 || day === 5 || day === 6) {
-            setDayCheck(1);
-        } else if (day === 0 || day === 1 || day === 3) {
-            // Ngày nghỉ
-            setDayCheck(0);
-        }
-    }, [day]);
     const [currentDate, setCurrentDate] = useState(new Date());
     const startDate = new Date(currentDate);
+    const [reminderDay, setReminderDay] = useState([]);
+
+
+    const loadData = async () => {
+        let user_id = await getItem('user_id');
+        setUserId(user_id)
+        handleGetUserInformation({
+            'user_id': user_id
+        })
+            .then(response => {
+                if (response?.data?.userInfo?.reminderDay) {
+                    // console.log(response?.data?.userInfo?.reminderDay)
+                    setReminderDay(response?.data?.userInfo?.reminderDay);
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    }
+    useEffect(() => {
+        loadData();
+    }, [])
+
     startDate.setDate(currentDate.getDate() - currentDate.getDay());
 
     const daysOfMonth = [];
@@ -48,7 +65,7 @@ const TrainingSchedule = () => {
                 style={styles.imagebg}>
                 <View style={{ flex: 1, backgroundColor: 'rgba(129,172,255, 0.6)', }}>
                     <View style={styles.rowContainer}>
-                        <TouchableOpacity>
+                        <TouchableOpacity style={{ marginHorizontal: -20 }}>
                             <MaterialCommunityIcon name="chevron-left" style={styles.iconHeader} />
                         </TouchableOpacity>
                         <Text style={styles.textHeader}>Training Schedule</Text>
@@ -83,34 +100,43 @@ const TrainingSchedule = () => {
             <View style={styles.calender}>
                 <Text style={styles.bluetext}>{year} - {month + 1}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', flex: 1, marginVertical: 5, }}>
-                    {daysOfWeek.map((day, index) => (
-                        <View key={index} style={[styles.day, { borderColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent', }]}>
-                            <Text style={styles.bluetext}>{day}</Text>
-                            <View style={styles.circle}>
-                                <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
+                    {daysOfWeek.map((day, index) => {
+                        const isReminderDay = reminderDay.includes(day);
+                        return (
+                            <View key={index} style={[styles.day, { borderColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent', }]}>
+                                <Text style={styles.bluetext}>{day}</Text>
+                                {
+                                    isReminderDay
+                                        ?
+                                        <>
+                                            <View style={styles.circleBg}>
+                                                <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
+                                            </View>
+                                        </>
+                                        :
+                                        <>
+                                            <View style={styles.circle}>
+                                                <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
+                                            </View>
+                                        </>
+                                }
                             </View>
-                        </View>
-                    ))}
+                        )
+                    })}
                 </View>
             </View>
             <View style={styles.attitude}>
                 {
-                    dayCheck ? (
-                        // Tập thì in ảnh này
-                        <Image source={require("../../assets/images/training1.png")} style={styles.image}></Image>
-                    ) : (
-                        <Image source={require("../../assets/images/training2.png")} style={styles.image}></Image>
-                    )
+                    reminderDay.includes(dayName)
+                        ?
+                        <>
+                        </>
+                        :
+                        <>
+                        </>
+
                 }
-                <Image source={require("../../assets/images/training3.png")} style={{ width: 200, marginTop: -30, }}></Image>
-                {
-                    dayCheck ? (
-                        //Tập thì in dòng text này
-                        <Text style={styles.bluetext}>Let's practice hard today</Text>
-                    ) : (
-                        <Text style={styles.bluetext}>Today is your day of ohh</Text>
-                    )
-                }
+
             </View>
         </View >
     )
@@ -169,7 +195,7 @@ const styles = StyleSheet.create({
     },
     calender: {
         marginVertical: 5,
-        height: 200,
+        height: 150,
         //backgroundColor: 'blue',
         borderBottomWidth: 2,
         borderColor: '#ccc'
@@ -192,9 +218,22 @@ const styles = StyleSheet.create({
         borderColor: 'blue',
         //    backgroundColor: 'blue',
         alignSelf: 'center',
-        marginTop: 40,
+        marginTop: 30,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    circleBg: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: 'blue',
+        //    backgroundColor: 'blue',
+        alignSelf: 'center',
+        marginTop: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'yellow'
     },
     attitude: {
         flex: 0.4,

@@ -11,8 +11,8 @@ import { handleLogout } from "../../api/UserAPI";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import SwitchLightDark from "../../../redux/reducer/switchLightDark";
-export default function Me() {
 
+export default function Me({ route }) {
     const navigation = useNavigation()
     const [userName, setUserName] = useState(null);
     const [gmail, setGmail] = useState(null);
@@ -22,49 +22,49 @@ export default function Me() {
     const [displayImage, setDisplayImage] = useState('');
     const [isReceiveNotification, setIsRecieveNotification] = useState(false);
     const [userId, setUserId] = useState(null);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const stylesLightDark = useSelector((state) => state.settings.styles);
 
-    useEffect(() => {
-        const loadData = async () => {
-            let userId = await getItem('user_id');
-            setUserId(userId)
-
-            handleGetUserInformation({
-                "user_id": userId
-            })
-                .then(
-                    (response) => {
-                        if (response.data.success === true) {
-                            setUserName(response?.data?.userInfo?.name);
-                            setHeight(String(response?.data?.userInfo?.height));
-                            setWeight(String(response?.data?.userInfo?.weight));
-                            setGmail(response?.data?.userInfo?.email);
-                            setGender(response?.data?.userInfo?.gender)
-                            setIsRecieveNotification(response?.data?.userInfo?.isReceiveNotification)
-                            if (response?.data?.userInfo?.avatar != '') {
-                                setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
-                            }
 
 
+    const loadData = async () => {
+        let userId = await getItem('user_id');
+        setUserId(userId)
 
+        handleGetUserInformation({
+            "user_id": userId
+        })
+            .then(
+                (response) => {
+                    if (response.data.success === true) {
+                        setUserName(response?.data?.userInfo?.name);
+                        setHeight(String(response?.data?.userInfo?.height));
+                        setWeight(String(response?.data?.userInfo?.weight));
+                        setGmail(response?.data?.userInfo?.email);
+                        setGender(response?.data?.userInfo?.gender)
+                        setIsRecieveNotification(response?.data?.userInfo?.isReceiveNotification)
+                        if (response?.data?.userInfo?.avatar != '') {
+                            setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
                         }
-                    }
-                )
-                .catch(error => {
-                    console.log(error)
-                })
 
-        }
-        loadData();
+
+
+                    }
+                }
+            )
+            .catch(error => {
+                console.log(error)
+            })
+
+    }
+
+    if (route?.params?.options == 'RECALL') {
+        loadData()
+    }
+    useEffect(() => {
+        loadData()
     }, []);
 
-    useEffect(() => {
-        handleUpdateReceiveNotification({
-            "user_id": userId,
-            "isReceiveNotification": isReceiveNotification
-        })
-    }, [isReceiveNotification])
 
     const handleEditButton = () => {
         navigation.navigate(ROUTES.EDIT_INFORMATION, {
@@ -73,6 +73,10 @@ export default function Me() {
     }
     const handleOnPress = (en) => {
         setIsRecieveNotification(en)
+        handleUpdateReceiveNotification({
+            "user_id": userId,
+            "isReceiveNotification": !isReceiveNotification
+        })
     }
     const handleLogoutBtn = () => {
         handleLogout({
@@ -83,8 +87,9 @@ export default function Me() {
             navigation.navigate(ROUTES.LOGIN)
         })
     }
+    console.log(isReceiveNotification)
     return (
-        <View style={{...stylesLightDark.background, flex: 1 }}>
+        <View style={{ ...stylesLightDark.background, flex: 1 }}>
             {/*Name and email...*/}
 
             <View style={{ flexDirection: 'row', marginTop: 20 }}>
@@ -168,7 +173,7 @@ export default function Me() {
                 <View style={styles.ViewRowContainer}>
                     <Image source={require('../../assets/icons/lightdark.png')} />
                     <Text style={styles.TextRow}>{t('lightDarkMode')}</Text>
-                    <View style={{marginTop: 10}}><SwitchLightDark style={{marginTop: 100}}/></View>
+                    <View style={{ marginTop: 10 }}><SwitchLightDark style={{ marginTop: 100 }} /></View>
                 </View>
 
                 <View style={styles.ViewRowContainer}>

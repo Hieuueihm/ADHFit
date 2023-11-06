@@ -104,17 +104,17 @@ const Home = () => {
                     margin: 20,
                     height: 50,
                     width: 50,
-                    marginLeft: 25
+                    marginLeft: 0
                 }}>
             </Image>
-            <Text style={{ marginTop: 32, marginLeft: -18, fontSize: 18, fontWeight: 'bold',...stylesLightDark.text }}>
+            <Text style={{ marginTop: 32, marginLeft: -20, fontSize: 18, fontWeight: 'bold', ...stylesLightDark.text }}>
                 {current?.temp_c}{'\u2103'}
             </Text>
         </>
     ]
     return (
         <ScrollView
-            style={{ flex: 1, backgroundColor: '#FDEEEE',...stylesLightDark.background }}>
+            style={{ flex: 1, backgroundColor: '#FDEEEE', ...stylesLightDark.background }}>
             <ImageBackground
                 source={require("../../assets/images/Layer1.png")}>
                 <View
@@ -146,8 +146,8 @@ const Home = () => {
                             marginStart: 10,
                             marginEnd: 20
                         }}>
-                        <Text style={{  color: '#7F7F7F', fontSize: 14,...stylesLightDark.text }}>{t('hello')}</Text>
-                        <Text style={{ color: '#000000', fontSize: 18,...stylesLightDark.text }}>{t(dayName)}, {t(dayOfmonth)} {t(monthName)}</Text>
+                        <Text style={{ color: '#7F7F7F', fontSize: 14, ...stylesLightDark.text }}>{t('hello')}</Text>
+                        <Text style={{ color: '#000000', fontSize: 18, ...stylesLightDark.text }}>{t(dayName)}, {t(dayOfmonth)} {t(monthName)}</Text>
                     </View>
                     <TouchableOpacity
                         style={{ flexDirection: 'row' }}
@@ -170,7 +170,7 @@ const Home = () => {
                         marginLeft: 5,
                         // backgroundColor:'yellow'
                     }}>
-                    <View style={{ flexDirection: 'column'}}>
+                    <View style={{ flexDirection: 'column' }}>
                         <TouchableOpacity
                             onPress={() => {
                                 navigation.navigate(ROUTES.STEP)
@@ -193,7 +193,7 @@ const Home = () => {
                                 <Text style={styles.title}>{t('steps')}</Text>
                                 <View style={styles.smallcircle}>
                                     <Image source={require('../../assets/icons/jogging.png')} style={styles.icon}></Image>
-                                </View>  
+                                </View>
                             </View>
                             <Donutchart radius={60} target={7500} spent={4200} text="Steps" colorTarget='#FB3535' colorAmount="#483867" strokeTarget="15" strokeAmount="15" colorText='#483867' fontText={12} />
                         </TouchableOpacity>
@@ -211,10 +211,10 @@ const Home = () => {
                                 backgroundColor: '#F3BDBD',
                                 margin: 5
                             }}>
-                            <View style={{width: 180,height: 70,flexDirection: 'row'}}>
+                            <View style={{ width: 180, height: 70, flexDirection: 'row' }}>
                                 <Text style={styles.title}>{t('heart')}</Text>
                                 <View style={styles.smallcircle}>
-                                    <Image source={require('../../assets/icons/heart-attack.png')}style={styles.icon}></Image>
+                                    <Image source={require('../../assets/icons/heart-attack.png')} style={styles.icon}></Image>
                                 </View>
                             </View>
                             <View
@@ -232,7 +232,7 @@ const Home = () => {
                                         width: 50,
                                         justifyContent: 'center'
                                     }}>
-                                    <Image source={require("../../assets/icons/heart2.png")}style={{ height: 30, width: 30,}}></Image>
+                                    <Image source={require("../../assets/icons/heart2.png")} style={{ height: 30, width: 30, }}></Image>
                                     <Text style={{ fontSize: 24, color: 'black', }}>bpm</Text>
                                 </View>
                             </View>
@@ -260,10 +260,10 @@ const Home = () => {
                                 }}
                             >
 
-                                <View style={{ width: 180,  flexDirection: 'row' }}>
-                                    <Text style={{...styles.title, color: "white"}}>{t('sleep')}</Text>
+                                <View style={{ width: 180, flexDirection: 'row' }}>
+                                    <Text style={{ ...styles.title, color: "white" }}>{t('sleep')}</Text>
                                     <View style={styles.smallcircle}>
-                                        <Image source={require('../../assets/icons/moon.png')}  style={styles.icon} ></Image>
+                                        <Image source={require('../../assets/icons/moon.png')} style={styles.icon} ></Image>
                                     </View>
                                 </View>
                                 <Text
@@ -289,26 +289,25 @@ const Home = () => {
                                 borderRadius: 15,
                                 backgroundColor: '#AFFF9B'
                             }}>
-                            <View style={{width: 180, height: 75, flexDirection: 'row' }}>
+                            <View style={{ width: 180, height: 75, flexDirection: 'row' }}>
                                 <Text style={styles.title} >Kcals</Text>
                                 <View style={styles.smallcircle} >
-                                    <Image source={require('../../assets/icons/kcal.png')}style={styles.icon}></Image>
+                                    <Image source={require('../../assets/icons/kcal.png')} style={styles.icon}></Image>
                                 </View>
                             </View>
                             <Donutchart radius={50} target={500} spent={375} text="Kcals" colorTarget='#D9D9D9' colorAmount="#63665A" strokeTarget="15" strokeAmount="15" colorText='#63665A' fontText={12} />
                         </TouchableOpacity>
                     </View>
                 </View>
-                
+
 
                 {/* See All */}
                 <View style={{ flexDirection: 'row', marginTop: 15, }} >
-                    <Text style={{ flex: 1, fontSize: 14, marginStart: 12,fontWeight: "bold",...stylesLightDark.text}}>Video</Text>
+                    <Text style={{ flex: 1, fontSize: 14, marginStart: 12, fontWeight: "bold", ...stylesLightDark.text }}>Video</Text>
                     <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate(ROUTES.LIST_VIDEO)}>
                         <Text
                             style={{
                                 fontSize: 14,
-                                
                                 color: 'red',
                                 textAlign: 'right',
                                 marginRight: 15,
@@ -430,7 +429,7 @@ const Home = () => {
                 <View   // cai thu 2
                     style={{
                         backgroundColor: '#FFFFFF',
-                        marginTop: 35,
+                        marginTop: 14,
                         marginStart: 10,
                         marginEnd: 10,
                         height: 65,
@@ -560,7 +559,7 @@ const styles = StyleSheet.create({
     smallcircle: {
         flex: 3,
         backgroundColor: '#483867',
-        
+
         height: 50,
         width: 50,
         borderRadius: 25,
