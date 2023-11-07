@@ -1,11 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ROUTES } from '../../constants';
 import Home from '../screens/home/Home';
+import Me from '../screens/me/me';
 import { View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
-import Me from '../screens/me/me';
-// import Sport from '../screens/sports/Sport';
+import Details from '../screens/details/Details';
+import Sport from '../screens/sports/Sport';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +28,14 @@ export function TabNavigations() {
                         iconName = focused ? 'settings' : 'settings-outline';
                         background = focused ? '#BBF246' : 'white';
                     }
+                    else if (screenName === ROUTES.DETAILS) {
+                        iconName = focused ? 'document' : 'document-outline';
+                        background = focused ? "#BBF246" : "white"
+                    }
+                    else if (screenName === ROUTES.SPORT_TAB) {
+                        iconName = focused ? 'footsteps' : "footsteps-outline";
+                        background = focused ? "#bbf246" : 'white'
+                    }
                     return <View
                         style={{
                             borderRadius: 20,
@@ -40,9 +49,9 @@ export function TabNavigations() {
                 },
             })}>
             <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.SPORT_TAB} component={Sport} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />
             <Tab.Screen name={ROUTES.ME_TAB} component={Me} options={{ headerShown: false }} />
-            {/* <Tab.Screen name={ROUTES.SPORT_TAB} component={Sport} options={{ headerShown: false }} /> */}
-
         </Tab.Navigator>
     );
 }

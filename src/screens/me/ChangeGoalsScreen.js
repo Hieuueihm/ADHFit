@@ -365,16 +365,20 @@ export default function ChangeGoalsScreen() {
                 }}>
             </Image>
             <View style={[styles.bottomSetting,]}>
-                <Text style={[styles.textBottom]}>Training remainder</Text>
+                <View style={{ width: 300, }}>
+                    <Text style={[styles.textBottom]}>Training remainder</Text>
+                </View>
                 <SwitchButton handleOnPress={handleOnPress} />
             </View>
             <View style={[styles.bottomSetting,]}>
-                <Text style={[styles.textBottom]}>Reminder time</Text>
+                <View style={{ width: 300, }}>
+                    <Text style={[styles.textBottom]}>Reminder time</Text>
+                </View>
                 {
                     (hour && Minutes) ? (
-                        <Text style={{ fontSize: 16, marginLeft: 60, }}>{hour}:{Minutes}</Text>
+                        <Text style={{ fontSize: 16, marginLeft: 25, }}>{hour}:{Minutes}</Text>
                     ) : (
-                        <Text style={{ fontSize: 16, marginLeft: 60, }}>Time</Text>
+                        <Text style={{ fontSize: 16, marginLeft: 25, }}>Time</Text>
                     )
                 }
                 <TouchableOpacity onPress={toggleModal}>

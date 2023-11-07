@@ -15,5 +15,14 @@ export const ROUTES = {
     SETTINGS_SCREEN: 'SETTINGS_SCREEN',
     CHANGE_GOALS_SCREEN: 'CHANGE_GOALS_SCREEN',
     TRAINING_SCHEDULE: 'TRAINING_SCHEDULE',
-    SPORT_TAB: 'SPORT_TAB'
+    SPORT_TAB: 'SPORT_TAB',
+    SPORT: 'Sport',
+    RUNNINGOUTDOOR: 'RunningOutDoor',
+    DETAILS: 'Details',
+    BloodPresssure: 'BloodPresssure',
+    BloodSugar: 'BloodSugar',
+    BodyWeight: 'BodyWeight',
+    HealthyFood: 'HealthyFood',
+    ViewSetting: 'ViewSetting',
+    Waittime: 'Waittime',
 }

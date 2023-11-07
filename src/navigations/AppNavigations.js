@@ -6,7 +6,7 @@ import Login from '../screens/welcome/Login';
 // import { SplashScreen } from '../screens/welcome/splash/SplashScreen';
 import SplashScreen from 'react-native-splash-screen';
 import Home from '../screens/home/Home';
-import EditInformation from '../screens/me/EditInformation';
+import EditInformation from '../screens/me/editInformation';
 import { TabNavigations } from './TabNavigations';
 import { COLORS, ROUTES } from '../../constants/index';
 import Listvideo from '../screens/home/Listvideo';
@@ -16,6 +16,7 @@ import Heart from '../screens/home/Heart';
 import WeatherScreen from '../screens/home/WeatherScreen';
 import Goals from '../screens/me/Goals';
 import Setting from '../screens/me/Settings';
+
 import { Provider } from 'react-redux';
 import store from '../../redux/store';
 import utils from '../utils';

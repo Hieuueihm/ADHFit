@@ -3,8 +3,11 @@ import { Text, View, Image, TouchableOpacity, ImageBackground, StyleSheet, } fro
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { format, addDays } from 'date-fns';
+
 import utils from "../../utils";
 import api from "../../api";
+import Donutchart from "../../components/Donutchart";
+import Entypo from "react-native-vector-icons/Entypo"
 
 const TrainingSchedule = () => {
     const [userId, setUserId] = useState(null);
@@ -21,6 +24,13 @@ const TrainingSchedule = () => {
     const Cumulative = 0;    // gia su cai nay = 0
     const totalNumber = 0;
     const targerComplete = 0;
+    const stepNumber = 0;
+    const distance = 0;
+    const target = 100; // mục tiêu chạy
+    const amount = 55; // thực hiện đc bao nhiêu
+    const percent = (amount / target * 100).toFixed(2);  // % ở donut
+
+
     const [currentDate, setCurrentDate] = useState(new Date());
     const startDate = new Date(currentDate);
     const [reminderDay, setReminderDay] = useState([]);
@@ -34,7 +44,7 @@ const TrainingSchedule = () => {
         })
             .then(response => {
                 if (response?.data?.userInfo?.reminderDay) {
-                    // console.log(response?.data?.userInfo?.reminderDay)
+                    //    console.log(response?.data?.userInfo?.reminderDay)
                     setReminderDay(response?.data?.userInfo?.reminderDay);
                 }
             })
@@ -74,6 +84,7 @@ const TrainingSchedule = () => {
                     </View>
                     <View style={styles.boxInfor}>
                         <View style={styles.detailInfor}>
+                            {/* Tích lũy */}
                             <Text style={styles.inforText1}>Cumulative{'\n'}</Text>
                             <View style={styles.detailInfor2}>
                                 <Text style={styles.inforText2}>{Cumulative}</Text>
@@ -81,12 +92,14 @@ const TrainingSchedule = () => {
                             </View>
                         </View>
                         <View style={styles.detailInfor}>
+                            {/* Tổng bước chạy trong tuần */}
                             <Text style={styles.inforText1}>Total number of step this week</Text>
                             <View style={styles.detailInfor2}>
                                 <Text style={styles.inforText2}>{totalNumber}</Text>
                             </View>
                         </View>
                         <View style={styles.detailInfor}>
+                            {/* Mục tiêu đã hoàn thành */}
                             <Text style={styles.inforText1}>Target completed</Text>
                             <View style={styles.detailInfor2}>
                                 <Text style={styles.inforText2}>{targerComplete}</Text>
@@ -108,13 +121,13 @@ const TrainingSchedule = () => {
                                     isReminderDay
                                         ?
                                         <>
-                                            <View style={styles.circleBg}>
-                                                <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
+                                            <View style={[styles.circleBg, { backgroundColor: 'blue' }]}>
+                                                <Text style={[styles.bluetext, { color: "white" }]}>{daysOfMonth[index]}</Text>
                                             </View>
                                         </>
                                         :
                                         <>
-                                            <View style={styles.circle}>
+                                            <View style={[styles.circle]}>
                                                 <Text style={styles.bluetext}>{daysOfMonth[index]}</Text>
                                             </View>
                                         </>
@@ -129,9 +142,50 @@ const TrainingSchedule = () => {
                     reminderDay.includes(dayName)
                         ?
                         <>
+                            {/* Tập thì la cai nay */}
+                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
+                                <View style={[styles.practiceRowView,]}>
+                                    <View style={styles.halfPractice}>
+                                        <View style={{
+                                            height: 45, width: 45, borderRadius: 22.5, backgroundColor: '#81acff'
+                                            , alignItems: 'center', justifyContent: 'center'
+                                        }}>
+                                            <Image source={require("../../assets/icons/shoe.png")} style={{
+                                                height: 36,
+                                                width: 36,
+                                            }}></Image>
+                                        </View>
+                                        <View style={{ width: 120, height: 45, marginLeft: 8, }}>
+                                            <Text style={{ fontSize: 18, }}>Step number {'\n'}
+                                                {stepNumber}</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.halfPractice, { alignItems: 'flex-start', marginTop: 50, }]}>
+                                        <View style={{
+                                            height: 45, width: 45, borderRadius: 22.5, backgroundColor: '#49F16E',
+                                            justifyContent: 'center', alignItems: 'center'
+                                        }}>
+                                            <Entypo name="location" size={30} color={"white"}></Entypo>
+                                        </View>
+                                        <View style={{ width: 120, height: 45, marginLeft: 8, }}>
+                                            <Text style={{ fontSize: 18, }}>Distance {'\n'}
+                                                {distance} km</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={styles.practiceRowView}>
+                                    <Donutchart radius={60} target={target} spent={percent} text="%" colorTarget='#FBDA85' colorAmount="#FCA21C" strokeTarget="15" strokeAmount="15" colorText='#FCA21C' fontText={20} />
+                                </View>
+
+                            </View>
                         </>
                         :
                         <>
+                            <View>
+                                <Image source={require("../../assets/images/training2.png")} style={styles.image}></Image>
+                                <Image source={require("../../assets/images/training3.png")} style={{ width: 200, marginTop: -30, }}></Image>
+                                <Text style={styles.bluetext}>Today is your day of ohh</Text>
+                            </View>
                         </>
 
                 }
@@ -235,7 +289,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'yellow'
     },
     attitude: {
-        flex: 0.4,
+        flex: 0.5,
         //    backgroundColor: 'orange',
         alignItems: 'center',
         justifyContent: 'center'
@@ -244,5 +298,18 @@ const styles = StyleSheet.create({
         height: 180,
         width: 180,
         alignSelf: 'center'
+    },
+    practiceRowView: {
+        flex: 0.5,
+        //    backgroundColor: 'green',
+        //    justifyContent: 'center',
+        //    alignSelf: 'flex-start'
+    },
+    halfPractice: {
+        flex: 0.5,
+        flexDirection: 'row',
+        //    backgroundColor: 'blue',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
     }
 })
