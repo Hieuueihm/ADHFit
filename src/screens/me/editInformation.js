@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, TextInput, ImageBackground, Image, Button, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, ImageBackground, Image, Button, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { COLORS, ROUTES } from "../../../constants";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { alignContent } from "react-native-wind/dist/styles/flex/align-content";
 import CalendarPickerButton from "../../components/CalendarPickerButton";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { removeItem } from "../../utils/asyncStorage";
 import { useNavigation } from "@react-navigation/native";
-import { handleGetUserInformation } from "../../api/UserAPI";
-import { getItem } from "../../utils/asyncStorage";
-import { handleEditInformation } from "../../api/UserAPI";
-
+import api from "../../api";
+import utils from "../../utils";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Modal from "react-native-modal";
-
+import Toast from 'react-native-toast-message'
 
 export default function EditInformation({ route }) {
 
@@ -37,11 +34,12 @@ export default function EditInformation({ route }) {
     const [valueGender, setValueGender] = useState(null);
     const [height, setHeight] = useState(null);
     const [weight, setWeight] = useState(null);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         const loadData = async () => {
-            let userId = await getItem('user_id');
+            let userId = await utils.AsyncStorage.getItem('user_id');
 
-            handleGetUserInformation({
+            api.UserAPI.handleGetUserInformation({
                 "user_id": userId
             })
                 .then(
@@ -70,80 +68,92 @@ export default function EditInformation({ route }) {
 
 
     const validateDataInput = () => {
-        if (userName) {
-
+        if (!userName || userName.trim() === '') {
+            // userName is empty
+            utils.Toast.showToast('info', 'Lack', 'Vui lòng nhập tên người dùng!', 'bottom');
+            return 0;
+        } else if (userName) {
             const formattedName = userName
                 .toLowerCase()
                 .split(' ')
                 .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ');
             setUserName(formattedName);
-        } else {
-            alert('Vui lòng nhập tên người dùng');
         }
-
         if (!selectedDate) {
-            alert('Vui lòng chọn ngày sinh');
+            utils.Toast.showToast('info', 'Lack', 'Vui lòng nhập ngày sinh!', 'bottom');
+            return 0;
         }
         if (!valueGender) {
-            alert('Vui lòng chọn giới tính');
+            utils.Toast.showToast('info', 'Lack', 'Vui lòng chọn giới tính!', 'bottom');
+            return 0;
         }
         if (height) {
-            if (height < 0 && height > 300) {
-                alert('Chiều cao không hợp lệ');
+            if (height < 0 || height > 300) {
+                utils.Toast.showToast('error', 'Over', 'Chiều cao không hợp lệ!', 'bottom');
+                return 0;
             }
         } else {
-            alert('Vui lòng nhập vào chiều cao');
+            utils.Toast.showToast('info', 'Lack', 'Vui lòng nhập chiều cao!', 'bottom');
+            return 0;
         }
         if (weight) {
-            if (weight < 0 && weight > 300) {
-                alert('Cân nặng không hợp lệ');
+            if (weight < 0 || weight > 300) {
+                utils.Toast.showToast('error', 'Over', 'cân nặng không hợp lệ!', 'bottom');
+                return 0;
             }
         } else {
-            alert('Vui lòng nhập vào Cân nặng');
+            utils.Toast.showToast('info', 'Lack', 'Vui lòng nhập cân nặng!', 'bottom');
+            return 0;
         }
+        return 1;
     }
     const handleSave = async () => {
         // xử lý xem đã nhập đủ thông tin hay chưa
-        validateDataInput();
-        const user_id = await getItem('user_id');
-        const formData = new FormData();
-        if (selectedImage !== '') {
+        const flag = validateDataInput();
+        if (flag == 1) {
+            const user_id = await utils.AsyncStorage.getItem('user_id');
+            const formData = new FormData();
+            if (selectedImage !== '') {
 
-            formData.append('avatar',
-                {
-                    uri: selectedImage?.uri,
-                    type: selectedImage?.type,
-                    name: selectedImage?.fileName
-                }
-            );
+                formData.append('avatar',
+                    {
+                        uri: selectedImage?.uri,
+                        type: selectedImage?.type,
+                        name: selectedImage?.fileName
+                    }
+                );
+            }
+            console.log(selectedImage)
+            formData.append('user_id', user_id)
+            formData.append('name', userName);
+            formData.append('dateOfBirth', selectedDate)
+            formData.append('gender', valueGender)
+            formData.append('height', height)
+            formData.append('weight', weight)
+            api.UserAPI.handleEditInformation(formData)
+                .then((result) => {
+                    if (result.data.success === true) {
+                        setLoading(true);
+                        utils.Toast.showToast('success', 'Success', 'Lưu thông tin thành công', 'bottom');
+                        setTimeout(() => {
+                            navigation.navigate(ROUTES.ME_TAB, {
+                                'options': 'RECALL'
+                            });
+                        }, 1000)
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+
         }
-        console.log(selectedImage)
-        formData.append('user_id', user_id)
-        formData.append('name', userName);
-        formData.append('dateOfBirth', selectedDate)
-        formData.append('gender', valueGender)
-        formData.append('height', height)
-        formData.append('weight', weight)
-        handleEditInformation(formData)
-            .then((result) => {
-                if (result.data.success === true) {
-                    alert('Lưu thông tin thành công');
-                    navigation.navigate(ROUTES.ME_TAB, {
-                        'options': 'RECALL'
-                    });
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            })
-
-
 
 
     }
     const handleSignOut = () => {
-        removeItem('user_id');
+        utils.AsyncStorage.removeItem('user_id');
         navigation.navigate(ROUTES.LOGIN)
 
     }
@@ -208,7 +218,20 @@ export default function EditInformation({ route }) {
     }
     return (
 
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: loading ? 'grey' : 'white' }}>
+            <Toast config={utils.Toast.toastConfig} />
+            {
+                loading && (
+                    <View style={{
+                        ...StyleSheet.absoluteFillObject, // Để spinner trải dài trên toàn màn hình
+                        backgroundColor: 'rgba(255,255,25)', // Để có một nền mờ (tuỳ chọn)
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <ActivityIndicator size="large" color={COLORS.signin} />
+                    </View>
+                )
+            }
 
             {/*avatar*/}
 
@@ -224,9 +247,10 @@ export default function EditInformation({ route }) {
                     }
                         style={displayImage === ''
                             ?
-                            { width: 120, height: 120 }
+                            { width: 120, height: 120, zIndex: -1000 }
                             :
                             {
+                                zIndex: -1000,
                                 width: 120,
                                 height: 120,
                                 borderRadius: 60,

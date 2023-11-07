@@ -9,12 +9,10 @@ import axios from "axios"
 import Listvideo from "./Listvideo"
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from "../../../constants"
-import { fetchWeatherForecast } from "../../api/WeatherAPI"
-import { handleGetUserInformation } from "../../api/UserAPI"
-import { getItem } from "../../utils/asyncStorage"
 import { useTranslation } from "react-i18next";
+import api from "../../api"
 import { useSelector } from "react-redux"
-
+import utils from "../../utils"
 
 
 const dataHeart = {
@@ -66,13 +64,13 @@ const Home = () => {
     const { t } = useTranslation();
 
     useEffect(() => {
-        fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
+        api.WeatherAPI.fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
             setWeather(data)
         })
         const loadData = async () => {
-            let userId = await getItem('user_id');
+            let userId = await utils.AsyncStorage.getItem('user_id');
 
-            handleGetUserInformation({
+            api.UserAPI.handleGetUserInformation({
                 "user_id": userId
             })
                 .then(
