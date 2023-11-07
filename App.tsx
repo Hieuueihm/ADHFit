@@ -4,14 +4,14 @@ import { ROUTES } from './constants';
 import ChangeGoalsScreen from './src/screens/me/ChangeGoalsScreen';
 
 import Goals from './src/screens/me/Goals';
-import { PermissionsAndroid } from 'react-native';
 import Login from './src/screens/welcome/Login';
-import { Notifications } from 'react-native-notifications';
 import { useEffect } from 'react';
 import EditInformation from './src/screens/me/EditInformation';
 import TrainingSchedule from './src/screens/me/TrainingSchedule';
+import Sport from './src/screens/sports/Sport';
+import RunningOutDoor from './src/screens/sports/RunningOutDoors';
+import Splash from './src/screens/welcome/splash/Splash';
 
-PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 const Stack = createNativeStackNavigator();
 
 
@@ -32,12 +32,13 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator>
-                {/* <Stack.Screen name={ROUTES.LOGIN} component={Login} /> */}
+                <Stack.Screen name={ROUTES.SPLASH} component={Splash} />
+                <Stack.Screen name={ROUTES.SPORT_TAB} component={RunningOutDoor} />
                 <Stack.Screen name={ROUTES.TRAINING_SCHEDULE} component={TrainingSchedule} />
 
                 <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} />
 
-                {/* <Stack.Screen name={ROUTES.LOGIN} component={Login} /> */}
+                <Stack.Screen name={ROUTES.LOGIN} component={Login} />
                 <Stack.Screen name={ROUTES.GOALS_SCREEN} component={Goals} />
 
 

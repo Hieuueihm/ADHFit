@@ -5,7 +5,7 @@ import { TouchableOpacity, ScrollView } from "react-native";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Image } from "react-native";
-import { fetchLocations, fetchWeatherForecast } from '../../api/WeatherAPI';
+import api from "../../api";
 import UVLine from "./UVLine";
 import Feather from 'react-native-vector-icons/Feather';
 import ParabolaCurve from "./Parabol";
@@ -41,10 +41,10 @@ export default function WeatherScreen() {
 
     }
     useEffect(() => {
-        fetchLocations({ cityName: 'Hanoi' }).then(data => {
+        api.WeatherAPI.fetchLocations({ cityName: 'Hanoi' }).then(data => {
             setLocations(data[0].name)
         })
-        fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
+        api.WeatherAPI.fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
             setWeather(data)
         })
     }, []);

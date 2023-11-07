@@ -3,14 +3,12 @@ import { View, Text, Safe, AreaView, TextInput, ImageBackground, Image, Button, 
 import { COLORS, ROUTES } from "../../../constants";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SwitchButton from "../../components/Switch";
-import { getItem } from "../../utils/asyncStorage";
-import { handleGetUserInformation, handleUpdateReceiveNotification } from "../../api/UserAPI";
+import api from "../../api";
 import { useNavigation } from "@react-navigation/native";
-import { removeItem } from "../../utils/asyncStorage";
-import { handleLogout } from "../../api/UserAPI";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import SwitchLightDark from "../../../redux/reducer/switchLightDark";
+import utils from "../../utils";
 
 export default function Me({ route }) {
     const navigation = useNavigation()
@@ -28,10 +26,10 @@ export default function Me({ route }) {
 
 
     const loadData = async () => {
-        let userId = await getItem('user_id');
+        let userId = await utils.AsyncStorage.getItem('user_id');
         setUserId(userId)
 
-        handleGetUserInformation({
+        api.UserAPI.handleGetUserInformation({
             "user_id": userId
         })
             .then(
@@ -73,21 +71,20 @@ export default function Me({ route }) {
     }
     const handleOnPress = (en) => {
         setIsRecieveNotification(en)
-        handleUpdateReceiveNotification({
+        api.UserAPI.handleUpdateReceiveNotification({
             "user_id": userId,
             "isReceiveNotification": !isReceiveNotification
         })
     }
     const handleLogoutBtn = () => {
-        handleLogout({
+        api.UserAPI.handleLogout({
             user_id: userId,
             fcmtoken: ''
         }).then((response) => {
-            removeItem('user_id');
+            utils.AsyncStorage.removeItem('user_id');
             navigation.navigate(ROUTES.LOGIN)
         })
     }
-    console.log(isReceiveNotification)
     return (
         <View style={{ ...stylesLightDark.background, flex: 1 }}>
             {/*Name and email...*/}

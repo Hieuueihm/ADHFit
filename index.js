@@ -11,9 +11,10 @@ import App from './App';
 import { PermissionsAndroid } from 'react-native';
 import { Notifications } from 'react-native-notifications';
 
+
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 Notifications.registerRemoteNotifications();
 
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => AppNavigations);

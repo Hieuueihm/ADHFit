@@ -3,9 +3,8 @@ import { Text, View, Image, TouchableOpacity, ImageBackground, StyleSheet, } fro
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { format, addDays } from 'date-fns';
-import { handleGetUserInformation } from "../../api/UserAPI";
-import { getItem } from "../../utils/asyncStorage";
-
+import utils from "../../utils";
+import api from "../../api";
 
 const TrainingSchedule = () => {
     const [userId, setUserId] = useState(null);
@@ -28,9 +27,9 @@ const TrainingSchedule = () => {
 
 
     const loadData = async () => {
-        let user_id = await getItem('user_id');
+        let user_id = await utils.AsyncStorage.getItem('user_id');
         setUserId(user_id)
-        handleGetUserInformation({
+        api.UserAPI.handleGetUserInformation({
             'user_id': user_id
         })
             .then(response => {
