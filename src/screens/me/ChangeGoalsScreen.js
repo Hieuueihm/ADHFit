@@ -6,9 +6,10 @@ import { ROUTES } from "../../../constants";
 import TickCheckbox from "../../components/Checkbox";
 import LinearGradient from "react-native-linear-gradient";
 import SwitchButton from "../../components/Switch";
-import { getItem } from "../../utils/asyncStorage";
-import { handleUpdateTarget } from "../../api/UserAPI";
+import api from "../../api";
 import Modal from 'react-native-modal';
+import utils from "../../utils";
+import Toast from 'react-native-toast-message'
 
 
 export default function ChangeGoalsScreen() {
@@ -42,21 +43,21 @@ export default function ChangeGoalsScreen() {
     const handleClick = async () => {
         console.log(currentScreen)
         if (currentScreen === 1 && selectedStep === null) {
-            alert('Choose one target step');
+            utils.Toast.showToast('info', 'Step', 'Choose one target step')
         }
         else if (currentScreen === 2 && selectedDate.length == 0) {
-            alert('Choose one day');
+            utils.Toast.showToast('info', 'Day', 'Choose one day')
         } else if (currentScreen === 3 && selectedStartTime === null) {
-            alert('Choose start time');
+            utils.Toast.showToast('info', 'Start Time', 'Choose start time')
         }
         else {
             if (currentScreen < 3) {
                 setCurrentScreen(currentScreen + 1);
             } else if (currentScreen === 3) {
-                const user_id = await getItem('user_id')
+                const user_id = await utils.AsyncStorage.getItem('user_id')
                 let temp_reminder_time = hour + ":" + Minutes;
                 console.log(temp_reminder_time)
-                handleUpdateTarget({
+                api.UserAPI.handleUpdateTarget({
                     'user_id': user_id,
                     'targetStep': selectedStep,
                     'reminderDay': selectedDate,
@@ -66,8 +67,10 @@ export default function ChangeGoalsScreen() {
 
                 }).then((result) => {
                     if (result?.data?.success === true) {
-                        alert('Cap nhat thong tin thanh cong');
-                        navigation.navigate(ROUTES.GOALS_SCREEN);
+                        alert('Cập nhật thông tin thành công');
+                        navigation.navigate(ROUTES.ME_TAB, {
+                            'options': 'RECALL'
+                        });
                     }
                 })
                     .catch(err => {
@@ -83,7 +86,7 @@ export default function ChangeGoalsScreen() {
         if (currentScreen !== 1) {
             setCurrentScreen(currentScreen - 1);
         } else {
-            navigation.navigate(ROUTES.GOALS_SCREEN)
+            navigation.navigate(ROUTES.ME_TAB)
         }
 
     }
@@ -191,7 +194,7 @@ export default function ChangeGoalsScreen() {
                     height: 250,
                     width: 250,
                     position: 'absolute',
-                    top: 280,
+                    top: 360,
                     left: 60,
                 }}></Image>
         </>,
@@ -388,6 +391,7 @@ export default function ChangeGoalsScreen() {
     ];
     return (
         <View style={styles.container}>
+            <Toast config={utils.Toast.toastConfig} />
             <View style={styles.rowContainer}>
                 <TouchableOpacity
                     onPress={backHandleClick}
@@ -395,7 +399,7 @@ export default function ChangeGoalsScreen() {
                     <MaterialCommunityIcon name="chevron-left" style={styles.iconHeader} />
                 </TouchableOpacity>
 
-                <View style={[styles.centerRowView, { borderRadius: 25, backgroundColor: "#81ACFF" }]}>
+                <View style={[styles.centerRowView, { borderRadius: 25, backgroundColor: "#81ACFF", zIndex: -100 }]}>
                     <Text style={styles.textHeader}>
                         {
                             titleScreen[currentScreen - 1]
@@ -424,7 +428,7 @@ export default function ChangeGoalsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginVertical: 4
+        marginVertical: 4,
     },
     rowContainer: {
         flexDirection: 'row',
@@ -441,7 +445,8 @@ const styles = StyleSheet.create({
     textHeader: {
         fontSize: 25,
         color: 'black',
-        fontWeight: '400'
+        fontWeight: '400',
+        zIndex: -100
     }
     ,
     iconHeader: {
@@ -450,7 +455,8 @@ const styles = StyleSheet.create({
     },
     textCenter: {
         flex: 1,
-        textAlign: 'center'
+        textAlign: 'center',
+        zIndex: -100
     },
     next: {
         backgroundColor: '#81ACFF',

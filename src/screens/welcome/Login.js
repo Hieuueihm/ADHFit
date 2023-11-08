@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, Alert, ActivityIndicator } from "react-native";
+import { Text, View, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, InputField, ActivityIndicator } from "react-native";
 import { COLORS, APP_NAME, ROUTES } from '../../../constants/index';
 // import Icon from '../../android/app/src/main/assets/fonts/FontAwesome.ttf'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 
 
-import { userGetCaptcha, userLogin, userLoginFacebook } from "../../api/UserAPI.js";
+import api from "../../api";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import { useNavigation } from '@react-navigation/native';
 import Home from "../home/Home.js";
 import Timer from "../../components/Timer";
 import { LoginManager, Profile, GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
-import { storeItem } from "../../utils/asyncStorage";
 import messaging from '@react-native-firebase/messaging';
+import utils from "../../utils";
+
+import Toast from 'react-native-toast-message'
 
 
 
@@ -50,16 +52,16 @@ const Login = () => {
     };
     const handleGetCaptcha = () => {
         if (!validateEmail(email)) {
-            Alert.alert('Lỗi email', 'Vui lòng nhập đúng đinh dạng email');
+            utils.Toast.showToast('error', 'Email', 'Vui lòng nhập đúng định dạng email', 'top');
             return;
         } else {
             setIsClickCaptcha(true);
-            userGetCaptcha({
+            api.UserAPI.userGetCaptcha({
                 "email": email
             }).then(async (result) => {
                 // console.log(result);
                 if (result.data.status === 200) {
-                    console.log("Captcha đã được xử lý thành công!");
+                    utils.Toast.showToast("success", "Captcha", "Mã Captcha đã được gửi!", "top");
                     // viết logic để chuyển giao diện
                 }
 
@@ -98,14 +100,14 @@ const Login = () => {
                                         console.error(error);
                                     } else {
                                         // console.log("Email: " + result.email);
-                                        userLoginFacebook({
+                                        api.UserAPI.userLoginFacebook({
                                             "email": result.email,
                                             "name": profile.name,
                                             "fcmtoken": fcmToken
                                         }).then(async (result) => {
                                             // console.log(result)
                                             if (result.data.success === true) {
-                                                storeItem('user_id', result.data._id);
+                                                utils.AsyncStorage.storeItem('user_id', result?.data?._id);
                                                 console.log(result.data.isNewUser)
                                                 if (result.data.isNewUser === true) {
                                                     navigation.navigate(ROUTES.EDIT_INFORMATION);
@@ -141,21 +143,21 @@ const Login = () => {
         const captchaRegex = /^\d{6}$/;
         const isCaptchaValid = captchaRegex.test(captchaInput);
         if (isClickCaptcha === false) {
-            alert('Vui lòng nhấn nút Captcha');
+            utils.Toast.showToast('info', 'Captcha', 'Vui lòng nhấn nút Captcha', 'top');
         } else {
 
             if (validateEmail(email)) {
                 // Thực hiện các tác vụ sau khi captcha hợp lệ
                 if (isCaptchaValid) {
                     setLoadingLogin(true)
-                    userLogin({
+                    api.UserAPI.userLogin({
                         "email": email,
                         "captcha": captchaInput,
                         "fcmtoken": fcmToken
                     })
                         .then(async (result) => {
                             if (result.data.status === 200) {
-                                storeItem('user_id', result.data._id);
+                                utils.AsyncStorage.storeItem('user_id', result?.data?._id);
                                 setLoadingLogin(false);
                                 if (result.data.isNewUser === true) {
                                     navigation.navigate(ROUTES.EDIT_INFORMATION, {
@@ -168,7 +170,7 @@ const Login = () => {
                                 handleClear()
                             } else {
                                 setLoadingLogin(false)
-                                alert("Mã captcha sai!");
+                                utils.Toast.showToast('error', 'Captcha', 'Mã Captcha sai...', 'top');
                             }
                         })
                         .catch(error => {
@@ -176,12 +178,13 @@ const Login = () => {
                             console.log(error)
                         })
                 } else {
-                    alert("Captcha không hợp lệ. Vui lòng nhập lại!");
+                    utils.Toast.showToast('error', 'Captcha', 'Mã Captcha không hợp lệ!');
                     // Thông báo lỗi cho người dùng hoặc thực hiện các tác vụ khác khi captcha không hợp lệ
                 }
 
             } else {
-                alert("email không hợp lệ");
+                utils.Toast.showToast('error', 'Email', 'Email không hợp lệ!');
+
             }
         }
     }
@@ -192,11 +195,15 @@ const Login = () => {
     return (
         <SafeAreaView
             style={styles.container}>
+            <Toast config={utils.Toast.toastConfig} />
             {/*Logo and Header*/}
             <View style={styles.layoutLogo}>
+
                 <Image
                     source={require('../../assets/logos/logo.png')}
-                    style={styles.mainLogo} />
+                    style={[styles.mainLogo, {
+                        zIndex: -100
+                    }]} />
             </View>
 
             <View

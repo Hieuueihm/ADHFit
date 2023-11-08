@@ -2,17 +2,17 @@ import { Image } from 'react-native';
 import React from 'react';
 import { Animated } from 'react-native/Libraries/Animated/Animated';
 import Onboarding from 'react-native-onboarding-swiper'; // 1.1.4
-import { storeItem } from '../../../utils/asyncStorage';
 import { useNavigation } from '@react-navigation/native';
-
+import utils from '../../../utils';
+import { ROUTES } from '../../../../constants';
 export default function OnboardingScreen() {
     const navigation = useNavigation();
 
     return (
         <Onboarding
             onDone={handleDone = () => {
-                navigation.navigate('Login');
-                storeItem('onboarded', '1');
+                navigation.navigate(ROUTES.LOGIN);
+                utils.AsyncStorage.storeItem('onboarded', '1');
             }}
 
             pages={[

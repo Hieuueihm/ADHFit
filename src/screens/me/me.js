@@ -3,14 +3,12 @@ import { View, Text, Safe, AreaView, TextInput, ImageBackground, Image, Button, 
 import { COLORS, ROUTES } from "../../../constants";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SwitchButton from "../../components/Switch";
-import { getItem } from "../../utils/asyncStorage";
-import { handleGetUserInformation, handleUpdateReceiveNotification } from "../../api/UserAPI";
+import api from "../../api";
 import { useNavigation } from "@react-navigation/native";
-import { removeItem } from "../../utils/asyncStorage";
-import { handleLogout } from "../../api/UserAPI";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import SwitchLightDark from "../../../redux/reducer/switchLightDark";
+import utils from "../../utils";
 
 export default function Me({ route }) {
     const navigation = useNavigation()
@@ -20,6 +18,7 @@ export default function Me({ route }) {
     const [weight, setWeight] = useState(null);
     const [gender, setGender] = useState(null);
     const [displayImage, setDisplayImage] = useState('');
+    const [hasTrainingSchedule, setHasTrainingSchedule] = useState(null)
     const [isReceiveNotification, setIsRecieveNotification] = useState(false);
     const [userId, setUserId] = useState(null);
     const { t } = useTranslation();
@@ -28,10 +27,10 @@ export default function Me({ route }) {
 
 
     const loadData = async () => {
-        let userId = await getItem('user_id');
+        let userId = await utils.AsyncStorage.getItem('user_id');
         setUserId(userId)
 
-        handleGetUserInformation({
+        api.UserAPI.handleGetUserInformation({
             "user_id": userId
         })
             .then(
@@ -42,13 +41,11 @@ export default function Me({ route }) {
                         setWeight(String(response?.data?.userInfo?.weight));
                         setGmail(response?.data?.userInfo?.email);
                         setGender(response?.data?.userInfo?.gender)
+                        setHasTrainingSchedule(response?.data?.userInfo?.hasTrainingSchedule)
                         setIsRecieveNotification(response?.data?.userInfo?.isReceiveNotification)
                         if (response?.data?.userInfo?.avatar != '') {
                             setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
                         }
-
-
-
                     }
                 }
             )
@@ -73,21 +70,20 @@ export default function Me({ route }) {
     }
     const handleOnPress = (en) => {
         setIsRecieveNotification(en)
-        handleUpdateReceiveNotification({
+        api.UserAPI.handleUpdateReceiveNotification({
             "user_id": userId,
             "isReceiveNotification": !isReceiveNotification
         })
     }
     const handleLogoutBtn = () => {
-        handleLogout({
+        api.UserAPI.handleLogout({
             user_id: userId,
             fcmtoken: ''
         }).then((response) => {
-            removeItem('user_id');
+            utils.AsyncStorage.removeItem('user_id');
             navigation.navigate(ROUTES.LOGIN)
         })
     }
-    console.log(isReceiveNotification)
     return (
         <View style={{ ...stylesLightDark.background, flex: 1 }}>
             {/*Name and email...*/}
@@ -104,7 +100,7 @@ export default function Me({ route }) {
                     }
                     style={{ marginHorizontal: 20, height: 58, width: 58, borderRadius: 60 }} />
                 <View style={{ marginVertical: 6, flex: 1 }}>
-                    <Text style={{ color: COLORS.black, fontSize: 20, fontWeight: 'bold' }}>{userName}</Text>
+                    <Text style={{ color: 'rgb(218,165,32)', fontSize: 20, fontWeight: 'bold' }}>{userName}</Text>
                     <Text style={{ color: COLORS.grey, fontWeight: '600' }} >{gmail}</Text>
                 </View>
                 <TouchableOpacity
@@ -154,9 +150,7 @@ export default function Me({ route }) {
                     <Text style={styles.TextRow}>{t('goals')}</Text>
 
                     <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate(ROUTES.GOALS_SCREEN)
-                        }}
+                        onPress={() => (hasTrainingSchedule ? navigation.navigate(ROUTES.TRAINING_SCHEDULE) : navigation.navigate(ROUTES.CHANGE_GOALS_SCREEN))}
                     >
                         <MaterialCommunityIcon name="chevron-right"
                             style={styles.iconRight} />

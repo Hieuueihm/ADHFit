@@ -9,12 +9,10 @@ import axios from "axios"
 import Listvideo from "./Listvideo"
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from "../../../constants"
-import { fetchWeatherForecast } from "../../api/WeatherAPI"
-import { handleGetUserInformation } from "../../api/UserAPI"
-import { getItem } from "../../utils/asyncStorage"
 import { useTranslation } from "react-i18next";
+import api from "../../api"
 import { useSelector } from "react-redux"
-
+import utils from "../../utils"
 
 
 const dataHeart = {
@@ -66,13 +64,13 @@ const Home = () => {
     const { t } = useTranslation();
 
     useEffect(() => {
-        fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
+        api.WeatherAPI.fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
             setWeather(data)
         })
         const loadData = async () => {
-            let userId = await getItem('user_id');
+            let userId = await utils.AsyncStorage.getItem('user_id');
 
-            handleGetUserInformation({
+            api.UserAPI.handleGetUserInformation({
                 "user_id": userId
             })
                 .then(
@@ -101,7 +99,7 @@ const Home = () => {
             <Image
                 //tuy tinh hinh thoi tiet ma lay anh thich hop
                 source={{ uri: `https:${current?.condition.icon}` }} style={{
-                    margin: 20,
+                    margin: 18,
                     height: 50,
                     width: 50,
                     marginLeft: 0
@@ -144,7 +142,8 @@ const Home = () => {
                         style={{
                             flexDirection: 'column',
                             marginStart: 10,
-                            marginEnd: 20
+                            marginEnd: 10,
+                            width: 200,
                         }}>
                         <Text style={{ color: '#7F7F7F', fontSize: 14, ...stylesLightDark.text }}>{t('hello')}</Text>
                         <Text style={{ color: '#000000', fontSize: 18, ...stylesLightDark.text }}>{t(dayName)}, {t(dayOfmonth)} {t(monthName)}</Text>

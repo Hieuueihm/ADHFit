@@ -123,3 +123,19 @@ export const handleLogout = async (data) => {
         return error
     }
 }
+
+export const handleDeleteTarget = async (data) => {
+    try {
+        const response = await APIManager('user/deleteTarget', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error
+    }
+}
+

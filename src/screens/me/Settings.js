@@ -111,13 +111,7 @@ export default function Setting() {
             </View>
 
             {/* footerSetting */}
-            <View style={styles.footer}>
-                <TouchableOpacity onPress={handleDeactivateAccount}>
-                    <View style={styles.blockFooter}>
-                        <Text style={styles.textFooter}>{t('deactivateAccount')}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
+
         </View>
     )
 
