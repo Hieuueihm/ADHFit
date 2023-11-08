@@ -12,7 +12,6 @@ const Details = () => {
         <SafeAreaView style={{ height: hei, width: wi, }}>
             <View style={{ flexDirection: 'row', height: hei / 12, width: wi, alignItems: 'center', backgroundColor: '#DAD1D1' }}>
                 <Text style={{ color: 'black', fontSize: 24, marginLeft: 20, }}>Details and Tips</Text>
-                <Image source={require("../../assets/images/avatar.png")} style={{ width: 45, height: 45, marginLeft: 130, }}></Image>
             </View>
             <ImageBackground source={require("../../assets/images/Layer1.png")} style={{ height: hei, width: wi, }}>
                 <ScrollView>

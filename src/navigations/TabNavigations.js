@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import Details from '../screens/details/Details';
-// import Sport from '../screens/sports/Sport';
+import Sport from '../screens/sports/Sport';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,7 +49,7 @@ export function TabNavigations() {
                 },
             })}>
             <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
-            {/* <Tab.Screen name={ROUTES.SPORT_TAB} component={Sport} options={{ headerShown: false }} /> */}
+            <Tab.Screen name={ROUTES.SPORT_TAB} component={Sport} options={{ headerShown: false }} />
             <Tab.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />
             <Tab.Screen name={ROUTES.ME_TAB} component={Me} options={{ headerShown: false }} />
         </Tab.Navigator>

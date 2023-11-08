@@ -48,6 +48,6 @@ export const ROUTES = {
     HealthyFoodPost4: 'HealthyFoodPost4',
     HealthyFoodPost5: 'HealthyFoodPost5',
 
-    ViewSetting: 'ViewSetting',
+    VIEWSETTING: 'ViewSetting',
     Waittime: 'Waittime',
 }
