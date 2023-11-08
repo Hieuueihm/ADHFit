@@ -68,7 +68,9 @@ export default function ChangeGoalsScreen() {
                 }).then((result) => {
                     if (result?.data?.success === true) {
                         alert('Cập nhật thông tin thành công');
-                        navigation.navigate(ROUTES.GOALS_SCREEN);
+                        navigation.navigate(ROUTES.ME_TAB, {
+                            'options': 'RECALL'
+                        });
                     }
                 })
                     .catch(err => {
@@ -84,7 +86,7 @@ export default function ChangeGoalsScreen() {
         if (currentScreen !== 1) {
             setCurrentScreen(currentScreen - 1);
         } else {
-            navigation.navigate(ROUTES.GOALS_SCREEN)
+            navigation.navigate(ROUTES.ME_TAB)
         }
 
     }
@@ -192,7 +194,7 @@ export default function ChangeGoalsScreen() {
                     height: 250,
                     width: 250,
                     position: 'absolute',
-                    top: 280,
+                    top: 360,
                     left: 60,
                 }}></Image>
         </>,
@@ -397,7 +399,7 @@ export default function ChangeGoalsScreen() {
                     <MaterialCommunityIcon name="chevron-left" style={styles.iconHeader} />
                 </TouchableOpacity>
 
-                <View style={[styles.centerRowView, { borderRadius: 25, backgroundColor: "#81ACFF" }]}>
+                <View style={[styles.centerRowView, { borderRadius: 25, backgroundColor: "#81ACFF", zIndex: -100 }]}>
                     <Text style={styles.textHeader}>
                         {
                             titleScreen[currentScreen - 1]
@@ -426,7 +428,7 @@ export default function ChangeGoalsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginVertical: 4
+        marginVertical: 4,
     },
     rowContainer: {
         flexDirection: 'row',
@@ -443,7 +445,8 @@ const styles = StyleSheet.create({
     textHeader: {
         fontSize: 25,
         color: 'black',
-        fontWeight: '400'
+        fontWeight: '400',
+        zIndex: -100
     }
     ,
     iconHeader: {
@@ -452,7 +455,8 @@ const styles = StyleSheet.create({
     },
     textCenter: {
         flex: 1,
-        textAlign: 'center'
+        textAlign: 'center',
+        zIndex: -100
     },
     next: {
         backgroundColor: '#81ACFF',

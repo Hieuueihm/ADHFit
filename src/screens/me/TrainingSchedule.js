@@ -8,8 +8,11 @@ import utils from "../../utils";
 import api from "../../api";
 import Donutchart from "../../components/Donutchart";
 import Entypo from "react-native-vector-icons/Entypo"
+import { useNavigation } from "@react-navigation/native";
+import { ROUTES } from "../../../constants";
 
 const TrainingSchedule = () => {
+    const navigation = useNavigation();
     const [userId, setUserId] = useState(null);
     const currentTime = new Date();
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -74,12 +77,12 @@ const TrainingSchedule = () => {
                 style={styles.imagebg}>
                 <View style={{ flex: 1, backgroundColor: 'rgba(129,172,255, 0.6)', }}>
                     <View style={styles.rowContainer}>
-                        <TouchableOpacity style={{ marginHorizontal: -20 }}>
+                        <TouchableOpacity style={{ marginHorizontal: -20, zIndex: 100 }} onPress={() => (navigation.navigate(ROUTES.ME_TAB))}>
                             <MaterialCommunityIcon name="chevron-left" style={styles.iconHeader} />
                         </TouchableOpacity>
                         <Text style={styles.textHeader}>Training Schedule</Text>
                         <TouchableOpacity>
-                            <Ionicons name="settings-outline" size={32} color={"white"} ></Ionicons>
+                            <Ionicons name="settings-outline" size={32} color={"white"} onPress={() => (navigation.navigate(ROUTES.VIEWSETTING))}></Ionicons>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.boxInfor}>
