@@ -12,8 +12,15 @@ import Sport from './src/screens/sports/Sport';
 import RunningOutDoor from './src/screens/sports/RunningOutDoors';
 import Splash from './src/screens/welcome/splash/Splash';
 import ViewSetting from './src/screens/me/ViewSetting';
+import Waitime from './src/screens/sports/Waitime';
 
-const Stack = createNativeStackNavigator();
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import Home from './src/screens/home/Home';
+import Walking from './src/screens/sports/Walking';
+import store from './redux/store';
+import { Provider } from 'react-redux';
+
+const Stack = createNativeStackNavigator()
 
 
 
@@ -31,25 +38,30 @@ export default function App() {
 
 
     return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                {/* <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} /> */}
+        <Provider store={store}>
 
-                <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />
-                {/* <Stack.Screen name='ViewSetting' component={ViewSetting} /> */}
-                <Stack.Screen name={ROUTES.SPLASH} component={Splash} />
-                <Stack.Screen name={ROUTES.SPORT_TAB} component={RunningOutDoor} />
-                {/* <Stack.Screen name={ROUTES.TRAINING_SCHEDULE} component={TrainingSchedule} /> */}
+            <NavigationContainer>
+                <Stack.Navigator>
+                    <Stack.Screen name='Waitime' component={Sport} />
+                    {/* <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} /> */}
 
-
-                <Stack.Screen name={ROUTES.LOGIN} component={Login} />
-                <Stack.Screen name={ROUTES.GOALS_SCREEN} component={Goals} />
-
+                    <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />
+                    {/* <Stack.Screen name='ViewSetting' component={ViewSetting} /> */}
+                    <Stack.Screen name={ROUTES.SPLASH} component={Splash} />
+                    <Stack.Screen name={ROUTES.SPORT_TAB} component={RunningOutDoor} />
+                    {/* <Stack.Screen name={ROUTES.TRAINING_SCHEDULE} component={TrainingSchedule} /> */}
 
 
+                    <Stack.Screen name={ROUTES.LOGIN} component={Login} />
+                    <Stack.Screen name={ROUTES.GOALS_SCREEN} component={Goals} />
 
-            </Stack.Navigator>
-        </NavigationContainer>
+
+
+
+                </Stack.Navigator>
+            </NavigationContainer>
+        </Provider>
     )
 }
+
 

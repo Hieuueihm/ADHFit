@@ -48,6 +48,11 @@ import Splash from '../screens/welcome/splash/Splash';
 import ChangeGoalsScreen from '../screens/me/ChangeGoalsScreen';
 import TrainingSchedule from '../screens/me/TrainingSchedule';
 import ViewSetting from '../screens/me/ViewSetting';
+import Details from '../screens/details/Details';
+import BloodPressure from '../screens/details/BloodPressure/BloodPressure';
+import BloodSugar from '../screens/details/BloodSugar/BloodSugar';
+import BodyWeight from '../screens/details/BodyWeight/BodyWeight';
+import HealthyFood from '../screens/details/HealthyFood/HealthyFood';
 const Stack = createNativeStackNavigator();
 
 function TabNavigationsMain() {
@@ -112,37 +117,37 @@ export default function AppNavigations() {
                         <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} />
                         <Stack.Screen name={ROUTES.TRAINING_SCHEDULE} component={TrainingSchedule} />
                         <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />
-                          
-                          
-                             <Stack.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />
 
-                    <Stack.Screen name={ROUTES.BloodPresssure} component={BloodPressure} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodPressurePost1} component={BloodPressurePost1} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodPressurePost2} component={BloodPressurePost2} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodPressurePost3} component={BloodPressurePost3} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodPressurePost4} component={BloodPressurePost4} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodPressurePost5} component={BloodPressurePost5} options={{ headerShown: false }} />
 
-                    <Stack.Screen name={ROUTES.BloodSugar} component={BloodSugar} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodSugarPost1} component={BloodSugarPost1} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodSugarPost2} component={BloodSugarPost2} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodSugarPost3} component={BloodSugarPost3} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodSugarPost4} component={BloodSugarPost4} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BloodSugarPost5} component={BloodSugarPost5} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />
 
-                    <Stack.Screen name={ROUTES.BodyWeight} component={BodyWeight} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BodyWeightPost1} component={BodyWeightPost1} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BodyWeightPost2} component={BodyWeightPost2} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BodyWeightPost3} component={BodyWeightPost3} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BodyWeightPost4} component={BodyWeightPost4} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.BodyWeightPost5} component={BodyWeightPost5} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodPresssure} component={BloodPressure} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodPressurePost1} component={BloodPressurePost1} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodPressurePost2} component={BloodPressurePost2} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodPressurePost3} component={BloodPressurePost3} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodPressurePost4} component={BloodPressurePost4} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodPressurePost5} component={BloodPressurePost5} options={{ headerShown: false }} />
 
-                    <Stack.Screen name={ROUTES.HealthyFood} component={HealthyFood} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HealthyFoodPost1} component={HealthyFoodPost1} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HealthyFoodPost2} component={HealthyFoodPost2} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HealthyFoodPost3} component={HealthyFoodPost3} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HealthyFoodPost4} component={HealthyFoodPost4} options={{ headerShown: false }} />
-                    <Stack.Screen name={ROUTES.HealthyFoodPost5} component={HealthyFoodPost5} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodSugar} component={BloodSugar} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodSugarPost1} component={BloodSugarPost1} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodSugarPost2} component={BloodSugarPost2} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodSugarPost3} component={BloodSugarPost3} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodSugarPost4} component={BloodSugarPost4} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BloodSugarPost5} component={BloodSugarPost5} options={{ headerShown: false }} />
+
+                        <Stack.Screen name={ROUTES.BodyWeight} component={BodyWeight} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BodyWeightPost1} component={BodyWeightPost1} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BodyWeightPost2} component={BodyWeightPost2} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BodyWeightPost3} component={BodyWeightPost3} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BodyWeightPost4} component={BodyWeightPost4} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.BodyWeightPost5} component={BodyWeightPost5} options={{ headerShown: false }} />
+
+                        <Stack.Screen name={ROUTES.HealthyFood} component={HealthyFood} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HealthyFoodPost1} component={HealthyFoodPost1} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HealthyFoodPost2} component={HealthyFoodPost2} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HealthyFoodPost3} component={HealthyFoodPost3} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HealthyFoodPost4} component={HealthyFoodPost4} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.HealthyFoodPost5} component={HealthyFoodPost5} options={{ headerShown: false }} />
 
                     </Stack.Navigator>
 
