@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -6,28 +6,62 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import SwitchButton from "../../components/Switch";
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from "../../../constants";
+import api from "../../api";
+import utils from "../../utils";
 const ViewSetting = () => {
     const navigation = useNavigation();
-    // ngay tap.
-    const isSun = true;
-    const isMon = false;
-    const isTue = false;
-    const isWed = true;
-    const isThu = false;
-    const isFri = true;
-    const isSat = false;
-    const hour = 8;
-    const Minutes = 30;
-    const handleOnPress = (enable) => {
-        setIsRemider(enable);
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const [startTime, setStartTime] = useState(0);
+    const [reminderDay, setReminderDay] = useState([]);
+    const [isReminder, setIsReminder] = useState(null);
+    const [reminderTime, setReminderTime] = useState(null);
+    const [userId, setUserId] = useState(null);
+
+    useState(() => {
+
+        const loadData = async () => {
+            let user_id = await utils.AsyncStorage.getItem('user_id');
+            setUserId(user_id);
+
+            api.UserAPI.handleGetUserInformation({
+                'user_id': user_id
+            })
+                .then(response => {
+                    if (response?.data?.userInfo) {
+                        setReminderDay(response?.data?.userInfo?.reminderDay)
+                        setStartTime(response?.data?.userInfo?.dailyStartTime)
+                        setIsReminder(response?.data?.userInfo?.isReminder)
+                        setReminderTime(response?.data?.userInfo?.reminderTime)
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        }
+        loadData();
+
+    }, [])
+
+    const handlePressDeleteBtn = () => {
+        api.UserAPI.handleDeleteTarget({
+            'user_id': userId
+        })
+            .then(response => {
+                if (response?.data?.success === true) {
+                    alert('Xóa mục tiêu thành công~')
+                    navigation.navigate(ROUTES.ME_TAB);
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
-    const startHouse = 9;
-    const startMinute = 45;
     return (
         <View style={styles.container}>
             <View style={styles.Header}>
                 <TouchableOpacity
-                    onPress={() => { navigation.navigate(ROUTES.SPORT_TAB) }}>
+                    onPress={() => { navigation.navigate(ROUTES.TRAINING_SCHEDULE) }}>
                     <MaterialCommunityIcons name="chevron-left" size={32}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <View style={{ flex: 0.9 }}>
@@ -44,78 +78,53 @@ const ViewSetting = () => {
                         height: 45,
                         width: 45,
                     }}></Image>
-                    <Text style={{ fontSize: 20, marginLeft: 10, }}>Start practice at : {startHouse}.{startMinute}</Text>
+                    <Text style={{ fontSize: 20, marginLeft: 10, }}>Start practice at : {startTime}</Text>
                 </View>
             </View>
             <View style={styles.ViewShedule}>
-                <View style={{ flexDirection: 'row', flex: 1 / 12 }}>
+                <View style={{ flexDirection: 'row', flex: 1 / 10 }}>
                     <View style={{ marginLeft: 10, width: 10, height: 25, backgroundColor: '#9d9d9d' }}></View>
                     <Text style={styles.tittle}>Schedule</Text>
                 </View>
-                <View style={{ flexDirection: "row", height: 100, }}>
-                    <View style={styles.day}>
-                        <Text style={styles.textday}>Sun</Text>
-                        <View style={styles.centerposition}>
-                            <View style={[styles.circleday, { backgroundColor: isSun ? '#9d9d9d' : 'transparent' }]}></View>
-                        </View>
-                    </View>
-                    <View style={styles.day}>
-                        <Text style={styles.textday}>Mon</Text>
-                        <View style={styles.centerposition}>
-                            <View style={[styles.circleday, { backgroundColor: isMon ? '#9d9d9d' : 'transparent' }]}></View>
-                        </View>
-                    </View>
-                    <View style={styles.day}>
-                        <Text style={styles.textday}>Tue</Text>
-                        <View style={styles.centerposition}>
-                            <View style={[styles.circleday, { backgroundColor: isTue ? '#9d9d9d' : 'transparent' }]}></View>
-                        </View>
-                    </View>
-                    <View style={styles.day}>
-                        <Text style={styles.textday}>Wed</Text>
-                        <View style={styles.centerposition}>
-                            <View style={[styles.circleday, { backgroundColor: isWed ? '#9d9d9d' : 'transparent' }]}></View>
-                        </View>
-                    </View>
-                    <View style={styles.day}>
-                        <Text style={styles.textday}>Thu</Text>
-                        <View style={styles.centerposition}>
-                            <View style={[styles.circleday, { backgroundColor: isThu ? '#9d9d9d' : 'transparent' }]}></View>
-                        </View>
-                    </View>
-                    <View style={styles.day}>
-                        <Text style={styles.textday}>Fri</Text>
-                        <View style={styles.centerposition}>
-                            <View style={[styles.circleday, { backgroundColor: isFri ? '#9d9d9d' : 'transparent' }]}></View>
-                        </View>
-                    </View>
-                    <View style={styles.day}>
-                        <Text style={styles.textday}>Sat</Text>
-                        <View style={styles.centerposition}>
-                            <View style={[styles.circleday, { backgroundColor: isSat ? '#9d9d9d' : 'transparent' }]}></View>
-                        </View>
-                    </View>
+                <View style={{ flexDirection: "row", height: 100 }}>
+
+
+                    {
+                        daysOfWeek.map((day, index) => {
+                            const isReminderDay = reminderDay.includes(day);
+                            return (
+                                <View style={styles.day} key={index}>
+                                    <Text style={styles.textday}>{day}</Text>
+                                    <View style={styles.centerposition}>
+                                        <View style={[styles.circleday, { backgroundColor: isReminderDay ? '#9d9d9d' : 'transparent' }]}></View>
+                                    </View>
+                                </View>
+                            )
+                        })
+                    }
                 </View>
                 <View style={[styles.bottomSetting,]}>
                     <View style={{ width: 300, }}>
                         <Text style={[styles.textBottom]}>Training remainder</Text>
                     </View>
-                    <SwitchButton handleOnPress={handleOnPress} />
+                    <SwitchButton updateStateSwitch={isReminder} />
                 </View>
                 <View style={[styles.bottomSetting,]}>
                     <View style={{ width: 300, }}>
                         <Text style={[styles.textBottom]}>Reminder time</Text>
                     </View>
-                    <Text style={{ fontSize: 16, marginLeft: 25, }}>{hour}:{Minutes}</Text>
+                    <Text style={{ fontSize: 16, marginLeft: 25, }}></Text>
 
-                    <TouchableOpacity>
-                        <MaterialCommunityIcons name="chevron-right" size={32}></MaterialCommunityIcons>
-                    </TouchableOpacity>
+                    <View style={{ marginLeft: 20 }}>
+                        <Text>
+                            {reminderTime}
+                        </Text>
+                    </View>
                 </View>
                 <TouchableOpacity
                     style={styles.delete}
                 >
-                    <Text style={{ color: 'black', fontSize: 18, }}>Delete</Text>
+                    <Text style={{ color: 'black', fontSize: 18, }} onPress={handlePressDeleteBtn}>Delete</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -194,7 +203,7 @@ const styles = StyleSheet.create({
     delete: {
         backgroundColor: '#81ACFF',
         borderRadius: 20,
-        height: 35,
+        height: 40,
         width: 300,
         position: 'absolute',
         bottom: 55,

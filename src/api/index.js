@@ -1,7 +1,7 @@
 import { fetchLocations, fetchWeatherForecast } from "./WeatherAPI";
 import {
     userGetCaptcha, userLogin, userLoginFacebook, handleGetUserInformation, handleEditInformation, handleUpdateTarget,
-    handleUpdateReceiveNotification, handleLogout
+    handleUpdateReceiveNotification, handleLogout, handleDeleteTarget
 } from "./UserAPI";
 export default api = {
     WeatherAPI: {
@@ -16,7 +16,8 @@ export default api = {
         handleEditInformation,
         handleUpdateTarget,
         handleUpdateReceiveNotification,
-        handleLogout
+        handleLogout,
+        handleDeleteTarget
 
     }
 }

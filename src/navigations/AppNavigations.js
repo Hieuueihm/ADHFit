@@ -6,7 +6,7 @@ import Login from '../screens/welcome/Login';
 // import { SplashScreen } from '../screens/welcome/splash/SplashScreen';
 import SplashScreen from 'react-native-splash-screen';
 import Home from '../screens/home/Home';
-import EditInformation from '../screens/me/editInformation';
+import EditInformation from '../screens/me/EditInformation';
 import { TabNavigations } from './TabNavigations';
 import { COLORS, ROUTES } from '../../constants/index';
 import Listvideo from '../screens/home/Listvideo';
@@ -22,6 +22,9 @@ import store from '../../redux/store';
 import utils from '../utils';
 import Toast from 'react-native-toast-message'
 import Splash from '../screens/welcome/splash/Splash';
+import ChangeGoalsScreen from '../screens/me/ChangeGoalsScreen';
+import TrainingSchedule from '../screens/me/TrainingSchedule';
+import ViewSetting from '../screens/me/ViewSetting';
 
 const Stack = createNativeStackNavigator();
 
@@ -84,6 +87,9 @@ export default function AppNavigations() {
                         <Stack.Screen name={ROUTES.WEATHER} component={WeatherScreen} />
                         <Stack.Screen name={ROUTES.GOALS_SCREEN} component={Goals} />
                         <Stack.Screen name={ROUTES.SETTINGS_SCREEN} component={Setting} />
+                        <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} />
+                        <Stack.Screen name={ROUTES.TRAINING_SCHEDULE} component={TrainingSchedule} />
+                        <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />
 
                     </Stack.Navigator>
 

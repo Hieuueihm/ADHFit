@@ -18,7 +18,7 @@ export default function WeatherScreen() {
     const [weather, setWeather] = useState({})
     const [selectedTab, setSelectedTab] = useState('hourly');
     const scrollViewRef = useRef();
-    const [scrollViewIsSet, setScrollViewIsSet] = useState(false);
+    const [scrollViewIsSet, setScrollViewIsSet] = useState(null);
 
 
 
@@ -56,7 +56,7 @@ export default function WeatherScreen() {
             setScrollViewIsSet(true); // Đánh dấu rằng ScrollView đã được thiết lập
             handleScroll('hourly'); // Gọi handleScroll
         }
-    }, [scrollViewRef]);
+    }, []);
 
     const handleTabClick = (tab) => {
         setSelectedTab(tab);
@@ -94,7 +94,9 @@ export default function WeatherScreen() {
     }
     // const { current, location, forecast } = weather;
     // const hourly = forecast?.forecastday[1];
-
+    if (scrollViewIsSet == true) {
+        handleScroll('hourly')
+    }
     return (
         <View
             style={{ flex: 1, backgroundColor: COLORS.weatherBgColor }}>
@@ -138,11 +140,10 @@ export default function WeatherScreen() {
 
             {/*image weather*/}
 
-
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                 <Image
                     source={{ uri: `https:${current?.condition.icon}` }}
-                    style={{ marginLeft: 0, width: 200, height: 180, resizeMode: 'contain' }} />
+                    style={{ marginLeft: 0, width: 200, height: 180, marginBottom: 30 }} />
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
                 <Text

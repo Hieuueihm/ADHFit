@@ -99,7 +99,7 @@ const Home = () => {
             <Image
                 //tuy tinh hinh thoi tiet ma lay anh thich hop
                 source={{ uri: `https:${current?.condition.icon}` }} style={{
-                    margin: 20,
+                    margin: 18,
                     height: 50,
                     width: 50,
                     marginLeft: 0
@@ -142,7 +142,8 @@ const Home = () => {
                         style={{
                             flexDirection: 'column',
                             marginStart: 10,
-                            marginEnd: 20
+                            marginEnd: 10,
+                            width: 200,
                         }}>
                         <Text style={{ color: '#7F7F7F', fontSize: 14, ...stylesLightDark.text }}>{t('hello')}</Text>
                         <Text style={{ color: '#000000', fontSize: 18, ...stylesLightDark.text }}>{t(dayName)}, {t(dayOfmonth)} {t(monthName)}</Text>
