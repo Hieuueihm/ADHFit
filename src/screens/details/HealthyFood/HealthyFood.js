@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, ImageBackground, SafeAreaView, TouchableOpacity, Dimensions, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from "../../../../constants";
 
 const HealthyFood = () => {
     const navigation = useNavigation();
@@ -20,35 +21,35 @@ const HealthyFood = () => {
                 <View style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, alignItems: 'center' }}>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("text1")}
+                        onPress={() => navigation.navigate(ROUTES.HealthyFoodPost1)}
                         activeOpacity={0.7} style={styles.container}>
                         <Text style={styles.text}>{text1}</Text>
                         <Image source={image1} style={styles.image}></Image>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("text2")}
+                        onPress={() => navigation.navigate(ROUTES.HealthyFoodPost2)}
                         activeOpacity={0.7} style={styles.container}>
                         <Text style={styles.text}>{text2}</Text>
                         <Image source={image2} style={styles.image}></Image>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("text3")}
+                        onPress={() => navigation.navigate(ROUTES.HealthyFoodPost3)}
                         activeOpacity={0.7} style={styles.container}>
                         <Text style={styles.text}>{text3}</Text>
                         <Image source={image3} style={styles.image}></Image>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("text4")}
+                        onPress={() => navigation.navigate(ROUTES.HealthyFoodPost4)}
                         activeOpacity={0.7} style={styles.container}>
                         <Text style={styles.text}>{text4}</Text>
                         <Image source={image4} style={styles.image}></Image>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("text5")}
+                        onPress={() => navigation.navigate(ROUTES.HealthyFoodPost5)}
                         activeOpacity={0.7} style={styles.container}>
                         <Text style={styles.text}>{text5}</Text>
                         <Image source={image5} style={styles.image}></Image>
