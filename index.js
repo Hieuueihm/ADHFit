@@ -17,4 +17,4 @@ PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 Notifications.registerRemoteNotifications();
 
 
-AppRegistry.registerComponent(appName, () => AppNavigations);
+AppRegistry.registerComponent(appName, () => App);

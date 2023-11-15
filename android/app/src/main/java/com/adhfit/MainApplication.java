@@ -12,10 +12,7 @@ import java.util.List;
 import com.oblador.vectoricons.VectorIconsPackage;
 // import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
-
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
-import com.reactnativecommunity.geolocation.GeolocationPackage;
-  
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -41,7 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected String getJSMainModuleName() {
       return "index";
     }
-  
+
     @Override
     protected boolean isNewArchEnabled() {
       return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
@@ -68,5 +65,5 @@ public class MainApplication extends Application implements ReactApplication {
       DefaultNewArchitectureEntryPoint.load();
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
-  } 
+  }
 }

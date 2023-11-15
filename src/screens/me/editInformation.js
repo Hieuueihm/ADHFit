@@ -201,13 +201,16 @@ export default function EditInformation({ route }) {
             });
         } else if (type === 'camera') {
             launchCamera(options, response => {
-                // if (response.didCancel) {
-                //     console.log('User cancelled camera picker');
-                // } else if (response.error) {
-                //     console.log('CameraPicker Error: ', response.error);
-                // } else {
-                //     console.log('Image Base64 String: ', response.assets[0]?.base64);
-                // }
+                if (response.didCancel) {
+                    console.log('User cancelled camera picker');
+                } else if (response.error) {
+                    console.log('CameraPicker Error: ', response.error);
+                } else {
+                    // console.log('Image Base64 String: ', response.assets[0]);
+                    setSelectedImage(response?.assets[0])
+                    setDisplayImage(response?.assets[0]?.uri)
+
+                }
             });
         }
     };
@@ -265,6 +268,10 @@ export default function EditInformation({ route }) {
                         <TouchableOpacity onPress={() => openImagePicker('album')}
                             style={styles.button}>
                             <Text style={styles.buttonText}>Album</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => openImagePicker('camera')}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>Take Picture</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={toggleModal}>
                             <Text style={[styles.buttonText, { color: 'red' }]}>Cancel</Text>
