@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Image, Dimensions, } from 'react-native';
-import MapView, { Marker, Overlay, } from 'react-native-maps';
+// import MapView, { Marker, Overlay, } from 'react-native-maps';
 // import Geolocation from '@react-native-community/geolocation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
