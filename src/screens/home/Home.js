@@ -143,7 +143,7 @@ const Home = () => {
                             flexDirection: 'column',
                             marginStart: 10,
                             marginEnd: 10,
-                            width: 200,
+                            width: 210,
                         }}>
                         <Text style={{ color: '#7F7F7F', fontSize: 14, ...stylesLightDark.text }}>{t('hello')}</Text>
                         <Text style={{ color: '#000000', fontSize: 18, ...stylesLightDark.text }}>{t(dayName)}, {t(dayOfmonth)} {t(monthName)}</Text>

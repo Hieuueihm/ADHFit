@@ -1,10 +1,13 @@
-import React from 'react';
-import { View, StyleSheet, FlatList, PermissionsAndroid, TouchableOpacity } from 'react-native';
-import MapView, { Polyline, Marker } from 'react-native-maps';
+import React, { useState } from 'react';
+import { View, StyleSheet, FlatList, PermissionsAndroid, TouchableOpacity, Platform } from 'react-native';
+import MapView, { Polyline, Marker, AnimatedRegion } from 'react-native-maps';
 import { List, Title, Headline, Text, Appbar } from 'react-native-paper';
 import { fetchData, csvrowToJson, parseCsvdata, twoDecimals } from './WalkTrack';
 import GetLocation from 'react-native-get-location'
 import { COLORS } from '../../../constants';
+import { ro } from 'date-fns/locale';
+const LATITUDE_DELTA = 0.009
+const LONGITUDE_DELTA = 0.009
 export default function Walking() {
 
     const [PGranted, setPGranted] = React.useState();
@@ -14,9 +17,15 @@ export default function Walking() {
     const [walkinfo, setWalkinfo] = React.useState([]);
     const [minThreshold, setMinThreshold] = React.useState(10);
     const [selectedWalkIndex, setSelectedWalkIndex] = React.useState(-1);
+    const [currentLatitude, setCurrentLatitude] = React.useState(null);
+    const [currentLongitude, setCurrentLongitude] = React.useState(null);
+
+    const [routeCoordinates, setRouteCoordinates] = React.useState([])
+
 
     const urlSource = "https://bit.ly/3vjOhiJ";
     const mapRef = React.useRef();
+    const marker = React.useRef();
 
     const pullData = async (url) => {
         await setRefreshing(true);
@@ -34,16 +43,23 @@ export default function Walking() {
         let granted = await getLocationPermission();
         setPGranted(granted)
         if (granted) {
-            getCurrentPosition();
+            await getCurrentPosition();
         }
     }
     async function getCurrentPosition() {
-        GetLocation.getCurrentPosition({
+        await GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
-            timeout: 60000,
+            timeout: 60000
         })
-            .then(location => {
-                console.log(location);
+            .then((location) => {
+                setCurrentLatitude(location?.latitude)
+                setCurrentLongitude(location?.longitude)
+                const { latitude, longitude, time } = location
+                let coordinate = {
+                    latitude: latitude, longitude: longitude, timestamp: time
+                }
+                setRouteCoordinates(prevCoordinates => [...prevCoordinates, coordinate]);
+
             })
             .catch(error => {
                 const { code, message } = error;
@@ -56,20 +72,29 @@ export default function Walking() {
         ).catch(err => console.log(err))
         return granted === PermissionsAndroid.RESULTS.GRANTED
     }
+
     React.useEffect(() => {
         checkLocationPermission();
-        pullData(urlSource);
+        // pullData(urlSource); 
+        const intervalGetLocation = setInterval(async () => {
+            await getCurrentPosition();
+        }, 10000)
+        return () => clearInterval(intervalGetLocation)
+
     }, []);
 
+
+
+    // render History of Walk track
     const renderItem = ({ item, index }) => {
-        const borderColor = (index === selectedWalkIndex) ? "orange" : "gray";
+        const borderColor = (index === selectedWalkIndex) ? "green" : "gray";
         return (
             <View>
                 <List.Item
                     style={[styles.listitem, { borderColor }]}
-                    title={`Walk #${index + 1} Distance: ${item.distance}m`}
+                    title={`Walk #${index + 1} - Distance: ${item.distance}m`}
                     description={
-                        `Dur.: ${twoDecimals(item.duration / 60)}mins ` +
+                        `Dur: ${twoDecimals(item.duration / 60)}mins - ` +
                         `Avg Spd: ${twoDecimals(item.speed)}m/sec`}
                     left={props => <List.Icon {...props} icon="walk" style={styles.icon} />}
                     onPress={() => {
@@ -87,7 +112,19 @@ export default function Walking() {
             </View>
         );
     };
-
+    React.useEffect(() => {
+        // Kiểm tra xem cả hai giá trị có tồn tại không
+        if (currentLatitude !== null && currentLongitude !== null && mapRef.current) {
+            // Nếu có, cập nhật region của bản đồ
+            mapRef.current.animateToRegion({
+                latitude: currentLatitude,
+                longitude: currentLongitude,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+            }, 500); // Thời gian (milliseconds) để thực hiện animation đến vùng mới
+            marker.current.animateMarkerToCoordinate({ latitude: currentLatitude, longitude: currentLongitude }, 500)
+        }
+    }, [currentLatitude, currentLongitude]);
     return (
         <View style={styles.mainView}>
             {
@@ -95,20 +132,63 @@ export default function Walking() {
                     ?
                     <>
                         <View style={styles.infoView}>
-                            <Appbar.Header>
-                                <Appbar.Content title="Walk Track" />
-                            </Appbar.Header>
                             <MapView
                                 ref={mapRef}
                                 style={styles.mapView}
                                 initialRegion={{
-                                    latitude: 37.78825,
-                                    longitude: -122.4324,
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421,
+                                    latitude: 37.4226711,
+                                    longitude: -122.0849872,
+                                    latitudeDelta: LATITUDE_DELTA,
+                                    longitudeDelta: LONGITUDE_DELTA,
                                 }}
                             >
                                 <Polyline
+                                    coordinates={routeCoordinates}
+                                    strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+                                    strokeColors={[
+                                        '#7F0000',
+                                        '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
+                                        '#B24112',
+                                        '#E5845C',
+                                        '#238C23',
+                                        '#7F0000',
+                                    ]}
+                                    lineDashPattern={[3, 1, 3, 1]}
+                                    strokeWidth={6}
+                                />
+
+                                {
+                                    routeCoordinates.length > 0 && (
+                                        <>
+                                            <Marker
+                                                coordinate={{
+                                                    latitude: routeCoordinates[0].latitude,
+                                                    longitude: routeCoordinates[0].longitude,
+                                                }}
+                                                title="Điểm đầu"
+                                                pinColor='red'
+                                            />
+
+                                        </>
+
+
+                                    )
+                                }
+                                <Marker.Animated
+                                    ref={marker}
+                                    coordinate={
+                                        {
+                                            latitude: 0,
+                                            longitude: 0
+                                        }
+                                    }
+                                    title="Điểm cuối"
+                                    pinColor="green"
+
+                                />
+
+
+                                {/* <Polyline
                                     coordinates={walkinfo}
                                     strokeColor="#8E94F2"
                                     strokeWidth={6}
@@ -127,10 +207,10 @@ export default function Walking() {
                                             coordinate={walkinfo[walkinfo.length - 1]}
                                         />
                                     </>
-                                }
+                                } */}
                             </MapView>
                         </View>
-                        <View style={styles.walklistView}>
+                        {/* <View style={styles.walklistView}>
                             <Title style={styles.title}>
                                 Walk List ({walklist.length})
                             </Title>
@@ -143,22 +223,28 @@ export default function Walking() {
                                     pullData(urlSource)
                                 }}
                             />
-                        </View>
+                        </View> */}
+
                     </>
 
                     :
                     <>
-                        <TouchableOpacity
-                            onPress={() => checkLocationPermission()}
-                            style={{
-                                width: 90, height: 40,
-                                flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
-                                backgroundColor: 'rgba(185, 175, 245, 1)',
-                                borderRadius: 30, marginRight: 30
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ marginVertical: 10 }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Require Location PermissionsAndroid...</Text>
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => checkLocationPermission()}
+                                style={{
+                                    width: 90, height: 40,
+                                    flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                    backgroundColor: 'rgba(185, 175, 245, 1)',
+                                    borderRadius: 30, marginRight: 30
 
-                            }}>
-                            <Text style={{ color: COLORS.bgWhite(1), fontWeight: 600, fontSize: 16 }}>Allow</Text>
-                        </TouchableOpacity>
+                                }}>
+                                <Text style={{ color: COLORS.bgWhite(1), fontWeight: 600, fontSize: 16 }}>Allow</Text>
+                            </TouchableOpacity>
+                        </View>
                     </>
             }
         </View >
@@ -191,7 +277,7 @@ const styles = StyleSheet.create({
         borderStyle: "solid",
         borderColor: "gray",
         borderRadius: 36,
-        margin: 6
+        margin: 4
     },
     title: {
         paddingLeft: 20,
@@ -199,7 +285,10 @@ const styles = StyleSheet.create({
         color: "#6200ee"
     },
     icon: {
-        borderRadius: 36,
-        backgroundColor: "gray",
+        marginHorizontal: 6,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 50,
+        backgroundColor: "#ccc"
     }
 });

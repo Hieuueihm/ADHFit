@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, TextInput, ImageBackground, Image, Button, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, ImageBackground, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { COLORS, ROUTES } from "../../../constants";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { alignContent } from "react-native-wind/dist/styles/flex/align-content";
@@ -11,6 +11,7 @@ import utils from "../../utils";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Modal from "react-native-modal";
 import Toast from 'react-native-toast-message'
+
 
 export default function EditInformation({ route }) {
 
@@ -124,7 +125,7 @@ export default function EditInformation({ route }) {
                     }
                 );
             }
-            console.log(selectedImage)
+            // console.log(selectedImage)
             formData.append('user_id', user_id)
             formData.append('name', userName);
             formData.append('dateOfBirth', selectedDate)
@@ -176,7 +177,7 @@ export default function EditInformation({ route }) {
         hideDatePicker();
     }
 
-    const openImagePicker = (type) => {
+    const openImagePicker = async (type) => {
         const options = {
             strorageOptions: {
                 mediaType: 'photo',
@@ -186,18 +187,19 @@ export default function EditInformation({ route }) {
         }
         if (type === 'album') {
             launchImageLibrary(options, response => {
-                if (response.assets[0]) {
-                    setSelectedImage(response?.assets[0])
-                    setDisplayImage(response?.assets[0]?.uri)
+
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else {
+                    if (response.assets[0]) {
+                        setSelectedImage(response?.assets[0])
+                        setDisplayImage(response?.assets[0]?.uri)
+                    }
                 }
-                // if (response.didCancel) {
-                //     console.log('User cancelled image picker');
-                // } else if (response.error) {
-                //     console.log('ImagePicker Error: ', response.error);
-                // } else {
-                //     console.log('Image Base64 String: ', response.assets[0]?.base64);
-                // }
                 toggleModal()
+
             });
         } else if (type === 'camera') {
             launchCamera(options, response => {
@@ -209,8 +211,9 @@ export default function EditInformation({ route }) {
                     // console.log('Image Base64 String: ', response.assets[0]);
                     setSelectedImage(response?.assets[0])
                     setDisplayImage(response?.assets[0]?.uri)
-
                 }
+                toggleModal()
+
             });
         }
     };
