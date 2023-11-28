@@ -18,7 +18,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import Home from './src/screens/home/Home';
 import store from './redux/store';
 import { Provider } from 'react-redux';
-import Walking from './src/screens/sports/Walking';
+import Walking from './src/screens/sports/Walking'
 
 const Stack = createNativeStackNavigator()
 
@@ -43,7 +43,7 @@ export default function App() {
             <NavigationContainer>
                 <Stack.Navigator>
 
-                    <Stack.Screen name='Waitime' component={Walking} />
+                    <Stack.Screen name='Waitime' component={Login} />
                     {/* <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} /> */}
 
                     <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />

@@ -50,7 +50,9 @@ const ViewSetting = () => {
             .then(response => {
                 if (response?.data?.success === true) {
                     alert('Xóa mục tiêu thành công~')
-                    navigation.navigate(ROUTES.ME_TAB);
+                    navigation.navigate(ROUTES.ME_TAB, {
+                        options: 'RECALL'
+                    });
                 }
             })
             .catch(err => {
