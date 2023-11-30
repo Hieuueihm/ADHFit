@@ -69,6 +69,9 @@ const Home = () => {
     const [currentTimesSleep, setCurrentTimeSleep] = useState(null)
     const [currentHeartRate, setCurrentHeartRate] = useState(null)
     const [currentKCals, setCurrentKcals] = useState(null)
+    const [userId, setUserId] = useState(null);
+
+    const [co2, setCo2] = useState(null);
 
 
 
@@ -81,8 +84,9 @@ const Home = () => {
         })
         const loadData = async () => {
             let userId = await utils.AsyncStorage.getItem('user_id');
+            setUserId(userId);
 
-            api.UserAPI.handleGetUserInformation({
+            await api.UserAPI.handleGetUserInformation({
                 "user_id": userId
             })
                 .then(
@@ -104,7 +108,15 @@ const Home = () => {
 
 
         const getStateData = async () => {
-            await api.StateAPI.handleGetStateData()
+            let ud = null;
+            if (userId == null) {
+                ud = await utils.AsyncStorage.getItem('user_id');
+            }
+
+
+            await api.UserAPI.handleGetStateDataFollowDay({
+                'objectId': userId == null ? ud : userId
+            })
                 .then(response => {
                     // console.log(response?.data);
                     if (response?.data) {
@@ -112,6 +124,9 @@ const Home = () => {
                             setCurrentStep(response?.data?.todayInfo?.step);
                             setCurrentKcals(response?.data?.todayInfo?.kcal);
                             setCurrentHeartRate(response?.data?.todayInfo?.heartRate?.currentHeartRate);
+                            setCo2(response?.data?.todayInfo?.airQuality?.co2);
+
+
 
                         }
                     }
@@ -126,6 +141,7 @@ const Home = () => {
         }, 1000);
         // getStateData();
         loadData();
+
 
     }, []);
     if (weather) {
@@ -147,6 +163,7 @@ const Home = () => {
             </Text>
         </>
     ]
+    // console.log(userId)
     return (
         <ScrollView
             style={{ flex: 1, backgroundColor: '#FDEEEE', ...stylesLightDark.background }}>

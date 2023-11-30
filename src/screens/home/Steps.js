@@ -41,12 +41,16 @@ const Steps = () => {
     const [currentDistance, setCurrentDistance] = useState(null);
     const [currentTimeRecord, setCurrentTimeRecord] = useState(null);
     const [timeIntervalGetStateData, setTimeIntervalGetStateData] = useState(null);
+    const [userId, setUserId] = useState(null);
 
 
 
     useEffect(() => {
         const loadData = async () => {
-            await api.StateAPI.handleGetAllStateData()
+            let ud = await utils.AsyncStorage.getItem('user_id');
+            await api.UserAPI.userGetAllStateData({
+                'objectId': ud
+            })
                 .then(response => {
                     // console.log(response.data.data.days)
                     if (response.data.data.days) {
@@ -92,7 +96,14 @@ const Steps = () => {
 
 
         const getStateData = async () => {
-            await api.StateAPI.handleGetStateData()
+            let ud = null;
+            if (userId == null) {
+                ud = await utils.AsyncStorage.getItem('user_id');
+                setUserId(ud);
+            }
+            await api.UserAPI.handleGetStateDataFollowDay({
+                'objectId': userId == null ? ud : userId
+            })
                 .then(response => {
                     // console.log(response?.data);
                     if (response?.data) {
