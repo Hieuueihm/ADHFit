@@ -19,4 +19,4 @@ PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 Notifications.registerRemoteNotifications();
 
-AppRegistry.registerComponent(appName, () => Sport);
+AppRegistry.registerComponent(appName, () => AppNavigations);

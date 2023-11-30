@@ -42,7 +42,7 @@ const Steps = () => {
     const [currentTimeRecord, setCurrentTimeRecord] = useState(null);
     const [timeIntervalGetStateData, setTimeIntervalGetStateData] = useState(null);
     const [userId, setUserId] = useState(null);
-
+    const [distanceFootRate, setDistanceFootRate] = useState(null);
 
 
     useEffect(() => {
@@ -84,6 +84,7 @@ const Steps = () => {
                         if (response.data.success === true) {
                             if (response?.data?.userInfo?.avatar != '') {
                                 setTargetStep(response?.data?.userInfo?.targetStep);
+                                setDistanceFootRate(response?.data?.userInfo?.distanceFootRate)
                             }
                         }
                     }
@@ -110,6 +111,7 @@ const Steps = () => {
                         if (response?.data?.todayInfo != {}) {
                             setCurrentStep(response?.data?.todayInfo?.step);
                             setCurrentKcals(response?.data?.todayInfo?.kcal);
+                            setCurrentDistance(response?.data?.todayInfo?.distance);
                             // setCurrentHeartRate(response?.data?.todayInfo?.heartRate?.currentHeartRate);
 
                         }
@@ -270,7 +272,6 @@ const Steps = () => {
                         }}>
                         <Rectanchart top={0} left={10} colorTarget="#cfdee4" colorAmount="#ff2777"></Rectanchart>
                         <Rectanchart top={30} left={46} colorTarget="#cfdee4" colorAmount="#68ffcb"></Rectanchart>
-                        <Rectanchart top={0} left={46} colorTarget="#cfdee4" colorAmount="#9340FC"></Rectanchart>
                         <Image
                             source={require("../../assets/icons/Asset5.png")}
                             style={{
@@ -285,15 +286,7 @@ const Steps = () => {
                                 left: 153,
                                 top: 54,
                             }}></Image>
-                        <Image
-                            source={require("../../assets/icons/Asset4.png")}
-                            style={{
-                                position: 'absolute',
-                                height: 18,
-                                width: 18,
-                                left: 270,
-                                top: 24,
-                            }}></Image>
+
                         <Text
                             style={{
                                 backgroundColor: '#FFB1AC',
@@ -309,15 +302,7 @@ const Steps = () => {
                                 fontSize: 15,
                                 top: 110,
                                 left: 140,
-                            }}>1.2km</Text>
-                        <Text
-                            style={{
-                                backgroundColor: '#FFB1AC',
-                                position: 'absolute',
-                                fontSize: 15,
-                                top: 80,
-                                left: 260,
-                            }}>1.3h</Text>
+                            }}>{currentDistance}km</Text>
                     </View>
                 </View>
                 <View

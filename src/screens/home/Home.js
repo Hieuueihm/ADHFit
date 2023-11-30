@@ -95,7 +95,7 @@ const Home = () => {
                             if (response?.data?.userInfo?.avatar != '') {
                                 setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
                                 setTargetStep(response?.data?.userInfo?.targetStep);
-                                setTargetKcal(response?.data?.userInfo?.targetStep * 10);
+                                setTargetKcal(response?.data?.userInfo?.targetKcal);
                             }
                         }
                     }
@@ -137,10 +137,15 @@ const Home = () => {
         }
         getStateData();
         const timeIntervalGetStateData = setInterval(() => {
+            loadData()
             getStateData()
         }, 1000);
         // getStateData();
         loadData();
+        return () => {
+            clearInterval(timeIntervalGetStateData);
+
+        };
 
 
     }, []);
@@ -349,7 +354,7 @@ const Home = () => {
                                     <Image source={require('../../assets/icons/kcal.png')} style={styles.icon}></Image>
                                 </View>
                             </View>
-                            <Donutchart radius={50} target={targetKcal} spent={currentKCals} text="Kcals" colorTarget='#D9D9D9' colorAmount="#63665A" strokeTarget="15" strokeAmount="15" colorText='#63665A' fontText={12} />
+                            <Donutchart radius={50} target={targetKcal} spent={currentKCals} text="Cals" colorTarget='#D9D9D9' colorAmount="#63665A" strokeTarget="15" strokeAmount="15" colorText='#63665A' fontText={12} />
                         </TouchableOpacity>
                     </View>
                 </View>
