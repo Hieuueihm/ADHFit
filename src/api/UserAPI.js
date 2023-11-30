@@ -139,3 +139,40 @@ export const handleDeleteTarget = async (data) => {
     }
 }
 
+
+export const handleGetStateDataFollowDay = async (data) => {
+    try {
+        const response = await APIManager('user/getStateFollowDay', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error
+    }
+}
+
+
+export const userGetAllStateData = async (data) => {
+    try {
+        const response = await APIManager('user/getAllStateData', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error
+    }
+}
+
+
+
+
+
+
