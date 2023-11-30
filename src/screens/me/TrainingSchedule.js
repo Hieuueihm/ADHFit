@@ -53,7 +53,7 @@ const TrainingSchedule = () => {
     const loadData = async () => {
         let user_id = await utils.AsyncStorage.getItem('user_id');
         setUserId(user_id)
-        api.UserAPI.handleGetUserInformation({
+        await api.UserAPI.handleGetUserInformation({
             'user_id': user_id
         })
             .then(response => {
@@ -74,7 +74,7 @@ const TrainingSchedule = () => {
                 console.log(err)
             })
 
-        api.UserAPI.userGetAllStateData({
+        await api.UserAPI.userGetAllStateData({
             'objectId': user_id
         })
             .then(response => {
@@ -82,7 +82,6 @@ const TrainingSchedule = () => {
                     const newStepInWeek = Array.from({ length: 7 }, (_, index) => {
                         const dayTimestamp = timeStampForWeek[index];
                         const matchingDataItem = response.data.data.days.find(item => parseInt(item.day, 10) === dayTimestamp);
-
                         return matchingDataItem ? matchingDataItem.step : 0;
                     });
 
@@ -115,6 +114,7 @@ const TrainingSchedule = () => {
                     if (response?.data) {
                         if (response?.data?.todayInfo != {}) {
                             setCurrentStep(response?.data?.todayInfo?.step);
+                            setCurrentDistance(response?.data?.todayInfo?.distance);
 
                             // setCurrentKcals(response?.data?.todayInfo?.kcal);
                             // setCurrentHeartRate(response?.data?.todayInfo?.heartRate?.currentHeartRate);
@@ -159,7 +159,13 @@ const TrainingSchedule = () => {
                 style={styles.imagebg}>
                 <View style={{ flex: 1, backgroundColor: 'rgba(129,172,255, 0.6)', }}>
                     <View style={styles.rowContainer}>
-                        <TouchableOpacity style={{ marginHorizontal: -20, zIndex: 100 }} onPress={() => (navigation.navigate(ROUTES.ME_TAB))}>
+                        <TouchableOpacity style={{ marginHorizontal: -20, zIndex: 100 }}
+                            onPress={() => {
+                                if (timeIntervalGetStateData) {
+                                    clearInterval(timeIntervalGetStateData);
+                                }
+                                navigation.navigate(ROUTES.ME_TAB)
+                            }}>
                             <MaterialCommunityIcon name="chevron-left" style={styles.iconHeader} />
                         </TouchableOpacity>
                         <Text style={styles.textHeader}>Training Schedule</Text>
@@ -249,7 +255,7 @@ const TrainingSchedule = () => {
                                         </View>
                                         <View style={{ width: 120, height: 45, marginLeft: 8, }}>
                                             <Text style={{ fontSize: 18, }}>Distance {'\n'}
-                                                {distance} km</Text>
+                                                {currentDistance} m</Text>
                                         </View>
                                     </View>
                                 </View>
