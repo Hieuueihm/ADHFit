@@ -10,11 +10,13 @@ import App from './App';
 
 import { PermissionsAndroid } from 'react-native';
 import { Notifications } from 'react-native-notifications';
+import MotionSetting from './src/screens/sports/MotionSetting';
+import Sport from './src/screens/sports/Sport';
+import Walking from './src/screens/sports/Walking';
 
 
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 Notifications.registerRemoteNotifications();
 
-
-AppRegistry.registerComponent(appName, () => AppNavigations);
+AppRegistry.registerComponent(appName, () => Sport);
