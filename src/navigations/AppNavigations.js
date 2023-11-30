@@ -87,6 +87,14 @@ export default function AppNavigations() {
             <Provider store={store}>
                 <NavigationContainer independent={true}>
                     <Stack.Navigator initialRouteName='main' screenOptions={{ headerShown: false }}>
+                        {
+                            showOnboarding
+                                ?
+                                <Stack.Screen name={ROUTES.ONBOARDING} component={OnboardingScreen} />
+                                :
+                                <Stack.Screen name={ROUTES.SPLASH} component={Splash} />
+                        }
+                        <Stack.Screen name={ROUTES.LOGIN} component={Login} />
 
                         <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} />
 
