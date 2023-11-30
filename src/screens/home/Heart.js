@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, Text, Image, Dimensions, TouchableOpacity, ImageBackground, StyleSheet, ScrollView } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo'
 import Liinechart from '../../components/Liinechart'
@@ -6,25 +6,107 @@ import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../../constants';
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux"
+import moment from 'moment';
+import api from '../../api';
+
 
 //Data mo phong cai heart
-const dataHeart = {
-    labels: ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"],
-    datasets: [
-        {
-            data: [90, 88, 73, 110, 49, 92, 88]
-        }
-    ]
-};
+// đo trong 4 tiếng trước
+// const dataHeart = {
+//     labels: ["10:30", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun", "3", "3"],
+//     datasets: [
+//         {
+//             data: [90, 88, 73, 110, 49, 92, 88, 88, 88]
+//         }
+//     ]
+// };
 
 // Lay kich thuoc cua cai man hinh thoi
 const Heart = () => {
     const navigation = useNavigation();
+    // const currentTime = moment();
+    // const startTime = moment(currentTime).startOf('hour').subtract(4, 'hours');
+    // const timeArray = Array.from({ length: 8 }, (_, index) =>
+    //     moment(startTime).add(index * 30, 'minutes').unix() * 1000
+    // );
+
+    // console.log(timeArray);  
+    const [dataHeart, setDataHeart] = useState(null)
+    const [dataSpo2, setDataSpo2] = useState(null)
+
     const hei = Dimensions.get("window").height;
     const wi = Dimensions.get("window").width;
     const { t } = useTranslation();
     const stylesLightDark = useSelector((state) => state.settings.styles);
 
+    useEffect(() => {
+        const loadData = async () => {
+            await api.StateAPI.handleGetStateData()
+                .then(response => {
+                    // console.log(response.data.todayInfo.heartRate.avgHeartRate)
+                    if (response.data.todayInfo) {
+                        if (response.data.todayInfo.heartRate) {
+                            if (response.data.todayInfo.heartRate.avgHeartRate) {
+                                avgArr = response.data.todayInfo.heartRate.avgHeartRate
+                                const maxElements = 8;
+                                const last8Elements = avgArr.slice(-maxElements);
+
+                                // console.log(last8Elements);
+                                const labels = last8Elements.map(item => {
+                                    const timeLabel = moment(parseInt(item.timestamp)).format('HH:mm');
+
+                                    return timeLabel
+                                });
+                                const datasets = avgArr.map(item => {
+
+                                    return item.value
+                                });
+                                setDataHeart({
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            data: datasets
+                                        }]
+                                })
+
+
+                            }
+                            if (response.data.todayInfo.heartRate.avgSpo2) {
+                                avgArr = response.data.todayInfo.heartRate.avgSpo2
+                                const maxElements = 8;
+                                const last8Elements = avgArr.slice(-maxElements);
+
+                                // console.log(last8Elements);
+                                const labels = last8Elements.map(item => {
+                                    const timeLabel = moment(parseInt(item.timestamp)).format('HH:mm');
+
+                                    return timeLabel
+                                });
+                                const datasets = avgArr.map(item => {
+
+                                    return item.value
+                                });
+                                setDataSpo2({
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            data: datasets
+                                        }]
+                                })
+
+
+                            }
+                        }
+                    }
+
+                })
+                .catch(err =>
+                    console.log(err))
+        }
+        loadData()
+    }, [])
+
+    // console.log(dataHeart)
     return (
         <SafeAreaView>
             <ImageBackground
@@ -32,7 +114,7 @@ const Heart = () => {
                 style={{
                     height: Dimensions.get("window").height,
                     width: Dimensions.get("window").width,
-                    alignItems: 'center',...stylesLightDark.background
+                    alignItems: 'center', ...stylesLightDark.background
                 }}>
                 <View
                     style={{
@@ -81,24 +163,7 @@ const Heart = () => {
                             color: 'white',
                             marginLeft: 20,
                         }}>{t('heartHealth')}</Text>
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        style={{
-                            height: 35,
-                            width: 85,
-                            borderRadius: 15,
-                            backgroundColor: 'white',
-                            marginLeft: 40,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                color: 'black',
-                            }}>{t('measure')}</Text>
 
-                    </TouchableOpacity>
                 </View>
                 <View
                     style={{
@@ -115,7 +180,12 @@ const Heart = () => {
                             fontSize: 20,
                             color: 'white',
                         }}>Heart rate-bpm</Text>
-                    <Liinechart height={250} width={350} data={dataHeart} backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' colorLine={`rgb(93,246,108)`} Opacity={0}></Liinechart>
+                    {dataHeart == null
+                        ? <></>
+                        :
+                        <Liinechart height={250} width={350} data={dataHeart} backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' colorLine={`rgb(93,246,108)`} Opacity={0}></Liinechart>
+
+                    }
                 </View>
                 <View
                     style={{
@@ -142,24 +212,6 @@ const Heart = () => {
                             color: 'white',
                             marginLeft: 15,
                         }}>{t('oxygenInBlood')}</Text>
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        style={{
-                            height: 35,
-                            width: 85,
-                            borderRadius: 15,
-                            backgroundColor: 'white',
-                            marginLeft: 20,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                color: 'black',
-                            }}>{t('measure')}</Text>
-
-                    </TouchableOpacity>
                 </View>
                 <View
                     style={{
@@ -176,7 +228,15 @@ const Heart = () => {
                             fontSize: 20,
                             color: 'white',
                         }}>SpO2-%</Text>
-                    <Liinechart height={250} width={350} data={dataHeart} backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' colorLine={`rgb(93,246,108)`} Opacity={0}></Liinechart>
+                    {
+                        dataSpo2 == null
+                            ?
+                            <></>
+                            :
+                            <Liinechart height={250} width={350} data={dataSpo2} backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' colorLine={`rgb(93,246,108)`} Opacity={0}></Liinechart>
+
+
+                    }
                 </View>
             </ImageBackground>
         </SafeAreaView>
