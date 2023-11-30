@@ -80,7 +80,10 @@ export default function Setting() {
                         <Text style={styles.textContainer}>{t('termsAndConditions')}</Text>
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.rightContainer}>
+                        <TouchableOpacity style={styles.rightContainer}
+                            onPress={() => {
+                                navigation.navigate(ROUTES.TermAndCondition)
+                            }}>
                             <MaterialCommunityIcon name="chevron-right" style={{ color: COLORS.bgBlack(1), fontSize: 30 }} />
                         </TouchableOpacity>
                     </View>

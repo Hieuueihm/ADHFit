@@ -53,6 +53,7 @@ import BloodPressure from '../screens/details/BloodPressure/BloodPressure';
 import BloodSugar from '../screens/details/BloodSugar/BloodSugar';
 import BodyWeight from '../screens/details/BodyWeight/BodyWeight';
 import HealthyFood from '../screens/details/healthyFood/HealthyFood';
+import TermAndCondition from '../screens/me/TermAndCondition';
 const Stack = createNativeStackNavigator();
 
 function TabNavigationsMain() {
@@ -86,14 +87,7 @@ export default function AppNavigations() {
             <Provider store={store}>
                 <NavigationContainer independent={true}>
                     <Stack.Navigator initialRouteName='main' screenOptions={{ headerShown: false }}>
-                        {
-                            showOnboarding
-                                ?
-                                <Stack.Screen name={ROUTES.ONBOARDING} component={OnboardingScreen} />
-                                :
-                                <Stack.Screen name={ROUTES.SPLASH} component={Splash} />
-                        }
-                        <Stack.Screen name={ROUTES.LOGIN} component={Login} />
+
                         <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} />
 
                         <Stack.Screen name={ROUTES.EDIT_INFORMATION} component={EditInformation} options={({ route }) => ({
@@ -117,6 +111,7 @@ export default function AppNavigations() {
                         <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} />
                         <Stack.Screen name={ROUTES.TRAINING_SCHEDULE} component={TrainingSchedule} />
                         <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />
+                        <Stack.Screen name={ROUTES.TermAndCondition} component={TermAndCondition} />
 
 
                         <Stack.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />

@@ -43,7 +43,7 @@ export default function App() {
             <NavigationContainer>
                 <Stack.Navigator>
 
-                    <Stack.Screen name='Waitime' component={Walking} />
+                    <Stack.Screen name='Waitime' component={Walking} options={{ headerShown: false }} />
                     {/* <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} /> */}
 
                     <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />
