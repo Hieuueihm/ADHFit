@@ -54,6 +54,7 @@ import BloodSugar from '../screens/details/BloodSugar/BloodSugar';
 import BodyWeight from '../screens/details/BodyWeight/BodyWeight';
 import HealthyFood from '../screens/details/healthyFood/HealthyFood';
 import TermAndCondition from '../screens/me/TermAndCondition';
+import HelpAndSupport from '../screens/me/HelpAndSupport';
 const Stack = createNativeStackNavigator();
 
 function TabNavigationsMain() {
@@ -120,7 +121,7 @@ export default function AppNavigations() {
                         <Stack.Screen name={ROUTES.TRAINING_SCHEDULE} component={TrainingSchedule} />
                         <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />
                         <Stack.Screen name={ROUTES.TermAndCondition} component={TermAndCondition} />
-
+                        <Stack.Screen name={ROUTES.HelpAndSupport} component={HelpAndSupport} />
 
                         <Stack.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />
 

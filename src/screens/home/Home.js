@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import api from "../../api"
 import { useSelector } from "react-redux"
 import utils from "../../utils"
+import { use } from "i18next"
 
 
 const dataHeart = {
@@ -59,8 +60,22 @@ const Home = () => {
     const [weather, setWeather] = useState({})
 
     const [displayImage, setDisplayImage] = useState('');
+    const [targetStep, setTargetStep] = useState(0);
+    const [targetKcal, setTargetKcal] = useState(0);
     const [currentScreenTopRight, setCurrentScreenTopRight] = useState(0)
     const stylesLightDark = useSelector((state) => state.settings.styles);
+
+    const [currentStep, setCurrentStep] = useState(null);
+    const [currentTimesSleep, setCurrentTimeSleep] = useState(null)
+    const [currentHeartRate, setCurrentHeartRate] = useState(null)
+    const [currentKCals, setCurrentKcals] = useState(null)
+    const [userId, setUserId] = useState(null);
+
+    const [co2, setCo2] = useState(null);
+
+
+
+
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -69,8 +84,9 @@ const Home = () => {
         })
         const loadData = async () => {
             let userId = await utils.AsyncStorage.getItem('user_id');
+            setUserId(userId);
 
-            api.UserAPI.handleGetUserInformation({
+            await api.UserAPI.handleGetUserInformation({
                 "user_id": userId
             })
                 .then(
@@ -78,6 +94,8 @@ const Home = () => {
                         if (response.data.success === true) {
                             if (response?.data?.userInfo?.avatar != '') {
                                 setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
+                                setTargetStep(response?.data?.userInfo?.targetStep);
+                                setTargetKcal(response?.data?.userInfo?.targetKcal);
                             }
                         }
                     }
@@ -88,7 +106,47 @@ const Home = () => {
 
         }
 
+
+        const getStateData = async () => {
+            let ud = null;
+            if (userId == null) {
+                ud = await utils.AsyncStorage.getItem('user_id');
+            }
+
+
+            await api.UserAPI.handleGetStateDataFollowDay({
+                'objectId': userId == null ? ud : userId
+            })
+                .then(response => {
+                    // console.log(response?.data);
+                    if (response?.data) {
+                        if (response?.data?.todayInfo != {}) {
+                            setCurrentStep(response?.data?.todayInfo?.step);
+                            setCurrentKcals(response?.data?.todayInfo?.kcal);
+                            setCurrentHeartRate(response?.data?.todayInfo?.heartRate?.currentHeartRate);
+                            setCo2(response?.data?.todayInfo?.airQuality?.co2);
+
+
+
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+        getStateData();
+        const timeIntervalGetStateData = setInterval(() => {
+            loadData()
+            getStateData()
+        }, 1000);
+        // getStateData();
         loadData();
+        return () => {
+            clearInterval(timeIntervalGetStateData);
+
+        };
+
 
     }, []);
     if (weather) {
@@ -110,6 +168,7 @@ const Home = () => {
             </Text>
         </>
     ]
+    // console.log(userId)
     return (
         <ScrollView
             style={{ flex: 1, backgroundColor: '#FDEEEE', ...stylesLightDark.background }}>
@@ -194,7 +253,7 @@ const Home = () => {
                                     <Image source={require('../../assets/icons/jogging.png')} style={styles.icon}></Image>
                                 </View>
                             </View>
-                            <Donutchart radius={60} target={7500} spent={4200} text="Steps" colorTarget='#FB3535' colorAmount="#483867" strokeTarget="15" strokeAmount="15" colorText='#483867' fontText={12} />
+                            <Donutchart radius={60} target={targetStep} spent={currentStep} text="Steps" colorTarget='#FB3535' colorAmount="#483867" strokeTarget="15" strokeAmount="15" colorText='#483867' fontText={12} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -222,14 +281,15 @@ const Home = () => {
                                     height: 80,
                                     width: 180,
                                     justifyContent: 'center',
-                                    alignItems: 'center',
+                                    alignItems: 'center'
                                 }}>
-                                <Text style={{ color: 'black', fontSize: 40, }}>131</Text>
+                                <Text style={{ color: 'black', fontSize: 40, }}>{currentHeartRate}</Text>
                                 <View
                                     style={{
                                         height: 80,
                                         width: 50,
-                                        justifyContent: 'center'
+                                        justifyContent: 'center',
+                                        marginLeft: 10
                                     }}>
                                     <Image source={require("../../assets/icons/heart2.png")} style={{ height: 30, width: 30, }}></Image>
                                     <Text style={{ fontSize: 24, color: 'black', }}>bpm</Text>
@@ -294,7 +354,7 @@ const Home = () => {
                                     <Image source={require('../../assets/icons/kcal.png')} style={styles.icon}></Image>
                                 </View>
                             </View>
-                            <Donutchart radius={50} target={500} spent={375} text="Kcals" colorTarget='#D9D9D9' colorAmount="#63665A" strokeTarget="15" strokeAmount="15" colorText='#63665A' fontText={12} />
+                            <Donutchart radius={50} target={targetKcal} spent={currentKCals} text="Cals" colorTarget='#D9D9D9' colorAmount="#63665A" strokeTarget="15" strokeAmount="15" colorText='#63665A' fontText={12} />
                         </TouchableOpacity>
                     </View>
                 </View>

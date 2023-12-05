@@ -108,6 +108,12 @@ const Login = () => {
                                             // console.log(result)
                                             if (result.data.success === true) {
                                                 utils.AsyncStorage.storeItem('user_id', result?.data?._id);
+                                                api.LogAPI.handleSetCurrentLog({
+                                                    login: true,
+                                                    objectId: result?.data?._id
+                                                }).catch(err => console.log(err))
+
+
                                                 console.log(result.data.isNewUser)
                                                 if (result.data.isNewUser === true) {
                                                     navigation.navigate(ROUTES.EDIT_INFORMATION);
@@ -158,6 +164,10 @@ const Login = () => {
                         .then(async (result) => {
                             if (result.data.status === 200) {
                                 utils.AsyncStorage.storeItem('user_id', result?.data?._id);
+                                api.LogAPI.handleSetCurrentLog({
+                                    login: true,
+                                    objectId: result?.data?._id
+                                }).catch(err => console.log(err))
                                 setLoadingLogin(false);
                                 if (result.data.isNewUser === true) {
                                     navigation.navigate(ROUTES.EDIT_INFORMATION, {

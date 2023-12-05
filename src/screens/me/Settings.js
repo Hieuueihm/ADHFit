@@ -93,7 +93,10 @@ export default function Setting() {
                         <Text style={styles.textContainer}>{t('helpSupport')}</Text>
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.rightContainer}>
+                        <TouchableOpacity style={styles.rightContainer}
+                            onPress={() => {
+                                navigation.navigate(ROUTES.HelpAndSupport)
+                            }}>
                             <MaterialCommunityIcon name="chevron-right" style={{ color: COLORS.bgBlack(1), fontSize: 30 }} />
                         </TouchableOpacity>
                     </View>

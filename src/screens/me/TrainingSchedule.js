@@ -10,6 +10,8 @@ import Donutchart from "../../components/Donutchart";
 import Entypo from "react-native-vector-icons/Entypo"
 import { useNavigation } from "@react-navigation/native";
 import { ROUTES } from "../../../constants";
+import moment from 'moment';
+
 
 const TrainingSchedule = () => {
     const navigation = useNavigation();
@@ -24,10 +26,13 @@ const TrainingSchedule = () => {
     const day = currentTime.getDay();          // Thứ trong tuần, nhung tra ve cac gia tri 0-6
     const dayName = daysOfWeek[day];           // Chuyen tu du lieu số sang thứ trong tuần
 
-    const Cumulative = 0;    // gia su cai nay = 0
-    const totalNumber = 0;
-    const targerComplete = 0;
-    const stepNumber = 0;
+
+    const currentDated = moment();
+    const monday = moment(currentDated).startOf('isoWeek');
+    const timeStampForWeek = Array.from({ length: 7 }, (_, index) =>
+        moment(monday).add(index, 'days').startOf('day').unix() * 1000
+    );
+
     const distance = 0;
     const target = 100; // mục tiêu chạy
     const amount = 55; // thực hiện đc bao nhiêu
@@ -37,12 +42,18 @@ const TrainingSchedule = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const startDate = new Date(currentDate);
     const [reminderDay, setReminderDay] = useState([]);
+    const [timeIntervalGetStateData, setTimeIntervalGetStateData] = useState(null);
 
+    const [currentStep, setCurrentStep] = useState(null);
+    const [currentDistance, setCurrentDistance] = useState(null);
+    const [targetStep, setTargetStep] = useState(0);
+    const [weeklyStep, setWeeklyStep] = useState(0);
+    const [targetCompleted, setTargetCompleted] = useState(0);
 
     const loadData = async () => {
         let user_id = await utils.AsyncStorage.getItem('user_id');
         setUserId(user_id)
-        api.UserAPI.handleGetUserInformation({
+        await api.UserAPI.handleGetUserInformation({
             'user_id': user_id
         })
             .then(response => {
@@ -50,14 +61,85 @@ const TrainingSchedule = () => {
                     //    console.log(response?.data?.userInfo?.reminderDay)
                     setReminderDay(response?.data?.userInfo?.reminderDay);
                 }
+                if (response?.data?.userInfo?.targetStep) {
+                    setTargetStep(response?.data?.userInfo?.targetStep);
+
+                }
+                if (response?.data?.userInfo?.targetCompleted) {
+                    setTargetCompleted(response?.data?.userInfo?.targetCompleted);
+
+                }
             })
             .catch(err => {
                 console.log(err)
             })
 
+        await api.UserAPI.userGetAllStateData({
+            'objectId': user_id
+        })
+            .then(response => {
+                if (response.data.data.days) {
+                    const newStepInWeek = Array.from({ length: 7 }, (_, index) => {
+                        const dayTimestamp = timeStampForWeek[index];
+                        const matchingDataItem = response.data.data.days.find(item => parseInt(item.day, 10) === dayTimestamp);
+                        return matchingDataItem ? matchingDataItem.step : 0;
+                    });
+
+                    let total = newStepInWeek.reduce((acc, cur) => acc + cur, 0);
+                    setWeeklyStep(total);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+
     }
     useEffect(() => {
         loadData();
+    }, [])
+    useEffect(() => {
+
+        const getStateData = async () => {
+            let ud = null;
+            if (userId == null) {
+                ud = await utils.AsyncStorage.getItem('user_id');
+                setUserId(ud);
+            }
+            await api.UserAPI.handleGetStateDataFollowDay({
+                'objectId': userId == null ? ud : userId
+            })
+                .then(response => {
+                    // console.log(response?.data);
+                    if (response?.data) {
+                        if (response?.data?.todayInfo != {}) {
+                            setCurrentStep(response?.data?.todayInfo?.step);
+                            setCurrentDistance(response?.data?.todayInfo?.distance);
+
+                            // setCurrentKcals(response?.data?.todayInfo?.kcal);
+                            // setCurrentHeartRate(response?.data?.todayInfo?.heartRate?.currentHeartRate);
+
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+        getStateData();
+        loadData();
+        const intervalId = setInterval(() => {
+            getStateData()
+        }, 1000);
+
+        setTimeIntervalGetStateData(intervalId);
+
+        return () => {
+            if (timeIntervalGetStateData) {
+                clearInterval(timeIntervalGetStateData);
+            }
+        };
+
     }, [])
 
     startDate.setDate(currentDate.getDate() - currentDate.getDay());
@@ -77,7 +159,13 @@ const TrainingSchedule = () => {
                 style={styles.imagebg}>
                 <View style={{ flex: 1, backgroundColor: 'rgba(129,172,255, 0.6)', }}>
                     <View style={styles.rowContainer}>
-                        <TouchableOpacity style={{ marginHorizontal: -20, zIndex: 100 }} onPress={() => (navigation.navigate(ROUTES.ME_TAB))}>
+                        <TouchableOpacity style={{ marginHorizontal: -20, zIndex: 100 }}
+                            onPress={() => {
+                                if (timeIntervalGetStateData) {
+                                    clearInterval(timeIntervalGetStateData);
+                                }
+                                navigation.navigate(ROUTES.ME_TAB)
+                            }}>
                             <MaterialCommunityIcon name="chevron-left" style={styles.iconHeader} />
                         </TouchableOpacity>
                         <Text style={styles.textHeader}>Training Schedule</Text>
@@ -87,25 +175,19 @@ const TrainingSchedule = () => {
                     </View>
                     <View style={styles.boxInfor}>
                         <View style={styles.detailInfor}>
-                            {/* Tích lũy */}
-                            <Text style={styles.inforText1}>Cumulative{'\n'}</Text>
-                            <View style={styles.detailInfor2}>
-                                <Text style={styles.inforText2}>{Cumulative}</Text>
-                                <Text style={{ color: 'white' }}>day</Text>
-                            </View>
-                        </View>
-                        <View style={styles.detailInfor}>
                             {/* Tổng bước chạy trong tuần */}
                             <Text style={styles.inforText1}>Total number of step this week</Text>
                             <View style={styles.detailInfor2}>
-                                <Text style={styles.inforText2}>{totalNumber}</Text>
+                                <Text style={styles.inforText2}>{weeklyStep}</Text>
+                                <Text style={{ color: 'white' }}>step</Text>
+
                             </View>
                         </View>
                         <View style={styles.detailInfor}>
                             {/* Mục tiêu đã hoàn thành */}
                             <Text style={styles.inforText1}>Target completed</Text>
                             <View style={styles.detailInfor2}>
-                                <Text style={styles.inforText2}>{targerComplete}</Text>
+                                <Text style={styles.inforText2}>{targetCompleted}</Text>
                                 <Text style={{ color: 'white' }}>day</Text>
                             </View>
                         </View>
@@ -116,6 +198,7 @@ const TrainingSchedule = () => {
                 <Text style={styles.bluetext}>{year} - {month + 1}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', flex: 1, marginVertical: 5, }}>
                     {daysOfWeek.map((day, index) => {
+
                         const isReminderDay = reminderDay.includes(day);
                         return (
                             <View key={index} style={[styles.day, { borderColor: dayNames[index].toLowerCase() === dayName.toLowerCase() ? 'blue' : 'transparent', }]}>
@@ -160,7 +243,7 @@ const TrainingSchedule = () => {
                                         </View>
                                         <View style={{ width: 120, height: 45, marginLeft: 8, }}>
                                             <Text style={{ fontSize: 18, }}>Step number {'\n'}
-                                                {stepNumber}</Text>
+                                                {currentStep}</Text>
                                         </View>
                                     </View>
                                     <View style={[styles.halfPractice, { alignItems: 'flex-start', marginTop: 50, }]}>
@@ -172,12 +255,12 @@ const TrainingSchedule = () => {
                                         </View>
                                         <View style={{ width: 120, height: 45, marginLeft: 8, }}>
                                             <Text style={{ fontSize: 18, }}>Distance {'\n'}
-                                                {distance} km</Text>
+                                                {currentDistance} m</Text>
                                         </View>
                                     </View>
                                 </View>
                                 <View style={styles.practiceRowView}>
-                                    <Donutchart radius={60} target={target} spent={percent} text="%" colorTarget='#FBDA85' colorAmount="#FCA21C" strokeTarget="15" strokeAmount="15" colorText='#FCA21C' fontText={20} />
+                                    <Donutchart radius={60} target={targetStep} spent={currentStep} text="step" colorTarget='#FBDA85' colorAmount="#FCA21C" strokeTarget="15" strokeAmount="15" colorText='#FCA21C' fontText={20} />
                                 </View>
 
                             </View>
@@ -227,6 +310,7 @@ const styles = StyleSheet.create({
     boxInfor: {
         flex: 1,
         flexDirection: 'row',
+        justifyContent: 'space-around'
     },
     detailInfor: {
         flex: 1 / 3,
