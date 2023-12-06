@@ -50,4 +50,6 @@ export const ROUTES = {
 
     VIEWSETTING: 'ViewSetting',
     Waittime: 'Waittime',
+    TermAndCondition: "TermAndCondition",
+    HelpAndSupport: "HelpAndSupport"
 }

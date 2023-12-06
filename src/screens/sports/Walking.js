@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, PermissionsAndroid, TouchableOpacity, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, FlatList, PermissionsAndroid, TouchableOpacity, Platform, Dimensions, Image } from 'react-native';
 import MapView, { Polyline, Marker, AnimatedRegion } from 'react-native-maps';
 import { List, Title, Headline, Text, Appbar } from 'react-native-paper';
 import { fetchData, csvrowToJson, parseCsvdata, twoDecimals } from './WalkTrack';
 import GetLocation from 'react-native-get-location'
 import { COLORS } from '../../../constants';
 import { ro } from 'date-fns/locale';
+import api from '../../api';
+import { useSelector } from "react-redux"
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const LATITUDE_DELTA = 0.009
 const LONGITUDE_DELTA = 0.009
 export default function Walking() {
@@ -21,6 +24,60 @@ export default function Walking() {
     const [currentLongitude, setCurrentLongitude] = React.useState(null);
 
     const [routeCoordinates, setRouteCoordinates] = React.useState([])
+
+
+    const [weather, setWeather] = useState({})
+    const stylesLightDark = useSelector((state) => state.settings.styles);
+    const [weatherText, setWeatherText] = useState("Excellent");
+    const lastKm = 0;
+    const [isBluetoothConnect, setIsBluetoothConnect] = useState(true);
+    useEffect(() => {
+        api.WeatherAPI.fetchWeatherForecast({ cityName: 'Hanoi', days: '7' }).then(data => {
+            setWeather(data)
+        })
+        const loadData = async () => {
+            let userId = await utils.AsyncStorage.getItem('user_id');
+
+            api.UserAPI.handleGetUserInformation({
+                "user_id": userId
+            })
+                .then(
+                    (response) => {
+                        if (response.data.success === true) {
+                            if (response?.data?.userInfo?.avatar != '') {
+                                setDisplayImage(`http://10.0.2.2:3001/${response?.data?.userInfo?.avatar}`)
+                            }
+                        }
+                    }
+                )
+                .catch(error => {
+                    console.log(error)
+                })
+
+        }
+
+        loadData();
+
+    }, []);
+    if (weather) {
+        var { current, location, forecast } = weather;
+    }
+    const screensTopRight = [
+        <>
+            <Image
+                //tuy tinh hinh thoi tiet ma lay anh thich hop
+                source={{ uri: `https:${current?.condition.icon}` }} style={{
+                    margin: 18,
+                    height: 50,
+                    width: 50,
+                    marginLeft: 0
+                }}>
+            </Image>
+            <Text style={{ marginTop: 2, marginLeft: -20, fontSize: 18, fontWeight: 'bold', ...stylesLightDark.text }}>
+                {current?.temp_c}{'\u2103'}
+            </Text>
+        </>
+    ]
 
 
     const urlSource = "https://bit.ly/3vjOhiJ";
@@ -210,6 +267,85 @@ export default function Walking() {
                                 } */}
                             </MapView>
                         </View>
+                        {/* 1 cái cục View tràn màn hình, coi như container mới để làm nút, và ko che phủ, là vẫn thao tác với bản đồ đc */}
+                        <View style={{
+                            height: Dimensions.get('screen').height,
+                            width: Dimensions.get('screen').width,
+                            backgroundColor: 'transparent',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            pointerEvents: 'box-none'
+                        }}>
+                            <View style={styles.header}>
+                                <Text style={styles.headerText}>Walking</Text>
+                            </View>
+                            <View style={styles.halfView}>
+                                <View style={{
+                                    flex: 0.2, justifyContent: 'flex-start', flexDirection: "row",
+                                    alignItems: 'center'
+                                }}>
+                                    <TouchableOpacity>
+                                        <View style={styles.weatherButton}>
+
+                                            {
+                                                screensTopRight[0]
+                                            }
+                                            <Text style={[styles.textSmall, { marginLeft: 5, }]}>{weatherText}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <View style={styles.lastKmView}>
+                                        <Text style={styles.textSmall}>Last km : {lastKm.toFixed(2)}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={[styles.halfView, { pointerEvents: 'box-none' }]}>
+                                <View style={{ flex: 0.4, justifyContent: 'flex-end', alignItems: 'center' }}>
+                                    {
+                                        isBluetoothConnect // neu ket noi duoc vs dth
+                                            ?
+                                            <>
+                                                <View style={[styles.weatherButton, { width: 80, marginLeft: -5, }]}>
+                                                    <Image source={require("../../assets/icons/product.png")}
+                                                        style={{
+                                                            height: 30,
+                                                            width: 30,
+                                                        }}></Image>
+                                                </View>
+                                            </>
+                                            :
+                                            <>
+                                                <View style={[styles.weatherButton, { width: 200, marginLeft: -5, }]}>
+                                                    <Text style={styles.textSmall}>Bluetooth is disconnected !</Text>
+                                                </View>
+                                            </>
+                                    }
+                                </View>
+                                <View style={{
+                                    flex: 0.4, flexDirection: "row",
+                                    justifyContent: 'space-around', alignItems: 'center'
+                                }}>
+                                    <TouchableOpacity>
+                                        <View style={styles.smallButton}>
+                                            <Image source={require("../../assets/icons/settings.png")}
+                                                style={{ height: 28, width: 28, }}></Image>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity>
+                                        <View style={styles.goButton}>
+                                            <Text style={{ fontSize: 55, color: "white" }}>GO!</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity>
+                                        <View style={styles.smallButton}>
+                                            <MaterialCommunityIcons name='target' size={32}></MaterialCommunityIcons>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+
+
+                        </View>
                         {/* <View style={styles.walklistView}>
                             <Title style={styles.title}>
                                 Walk List ({walklist.length})
@@ -265,6 +401,7 @@ const styles = StyleSheet.create({
     },
     mapView: {
         flex: 1,
+        pointerEvents: "auto",
     },
     walklistView: {
         flex: 1,
@@ -290,5 +427,58 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         borderRadius: 50,
         backgroundColor: "#ccc"
+    },
+    header: {
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white'
+    },
+    headerText: {
+        color: '#81acff',
+        fontSize: 24,
+    },
+    halfView: {
+        height: (Dimensions.get('screen').height - 100) / 2,
+    },
+    weatherButton: {
+        height: 45,
+        width: 170,
+        borderRadius: 25,
+        backgroundColor: 'white',
+        marginLeft: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    textSmall: {
+        color: '#A4A2A2',
+        fontSize: 14,
+
+    },
+    lastKmView: {
+        height: 45,
+        width: 110,
+        borderRadius: 25,
+        backgroundColor: 'white',
+        marginLeft: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    goButton: {
+        height: 100,
+        width: 100,
+        borderRadius: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#81acff'
+    },
+    smallButton: {
+        height: 45,
+        width: 45,
+        borderRadius: 35,
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor: 'white'
     }
 });

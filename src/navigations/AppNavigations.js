@@ -35,11 +35,11 @@ import BodyWeightPost3 from '../screens/details/BodyWeight/Post3';
 import BodyWeightPost4 from '../screens/details/BodyWeight/Post4';
 import BodyWeightPost5 from '../screens/details/BodyWeight/Post5';
 
-import HealthyFoodPost1 from '../screens/details/HealthyFood/Post1';
-import HealthyFoodPost2 from '../screens/details/HealthyFood/Post2';
-import HealthyFoodPost3 from '../screens/details/HealthyFood/Post3';
-import HealthyFoodPost4 from '../screens/details/HealthyFood/Post4';
-import HealthyFoodPost5 from '../screens/details/HealthyFood/Post5';
+import HealthyFoodPost1 from '../screens/details/healthyFood/Post1';
+import HealthyFoodPost2 from '../screens/details/healthyFood/Post2';
+import HealthyFoodPost3 from '../screens/details/healthyFood/Post3';
+import HealthyFoodPost4 from '../screens/details/healthyFood/Post4';
+import HealthyFoodPost5 from '../screens/details/healthyFood/Post5';
 import { Provider } from 'react-redux';
 import store from '../../redux/store';
 import utils from '../utils';
@@ -52,7 +52,9 @@ import Details from '../screens/details/Details';
 import BloodPressure from '../screens/details/BloodPressure/BloodPressure';
 import BloodSugar from '../screens/details/BloodSugar/BloodSugar';
 import BodyWeight from '../screens/details/BodyWeight/BodyWeight';
-import HealthyFood from '../screens/details/HealthyFood/HealthyFood';
+import HealthyFood from '../screens/details/healthyFood/HealthyFood';
+import TermAndCondition from '../screens/me/TermAndCondition';
+import HelpAndSupport from '../screens/me/HelpAndSupport';
 const Stack = createNativeStackNavigator();
 
 function TabNavigationsMain() {
@@ -94,6 +96,7 @@ export default function AppNavigations() {
                                 <Stack.Screen name={ROUTES.SPLASH} component={Splash} />
                         }
                         <Stack.Screen name={ROUTES.LOGIN} component={Login} />
+
                         <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} />
 
                         <Stack.Screen name={ROUTES.EDIT_INFORMATION} component={EditInformation} options={({ route }) => ({
@@ -117,7 +120,8 @@ export default function AppNavigations() {
                         <Stack.Screen name={ROUTES.CHANGE_GOALS_SCREEN} component={ChangeGoalsScreen} />
                         <Stack.Screen name={ROUTES.TRAINING_SCHEDULE} component={TrainingSchedule} />
                         <Stack.Screen name={ROUTES.VIEWSETTING} component={ViewSetting} />
-
+                        <Stack.Screen name={ROUTES.TermAndCondition} component={TermAndCondition} />
+                        <Stack.Screen name={ROUTES.HelpAndSupport} component={HelpAndSupport} />
 
                         <Stack.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />
 

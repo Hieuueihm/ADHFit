@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SwitchButton from '../../components/Switch';
 
@@ -78,10 +78,10 @@ const MotionSetting = () => {
             </View>
             <View style={[style.boxView, { marginTop: 10, }]}>
                 <View style={[style.inforView]}>
-                    <View style={style.halfbox}>
+                    <View style={[style.halfbox, { height: 45 }]}>
                         <Text style={style.textInfor}>Heart rate warning</Text>
                     </View>
-                    <Text style={style.smalltext}>Heart rate reaches the warning value during exercise, equipment vibration reminder</Text>
+                    <Text style={[style.smalltext, { marginTop: -15 }]}>Heart rate reaches the warning value during exercise, equipment vibration reminder</Text>
                 </View>
                 <View style={[style.togglebox, { flexDirection: 'row' }]}>
                     <SwitchButton></SwitchButton>
@@ -94,7 +94,6 @@ const MotionSetting = () => {
                     </View>
                 </TouchableOpacity>
             </View>
-
         </View>
     )
 

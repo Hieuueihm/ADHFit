@@ -1,4 +1,4 @@
-import { getItem, removeItem, storeItem } from "./AsyncStorage";
+import { getItem, removeItem, storeItem } from "./asyncStorage";
 import { showToast, toastConfig } from "./ToastMessage";
 
 export default utils = {

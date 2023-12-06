@@ -13,10 +13,19 @@ import { Notifications } from 'react-native-notifications';
 import MotionSetting from './src/screens/sports/MotionSetting';
 import Sport from './src/screens/sports/Sport';
 import Walking from './src/screens/sports/Walking';
+import { TabNavigations } from './src/navigations/TabNavigations';
+import Home from './src/screens/home/Home';
+import Me from './src/screens/me/me';
+import TermAndCondition from './src/screens/me/TermAndCondition';
+import BaarChart2 from './src/components/Baarchart2';
+import SetTarget from './src/screens/sports/SetTarget';
+import HelpAndSupport from './src/screens/me/HelpAndSupport';
+import Loading from './src/components/Loading';
+
 
 
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 Notifications.registerRemoteNotifications();
 
-AppRegistry.registerComponent(appName, () => AppNavigations);
+AppRegistry.registerComponent(appName, () => MotionSetting);

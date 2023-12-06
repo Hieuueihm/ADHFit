@@ -270,8 +270,8 @@ const Steps = () => {
                             position: 'relative',
                             bottom: 50,
                         }}>
-                        <Rectanchart top={0} left={10} colorTarget="#cfdee4" colorAmount="#ff2777"></Rectanchart>
-                        <Rectanchart top={30} left={46} colorTarget="#cfdee4" colorAmount="#68ffcb"></Rectanchart>
+                        <Rectanchart top={10} left={10} colorTarget="#cfdee4" colorAmount="#ff2777"></Rectanchart>
+                        <Rectanchart top={10} left={162} colorTarget="#cfdee4" colorAmount="#68ffcb"></Rectanchart>
                         <Image
                             source={require("../../assets/icons/Asset5.png")}
                             style={{
@@ -283,8 +283,8 @@ const Steps = () => {
                             source={require("../../assets/icons/Asset3.png")}
                             style={{
                                 position: 'absolute',
-                                left: 153,
-                                top: 54,
+                                left: 268,
+                                top: 34,
                             }}></Image>
 
                         <Text
@@ -292,17 +292,17 @@ const Steps = () => {
                                 backgroundColor: '#FFB1AC',
                                 position: 'absolute',
                                 fontSize: 15,
-                                top: 80,
-                                left: 10,
+                                top: 90,
+                                left: 36,
                             }}>{currentKCals} kcal</Text>
                         <Text
                             style={{
                                 backgroundColor: '#FFB1AC',
                                 position: 'absolute',
                                 fontSize: 15,
-                                top: 110,
-                                left: 140,
-                            }}>{currentDistance}km</Text>
+                                top: 90,
+                                left: 278,
+                            }}>{currentDistance} km</Text>
                     </View>
                 </View>
                 <View
