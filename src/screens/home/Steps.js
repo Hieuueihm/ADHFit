@@ -270,21 +270,21 @@ const Steps = () => {
                             position: 'relative',
                             bottom: 50,
                         }}>
-                        <Rectanchart top={10} left={10} colorTarget="#cfdee4" colorAmount="#ff2777"></Rectanchart>
-                        <Rectanchart top={10} left={162} colorTarget="#cfdee4" colorAmount="#68ffcb"></Rectanchart>
+                        <Rectanchart top={30} left={30} colorTarget="#cfdee4" colorAmount="#ff2777"></Rectanchart>
+                        <Rectanchart top={30} left={120} colorTarget="#cfdee4" colorAmount="#68ffcb"></Rectanchart>
                         <Image
                             source={require("../../assets/icons/Asset5.png")}
                             style={{
                                 position: 'absolute',
-                                left: 36,
-                                top: 24,
+                                left: 55,
+                                top: 55,
                             }}></Image>
                         <Image
                             source={require("../../assets/icons/Asset3.png")}
                             style={{
                                 position: 'absolute',
-                                left: 268,
-                                top: 34,
+                                left: 248,
+                                top: 55,
                             }}></Image>
 
                         <Text
@@ -292,16 +292,16 @@ const Steps = () => {
                                 backgroundColor: '#FFB1AC',
                                 position: 'absolute',
                                 fontSize: 15,
-                                top: 90,
-                                left: 36,
+                                top: 110,
+                                left: 46,
                             }}>{currentKCals} kcal</Text>
                         <Text
                             style={{
                                 backgroundColor: '#FFB1AC',
                                 position: 'absolute',
                                 fontSize: 15,
-                                top: 90,
-                                left: 278,
+                                top: 110,
+                                left: 240,
                             }}>{currentDistance} km</Text>
                     </View>
                 </View>

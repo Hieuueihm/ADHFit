@@ -51,5 +51,8 @@ export const ROUTES = {
     VIEWSETTING: 'ViewSetting',
     Waittime: 'Waittime',
     TermAndCondition: "TermAndCondition",
-    HelpAndSupport: "HelpAndSupport"
+    HelpAndSupport: "HelpAndSupport",
+    MotionSetting: "MotionSetting",
+    SetTarget: "SetTarget",
+    Walking: 'Walking'
 }

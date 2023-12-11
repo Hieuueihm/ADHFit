@@ -55,6 +55,10 @@ import BodyWeight from '../screens/details/BodyWeight/BodyWeight';
 import HealthyFood from '../screens/details/HealthyFood/HealthyFood';
 import TermAndCondition from '../screens/me/TermAndCondition';
 import HelpAndSupport from '../screens/me/HelpAndSupport';
+import MotionSetting from '../screens/sports/MotionSetting';
+import SetTarget from '../screens/sports/SetTarget';
+import Walking from '../screens/sports/Walking';
+import Waitime from '../screens/sports/Waitime';
 const Stack = createNativeStackNavigator();
 
 function TabNavigationsMain() {
@@ -96,7 +100,6 @@ export default function AppNavigations() {
                                 <Stack.Screen name={ROUTES.SPLASH} component={Splash} />
                         }
                         <Stack.Screen name={ROUTES.LOGIN} component={Login} />
-
                         <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} />
 
                         <Stack.Screen name={ROUTES.EDIT_INFORMATION} component={EditInformation} options={({ route }) => ({
@@ -152,6 +155,11 @@ export default function AppNavigations() {
                         <Stack.Screen name={ROUTES.HealthyFoodPost3} component={HealthyFoodPost3} options={{ headerShown: false }} />
                         <Stack.Screen name={ROUTES.HealthyFoodPost4} component={HealthyFoodPost4} options={{ headerShown: false }} />
                         <Stack.Screen name={ROUTES.HealthyFoodPost5} component={HealthyFoodPost5} options={{ headerShown: false }} />
+
+                        <Stack.Screen name={ROUTES.MotionSetting} component={MotionSetting} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.SetTarget} component={SetTarget} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.Walking} component={Walking} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.Waittime} component={Waitime} options={{ headerShown: false }} />
 
                     </Stack.Navigator>
 

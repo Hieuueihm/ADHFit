@@ -171,19 +171,7 @@ export default function TermAndCondition() {
 
                 </ScrollView>
             </View>
-            <View style={styles.bootomTab}>
-                <TouchableOpacity
-                    onPress={handleDecline}>
-                    <View style={[styles.bottomButton,]}>
-                        <Text style={{ fontSize: 18, color: '#81acff' }}>DECLINE</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <View style={[styles.bottomButton, { backgroundColor: '#81acff' }]}>
-                        <Text style={{ fontSize: 18, color: 'white' }}>ACCEPT</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
+
         </View>
     )
 }
@@ -193,7 +181,7 @@ const styles = StyleSheet.create({
 
     },
     scrollView: {
-        height: Dimensions.get("screen").height * 0.7,
+        height: Dimensions.get("screen").height * 0.8,
 
     },
     bootomTab: {
@@ -237,7 +225,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     headerText: {
-        color: '#81acff',
+        color: 'black',
         fontSize: 24,
     },
     boldText: {

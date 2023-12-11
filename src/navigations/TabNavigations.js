@@ -50,7 +50,7 @@ export function TabNavigations() {
                 },
             })}>
             <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.SPORT_TAB} component={Walking} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.SPORT_TAB} component={Sport} options={{ headerShown: false }} />
             <Tab.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />
             <Tab.Screen name={ROUTES.ME_TAB} component={Me} options={{ headerShown: false }} />
         </Tab.Navigator>
