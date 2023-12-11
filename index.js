@@ -28,4 +28,4 @@ PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 Notifications.registerRemoteNotifications();
 
-AppRegistry.registerComponent(appName, () => MotionSetting);
+AppRegistry.registerComponent(appName, () => AppNavigations);

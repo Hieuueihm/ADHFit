@@ -171,6 +171,23 @@ export const userGetAllStateData = async (data) => {
     }
 }
 
+export const userSendResponse = async (data) => {
+    try {
+        const response = await APIManager('user/achieveResponseFromUser', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        })
+        return response
+    } catch (error) {
+        return error
+    }
+}
+
+
+
 
 
 
