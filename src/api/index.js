@@ -2,6 +2,7 @@ import { fetchLocations, fetchWeatherForecast } from "./WeatherAPI";
 import {
     userGetCaptcha, userLogin, userLoginFacebook, handleGetUserInformation, handleEditInformation, handleUpdateTarget,
     handleUpdateReceiveNotification, handleLogout, handleDeleteTarget, handleGetStateDataFollowDay, userGetAllStateData,
+    userSendResponse
 
 } from "./UserAPI";
 import { handleSetCurrentLog } from './LogAPI'
@@ -23,6 +24,7 @@ export default api = {
         handleDeleteTarget,
         handleGetStateDataFollowDay,
         userGetAllStateData,
+        userSendResponse
 
 
     },
