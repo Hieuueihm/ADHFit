@@ -2,10 +2,12 @@ import React, { useState, useRef } from "react";
 import { View, Image, Dimensions, TouchableOpacity, StyleSheet, Text, ScrollView, TouchableWithoutFeedback } from "react-native";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
-
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from "../../../constants";
 
 
 const SetTarget = () => {
+    const navigation = useNavigation();
     const [currentScreen, setCurrentScreen] = useState(1);
     const [kilometer, setKilometer] = useState(0);
     const [isModalVisible, setModalVisible] = useState(false);
@@ -104,7 +106,10 @@ const SetTarget = () => {
     return (
         <View style={styles.container}>
             <View style={styles.Header}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate(ROUTES.SPORT_TAB)
+                    }}>
                     <View style={{
                         width: 100,
                         alignItems: 'flex-start',

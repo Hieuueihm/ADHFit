@@ -7,7 +7,7 @@ import { ROUTES } from "../../../constants";
 const Waitime = () => {
     const navigation = useNavigation();
     setTimeout(() => {
-        navigation.navigate(ROUTES.RUNNINGOUTDOOR);
+        navigation.navigate(ROUTES.Walking);
     }, 5500);
     return (
         <View style={styles.container}>

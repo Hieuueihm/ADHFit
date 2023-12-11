@@ -11,6 +11,7 @@ const Loading = () => {
             <ActivityIndicator
                 size={'large'}
                 color={"#81acff"}></ActivityIndicator>
+            <Text>Loading...</Text>
         </View>
     )
 }

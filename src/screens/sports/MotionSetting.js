@@ -2,12 +2,18 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SwitchButton from '../../components/Switch';
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../../constants';
 
 const MotionSetting = () => {
+    const navigation = useNavigation();
     return (
         <View style={style.container}>
             <View style={style.Header}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate(ROUTES.SPORT_TAB)
+                    }}>
                     <View style={{
                         width: 100,
                         alignItems: 'flex-start',
