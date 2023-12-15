@@ -26,6 +26,7 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+        maven { url 'https://jitpack.io' }
         // maven {
         //     url 'https://api.mapbox.com/downloads/v2/releases/maven'
         //     authentication {
@@ -46,4 +47,12 @@ buildscript {
         classpath 'com.google.gms:google-services:4.4.0'
     }
 }
-
+allprojects {
+    repositories {
+        // Other repositories...
+        maven {
+          // react-native-background-fetch
+         url("${project(':react-native-background-fetch').projectDir}/libs")
+    }
+    }
+}
