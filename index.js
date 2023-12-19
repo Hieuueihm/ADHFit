@@ -21,6 +21,7 @@ import BaarChart2 from './src/components/Baarchart2';
 import SetTarget from './src/screens/sports/SetTarget';
 import HelpAndSupport from './src/screens/me/HelpAndSupport';
 import Loading from './src/components/Loading';
+import History from './src/screens/sports/History';
 
 
 

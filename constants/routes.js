@@ -54,5 +54,6 @@ export const ROUTES = {
     HelpAndSupport: "HelpAndSupport",
     MotionSetting: "MotionSetting",
     SetTarget: "SetTarget",
-    Walking: 'Walking'
+    Walking: 'Walking',
+    History: "History"
 }
