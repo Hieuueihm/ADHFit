@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Image, Dimensions, ImageBackground, SafeAreaView } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Image, Dimensions, ImageBackground, SafeAreaView, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -8,36 +8,78 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../../constants';
 import { useSelector } from "react-redux"
-import Donutchart from '../../components/Donutchart';
-
-
-const distance = 5.45;
-const distanceTarget = 7;
-
-const time = 30;
-const pace = time / distance;
-const kCal = 450;
-const kCalTarget = 400;
-const heart = 120;
-
-const calculateKm = () => {
-    // Tính toán tỷ lệ tiến triển (progress) của distance so với distanceTarget
-    const progress = Math.min(distance / distanceTarget, 1);
-    return progress * 100; // Chuyển đổi thành phần trăm
-};
-
-const progress = calculateKm();
-
-const calculateKcal = () => {
-    const progressKcal = Math.min(kCal / kCalTarget, 1);
-    return progressKcal * 100;
-};
-
-const progressKcal = calculateKcal();
-
+import { List, Title, Headline, Appbar } from 'react-native-paper';
 
 const History = () => {
+    const [walklist, setWalklist] = React.useState([]);
+    const [refreshing, setRefreshing] = React.useState(false);
     const navigation = useNavigation();
+
+    const distance = 5.45;
+    const distanceTarget = 7;
+
+    const time = 30;
+    const pace = time / distance;
+    const kCal = 450;
+    const kCalTarget = 400;
+    const heart = 120;
+
+    const calculateKm = () => {
+        // Tính toán tỷ lệ tiến triển (progress) của distance so với distanceTarget
+        const progress = Math.min(distance / distanceTarget, 1);
+        return progress * 100; // Chuyển đổi thành phần trăm
+    };
+
+    const progress = calculateKm();
+
+    const calculateKcal = () => {
+        const progressKcal = Math.min(kCal / kCalTarget, 1);
+        return progressKcal * 100;
+    };
+
+    const progressKcal = calculateKcal();
+
+    const pullData = async (url) => {
+        await setRefreshing(true);
+        const csvdata = await fetchData(url);
+        if (!csvdata) {
+            await setRefreshing(false);
+            return false;
+        }
+        const parsedWalks = await parseCsvdata(csvdata, minThreshold);
+        await setWalklist(parsedWalks);
+        await setRefreshing(false);
+        return true;
+    };
+    const renderItem = ({ item, index }) => {
+        const borderColor = (index === selectedWalkIndex) ? "green" : "gray";
+        return (
+            <View>
+                <List.Item
+                    style={[styles.listitem, { borderColor }]}
+                    title={`Walk #${index + 1} - Distance: ${item.distance}m`}
+                    description={
+                        `Dur: ${twoDecimals(item.duration / 60)}mins - ` +
+                        `Avg Spd: ${twoDecimals(item.speed)}m/sec`}
+                    left={props => <List.Icon {...props} icon="walk" style={styles.icon} />}
+                    onPress={() => {
+                        const newWalkinfo = item.gps.map(e => { return { latitude: e.latitude, longitude: e.longitude, timestamp: e.timestamp } })
+                        setWalkinfo(newWalkinfo);
+                        mapRef.current.fitToCoordinates(newWalkinfo);
+                        setSelectedWalkIndex(index);
+                        // print current walk info on console
+                        // console.log(`Walk #${index + 1} Distance: ${item.distance}m `+
+                        //   `Duration: ${twoDecimals(item.duration / 60)}mins `+
+                        //   `Avg Spd: ${twoDecimals(item.speed)}m/sec`);
+
+                    }}
+                />
+            </View>
+        );
+    };
+
+
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.Header}>
@@ -54,68 +96,20 @@ const History = () => {
                 </TouchableOpacity>
                 <View><Text style={[styles.headerText,]}>History</Text></View>
             </View>
-            <View style={styles.chartView}>
-                <Donutchart radius={80} target={distanceTarget} spent={distance} text="km" colorTarget='#aaa' colorAmount="#81acff" strokeTarget="20" strokeAmount="20" colorText='black' fontText={21}
-                ></Donutchart>
-                <Text style={{
-                    color: 'black',
-                    fontSize: 20,
-                    position: 'absolute',
-                    top: 20,
-                    left: 30,
-                }}>Last km</Text>
-            </View>
-            <View style={styles.inforView}>
-                <View style={styles.halfView}>
-                    <View style={[styles.halfView, { flexDirection: 'column' }]}>
-                        <Entypo name='location-pin' size={38} color={"blue"} style={{
-                            marginLeft: 28,
-                            marginTop: 20,
-                        }}></Entypo>
-                        <Text style={styles.textInfor}>{distance} km</Text>
-                        <Text style={styles.smallText}>total distance</Text>
-                    </View>
-                    <View style={[styles.halfView, { flexDirection: 'column' }]}>
-                        <Entypo name='back-in-time' size={38} color={"blue"} style={{
-                            marginLeft: 28,
-                            marginTop: 20,
-                        }}></Entypo>
-                        <Text style={styles.textInfor}>{time} min</Text>
-                        <Text style={styles.smallText}>total time</Text>
-                    </View>
-                </View>
-                <View style={styles.halfView}>
-                    <View style={[styles.halfView, { flexDirection: 'column' }]}>
-                        <MaterialCommunityIcon name='chevron-double-right' size={38} color={"violet"} style={{
-                            marginLeft: 28,
-                            marginTop: 20,
-                        }}></MaterialCommunityIcon>
-                        <Text style={styles.textInfor}>{time} min/km</Text>
-                        <Text style={styles.smallText}>average pace</Text>
-                    </View>
-                    <View style={[styles.halfView, { flexDirection: 'column' }]}>
-                        <AntDesign name='heart' size={38} color={"violet"} style={{
-                            marginLeft: 28,
-                            marginTop: 20,
-                        }}></AntDesign>
-                        <Text style={styles.textInfor}>{heart} bpm</Text>
-                        <Text style={styles.smallText}>average heart rate</Text>
-                    </View>
-                </View>
 
-            </View>
-            <View style={styles.lastView}>
-                <Text style={[styles.textInfor, { marginTop: 20, }]}>{distance}<Text style={styles.morderateText}> / {distanceTarget}</Text></Text>
-                <Text style={styles.smallText}>distance goal</Text>
-                <View style={styles.progressBarContainer}>
-                    <View style={[styles.progressBar, { width: `${progress}%` }]} />
-                </View>
-
-                <Text style={[styles.textInfor, { marginTop: 20, }]}>{kCal}<Text style={styles.morderateText}> / {kCalTarget}</Text></Text>
-                <Text style={styles.smallText}>calories goal</Text>
-                <View style={styles.progressBarContainer}>
-                    <View style={[styles.progressBar, { width: `${progressKcal}%`, backgroundColor: 'violet' }]} />
-                </View>
+            <View style={styles.walklistView}>
+                <Title style={styles.title}>
+                    Walk List ({walklist.length})
+                </Title>
+                <FlatList
+                    data={walklist} w
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index}
+                    refreshing={refreshing}
+                    onRefresh={() => {
+                        pullData(urlSource)
+                    }}
+                />
             </View>
         </SafeAreaView >
     )
@@ -191,5 +185,15 @@ const styles = StyleSheet.create({
         height: '100%',
         backgroundColor: 'blue',
     },
-
+    walklistView: {
+        flex: 1,
+        borderRadius: 12,
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    title: {
+        paddingLeft: 20,
+        paddingTop: 10,
+        color: "#6200ee"
+    },
 })

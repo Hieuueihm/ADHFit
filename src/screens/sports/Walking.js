@@ -6,9 +6,12 @@ import { fetchData, csvrowToJson, parseCsvdata, twoDecimals } from './WalkTrack'
 import GetLocation from 'react-native-get-location'
 import { COLORS } from '../../../constants';
 import { ro } from 'date-fns/locale';
+import { useNavigation } from "@react-navigation/native";
+import { ROUTES } from '../../../constants';
 const LATITUDE_DELTA = 0.009
 const LONGITUDE_DELTA = 0.009
 export default function Walking() {
+    const navigation = useNavigation();
 
     const [PGranted, setPGranted] = React.useState();
 
@@ -133,6 +136,7 @@ export default function Walking() {
     const handleButtonPress = () => {
         setButtonPressed(true);
         pressTimeout.current = setTimeout(() => {
+            navigation.navigate(ROUTES.SPORT_TAB)
             // Xử lý logic sau khi giữ nút trong 2 giây
             console.log('2s rồi');
         }, 2000);
@@ -150,6 +154,7 @@ export default function Walking() {
                     ?
                     <>
                         <View style={styles.infoView}>
+
                             <MapView
                                 ref={mapRef}
                                 style={styles.mapView}
