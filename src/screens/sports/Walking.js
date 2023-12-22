@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, PermissionsAndroid, TouchableOpacity, Platform } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, FlatList, PermissionsAndroid, TouchableOpacity, Platform, Dimensions } from 'react-native';
 import MapView, { Polyline, Marker, AnimatedRegion } from 'react-native-maps';
 import { List, Title, Headline, Text, Appbar } from 'react-native-paper';
 import { fetchData, csvrowToJson, parseCsvdata, twoDecimals } from './WalkTrack';
@@ -125,6 +125,24 @@ export default function Walking() {
             marker.current.animateMarkerToCoordinate({ latitude: currentLatitude, longitude: currentLongitude }, 500)
         }
     }, [currentLatitude, currentLongitude]);
+
+
+    const [isButtonPressed, setButtonPressed] = useState(false);
+    const pressTimeout = useRef(null);
+
+    const handleButtonPress = () => {
+        setButtonPressed(true);
+        pressTimeout.current = setTimeout(() => {
+            // Xử lý logic sau khi giữ nút trong 2 giây
+            console.log('2s rồi');
+        }, 2000);
+    };
+
+    const handleButtonRelease = () => {
+        setButtonPressed(false);
+        // Hủy timeout nếu nút được thả ra trước khi hết 2 giây
+        clearTimeout(pressTimeout.current);
+    };
     return (
         <View style={styles.mainView}>
             {
@@ -209,6 +227,29 @@ export default function Walking() {
                                     </>
                                 } */}
                             </MapView>
+                            <TouchableOpacity
+                                onPressIn={handleButtonPress}
+                                onPressOut={handleButtonRelease}
+                            >
+                                <View
+                                    style={{
+                                        height: 80,
+                                        width: 80,
+                                        borderRadius: 40,
+                                        backgroundColor: 'red',
+                                        pointerEvents: 'box-only',
+                                        position: 'absolute',
+                                        bottom: 50,
+                                        left: (Dimensions.get("window").width / 2) - 40,
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                    }}>
+                                    <Text style={{
+                                        fontSize: 28,
+                                        color: "white",
+                                    }}>STOP</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                         {/* <View style={styles.walklistView}>
                             <Title style={styles.title}>
