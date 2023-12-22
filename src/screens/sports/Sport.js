@@ -98,10 +98,14 @@ const Sport = () => {
                             }
                             <Text style={[styles.textSmall, { marginLeft: 5, }]}>{weatherText}</Text>
                         </View>
-
-                        <View style={styles.lastKmView}>
-                            <Text style={styles.textSmall}>Last km : {lastKm.toFixed(2)}</Text>
-                        </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(ROUTES.History)
+                            }}>
+                            <View style={styles.lastKmView}>
+                                <Text style={styles.textSmall}>Last km : {lastKm.toFixed(2)}</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={[styles.halfView, { pointerEvents: 'box-none' }]}>
@@ -132,28 +136,10 @@ const Sport = () => {
                     }}>
                         <TouchableOpacity
                             onPress={() => {
-                                navigation.navigate(ROUTES.MotionSetting)
-                            }}
-                        >
-                            <View style={styles.smallButton}>
-                                <Image source={require("../../assets/icons/settings.png")}
-                                    style={{ height: 28, width: 28, }}></Image>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => {
                                 navigation.navigate(ROUTES.Waittime)
                             }}>
                             <View style={styles.goButton}>
                                 <Text style={{ fontSize: 55, color: "white" }}>GO!</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => {
-                                navigation.navigate(ROUTES.SetTarget)
-                            }}>
-                            <View style={styles.smallButton}>
-                                <MaterialCommunityIcons name='target' size={32}></MaterialCommunityIcons>
                             </View>
                         </TouchableOpacity>
                     </View>

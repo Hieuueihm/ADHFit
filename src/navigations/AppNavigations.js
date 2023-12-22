@@ -59,10 +59,12 @@ import MotionSetting from '../screens/sports/MotionSetting';
 import SetTarget from '../screens/sports/SetTarget';
 import Walking from '../screens/sports/Walking';
 import Waitime from '../screens/sports/Waitime';
+
 import PushNotification from 'react-native-push-notification';
 import BackgroundFetch from 'react-native-background-fetch';
 import BackgroundTimer from 'react-native-background-timer';
 import api from '../api';
+import History from '../screens/sports/History';
 const Stack = createNativeStackNavigator();
 
 function TabNavigationsMain() {
@@ -261,6 +263,7 @@ export default function AppNavigations() {
                         <Stack.Screen name={ROUTES.SetTarget} component={SetTarget} options={{ headerShown: false }} />
                         <Stack.Screen name={ROUTES.Walking} component={Walking} options={{ headerShown: false }} />
                         <Stack.Screen name={ROUTES.Waittime} component={Waitime} options={{ headerShown: false }} />
+                        <Stack.Screen name={ROUTES.History} component={History} options={{ headerShown: false }} />
 
                     </Stack.Navigator>
 
