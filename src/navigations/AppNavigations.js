@@ -59,11 +59,6 @@ import MotionSetting from '../screens/sports/MotionSetting';
 import SetTarget from '../screens/sports/SetTarget';
 import Walking from '../screens/sports/Walking';
 import Waitime from '../screens/sports/Waitime';
-
-import PushNotification from 'react-native-push-notification';
-import BackgroundFetch from 'react-native-background-fetch';
-import BackgroundTimer from 'react-native-background-timer';
-import api from '../api';
 import History from '../screens/sports/History';
 const Stack = createNativeStackNavigator();
 
@@ -76,106 +71,9 @@ function TabNavigationsMain() {
 export default function AppNavigations() {
     SplashScreen.hide();
     const [showOnboarding, setShowOnboarding] = useState(null);
-    /////////////////////////////////////////////////////////////////////////////
-    const [userId, setUserId] = useState(null);
-    const [currentStep, setCurrentStep] = useState(0);
     useEffect(() => {
-        let isActive = true;
-        const getUserId = async () => {
-            return await utils.AsyncStorage.getItem('user_id');
-        };
-        const getStateData = async () => {
-            const userId = await getUserId();
-            setUserId(userId);
-            if (!userId) return;
-            try {
-                const response = await api.UserAPI.handleGetStateDataFollowDay({ 'objectId': userId });
-                if (isActive && response?.data?.todayInfo) {
-                    setCurrentStep(response.data.todayInfo.step);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-    
-        getStateData();
-        const intervalId = setInterval(getStateData, 1000);
-    
-        return () => {
-            isActive = false;
-            clearInterval(intervalId);
-        };
-    }, []);
-    ////////////////////////////////////////////////////////////
-    useEffect(() => {
-      checkIfAlreadyOnboarding();
-      createNotificationChannel();
-      initializeBackgroundFetch();
-      initializeBackgroundTask();
-      showNotification(currentStep);
-    }, []);
-
-    const initializeBackgroundTask = () => {
-        BackgroundTimer.runBackgroundTimer(() => {
-           showNotification(currentStep);
-        }, 1000); // wait 1s -> update step
-      };
-    
-      // Clear timer...
-      useEffect(() => {
-        return () => {
-          BackgroundTimer.stopBackgroundTimer();
-        };
-      }, []);
-    
-      useEffect(() => {
-        showNotification(currentStep);
-      }, [currentStep]);
-
-      const createNotificationChannel = () => {
-      PushNotification.createChannel(
-        {
-          channelId: "steps-channel",
-          channelName: "Steps Channel",
-          channelDescription: "A channel to categorise your step count notifications",
-          playSound: false,
-          soundName: 'default',
-          importance: 4,
-          vibrate: true,
-        },
-        () => {}
-      );
-      }
-      const initializeBackgroundFetch = () => {
-        BackgroundFetch.configure({
-          minimumFetchInterval: 15,
-          stopOnTerminate: false,
-          startOnBoot: true,
-        }, async (taskId) => {
-          console.log('[BackgroundFetch] taskId: ', taskId);
-          try {
-            await getStateData();
-          } catch (error) {
-            console.error('Lỗi khi cập nhật số bước chân từ Background Fetch: ', error);
-          }
-          BackgroundFetch.finish(taskId);
-        }, (error) => {
-          console.error('[BackgroundFetch] ERROR: ', error);
-        });
-      };
-      const showNotification = (steps) => {
-        PushNotification.localNotification({
-          channelId: "steps-channel",
-          title: "STEP",
-          message: `Your step count is ${steps}`,
-          id: "123",
-          largeIcon: "run",
-          color: "#3D8BEC",
-        });
-      };
-    
-      // Function fetchStep
-    /////////////////////////////////////////////////////////////////////////////
+        checkIfAlreadyOnboarding();
+    }, [])
     const checkIfAlreadyOnboarding = async () => {
         const onboarded = await utils.AsyncStorage.getItem('onboarded');
 

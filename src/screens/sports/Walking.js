@@ -8,7 +8,11 @@ import { COLORS } from '../../../constants';
 import { ro } from 'date-fns/locale';
 import { useNavigation } from "@react-navigation/native";
 import { ROUTES } from '../../../constants';
+import api from '../../api';
+import utils from '../../utils';
 const LATITUDE_DELTA = 0.009
+console.error = function () { };
+
 const LONGITUDE_DELTA = 0.009
 export default function Walking() {
     const navigation = useNavigation();
@@ -24,7 +28,9 @@ export default function Walking() {
     const [currentLongitude, setCurrentLongitude] = React.useState(null);
 
     const [routeCoordinates, setRouteCoordinates] = React.useState([])
-
+    const [timeStart, setTimeStart] = useState(null)
+    const [timeEnd, setTimeEnd] = useState(null)
+    const [userId, setUserId] = useState(null)
 
     const urlSource = "https://bit.ly/3vjOhiJ";
     const mapRef = React.useRef();
@@ -76,7 +82,13 @@ export default function Walking() {
         return granted === PermissionsAndroid.RESULTS.GRANTED
     }
 
-    React.useEffect(() => {
+    React.useEffect(async () => {
+        let userId = await utils.AsyncStorage.getItem('user_id');
+        setUserId(userId)
+
+        const time = new Date()
+        const timestamp = time.getTime()
+        setTimeStart(timestamp)
         checkLocationPermission();
         // pullData(urlSource); 
         const intervalGetLocation = setInterval(async () => {
@@ -129,13 +141,34 @@ export default function Walking() {
         }
     }, [currentLatitude, currentLongitude]);
 
-
     const [isButtonPressed, setButtonPressed] = useState(false);
     const pressTimeout = useRef(null);
 
     const handleButtonPress = () => {
         setButtonPressed(true);
         pressTimeout.current = setTimeout(() => {
+            const time = new Date()
+            const timestamp = time.getTime()
+            var latitudes = [];
+            var longitudes = [];
+            for (var i = 0; i < routeCoordinates.length; i++) {
+                latitudes.push(routeCoordinates[i].latitude);
+                longitudes.push(routeCoordinates[i].longitude);
+            }
+
+            api.MapAPI.handlePostSportHistory({
+                'objectId': userId,
+                'timeStart': timeStart,
+                'timeEnd': timestamp,
+                'latitude': latitudes,
+                'longitude': longitudes
+            }).then(response => {
+
+            }).catch(err => {
+                console.log(err)
+            })
+
+            console.log(routeCoordinates)
             navigation.navigate(ROUTES.SPORT_TAB)
             // Xử lý logic sau khi giữ nút trong 2 giây
             console.log('2s rồi');
