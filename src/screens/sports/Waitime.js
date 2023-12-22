@@ -7,6 +7,8 @@ import { ROUTES } from "../../../constants";
 const Waitime = () => {
     const navigation = useNavigation();
     setTimeout(() => {
+        const time = new Date()
+        const timestamp = time.get
         navigation.navigate(ROUTES.Walking);
     }, 5500);
     return (
