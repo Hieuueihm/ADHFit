@@ -6,7 +6,7 @@ import {
 
 } from "./UserAPI";
 import { handleSetCurrentLog } from './LogAPI'
-import { handleGetStateData, handleGetAllStateData } from './StateAPI'
+import { handleGetStateData, handleGetAllStateData, handleGetWeeklyTimeSleep } from './StateAPI'
 import { handlePostSportHistory } from './MapAPI'
 export default api = {
     WeatherAPI: {
@@ -35,7 +35,8 @@ export default api = {
     },
     StateAPI: {
         handleGetStateData,
-        handleGetAllStateData
+        handleGetAllStateData,
+        handleGetWeeklyTimeSleep
     },
     MapAPI: {
         handlePostSportHistory
