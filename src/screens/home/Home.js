@@ -72,6 +72,7 @@ const Home = () => {
     const [userId, setUserId] = useState(null);
 
     const [co2, setCo2] = useState(null);
+    const [currentTimeDisplay, setCurrentTimeDisplay] = useState(null);
 
 
 
@@ -137,6 +138,15 @@ const Home = () => {
         }
         getStateData();
         const timeIntervalGetStateData = setInterval(() => {
+
+            const currentDate = new Date();
+            const hours = currentDate.getHours();
+            const minutes = currentDate.getMinutes();
+
+            // Format the time as "hh:mmh"
+            const formattedTime = `${hours}:${minutes}h`;
+
+            setCurrentTimeDisplay(formattedTime)
             loadData()
             getStateData()
         }, 1000);
@@ -332,7 +342,7 @@ const Home = () => {
                                         marginLeft: 10,
                                         marginTop: 35
                                     }}
-                                >8:00h</Text>
+                                >{currentTimeDisplay}</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                         <TouchableOpacity

@@ -181,7 +181,8 @@ export default function EditInformation({ route }) {
         const options = {
             strorageOptions: {
                 mediaType: 'photo',
-                path: 'image'
+                path: 'image',
+
             },
             includeBase64: true
         }
@@ -208,9 +209,13 @@ export default function EditInformation({ route }) {
                 } else if (response.error) {
                     console.log('CameraPicker Error: ', response.error);
                 } else {
-                    // console.log('Image Base64 String: ', response.assets[0]);
-                    setSelectedImage(response?.assets[0])
-                    setDisplayImage(response?.assets[0]?.uri)
+                    // console.log('Image Base64 String: ', response.assets);
+                    if (response) {
+                        if (response?.assets[0]) {
+                            setSelectedImage(response?.assets[0])
+                            setDisplayImage(response?.assets[0]?.uri)
+                        }
+                    }
                 }
                 toggleModal()
 
