@@ -60,6 +60,11 @@ import SetTarget from '../screens/sports/SetTarget';
 import Walking from '../screens/sports/Walking';
 import Waitime from '../screens/sports/Waitime';
 import History from '../screens/sports/History';
+import PushNotification from 'react-native-push-notification';
+import BackgroundFetch from 'react-native-background-fetch';
+import BackgroundTimer from 'react-native-background-timer';
+import api from '../api';
+
 const Stack = createNativeStackNavigator();
 
 function TabNavigationsMain() {
@@ -71,9 +76,124 @@ function TabNavigationsMain() {
 export default function AppNavigations() {
     SplashScreen.hide();
     const [showOnboarding, setShowOnboarding] = useState(null);
-    useEffect(() => {
-        checkIfAlreadyOnboarding();
-    }, [])
+    const [timeIntervalGetStateData, setTimeIntervalGetStateData] = useState(null);
+     /////////////////////////////////////////////////////////////////////////////
+     const [userId, setUserId] = useState(null);
+     const [currentStep, setCurrentStep] = useState(null);
+     useEffect(() => {
+      const getStateData = async () => {
+        let ud = null;
+        if (userId == null) {
+            ud = await utils.AsyncStorage.getItem('user_id');
+            setUserId(ud);
+        }
+        await api.UserAPI.handleGetStateDataFollowDay({
+            'objectId': userId == null ? ud : userId
+        })
+            .then(response => {
+                if (response?.data) {
+                    if (response?.data?.todayInfo != {}) {
+                        setCurrentStep(response?.data?.todayInfo?.step);
+                        // console.log(response?.data?.todayInfo?.step)
+                        const step =  response?.data?.todayInfo?.step
+                        showNotification(step);
+
+
+                      }
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+    getStateData();
+    const intervalId = setInterval(() => {
+        getStateData()
+    }, 1000);
+
+    // setTimeIntervalGetStateData(intervalId);
+
+    // return () => {
+    //     if (timeIntervalGetStateData) {
+    //         clearInterval(timeIntervalGetStateData);
+    //     }
+    // };
+
+      checkIfAlreadyOnboarding();
+      createNotificationChannel();
+
+
+
+      // initializeBackgroundFetch();
+      // initializeBackgroundTask();
+    }, []);
+     
+     ////////////////////////////////////////////////////////////
+    //  useEffect(() => {
+      
+    //   }, []);
+  
+      // const initializeBackgroundTask = () => {
+      //     BackgroundTimer.runBackgroundTimer(() => {
+      //        showNotification(currentStep);
+      //     },1000); // wait 100 -> update step
+      //   };
+  
+        // Clear timer...
+        // useEffect(() => {
+        //   // return () => {
+        //   //   BackgroundTimer.stopBackgroundTimer();
+        //   // };
+        // }, []);
+  
+        // useEffect(() => {
+        //   showNotification(currentStep);
+        // }, [currentStep]);
+
+        const createNotificationChannel = () => {
+        PushNotification.createChannel(
+          {
+            channelId: "steps-channel",
+            channelName: "Steps Channel",
+            channelDescription: "A channel to categorise your step count notifications",
+            playSound: false,
+            soundName: 'default',
+            importance: 4,
+            vibrate: true,
+          },
+          () => {}
+        );
+        }
+        const initializeBackgroundFetch = () => {
+          BackgroundFetch.configure({
+            minimumFetchInterval: 15,
+            stopOnTerminate: false,
+            startOnBoot: true,
+          }, async (taskId) => {
+            console.log('[BackgroundFetch] taskId: ', taskId);
+            try {
+              await getStateData();
+            } catch (error) {
+              console.error('Lỗi khi cập nhật số bước chân từ Background Fetch: ', error);
+            }
+            BackgroundFetch.finish(taskId);
+          }, (error) => {
+            console.error('[BackgroundFetch] ERROR: ', error);
+          });
+        };
+        const showNotification = async (steps) => {
+          PushNotification.localNotification({
+            channelId: "steps-channel",
+            title: "STEP",
+            message: `Your step count is ${steps}`,
+            id: "123",
+            largeIcon: "run",
+            color: "#3D8BEC",
+          });
+        };
+  
+        // Function fetchStep
+      /////////////////////////////////////////////////////////////////////////////
     const checkIfAlreadyOnboarding = async () => {
         const onboarded = await utils.AsyncStorage.getItem('onboarded');
 
@@ -93,6 +213,8 @@ export default function AppNavigations() {
             <Provider store={store}>
                 <NavigationContainer independent={true}>
                     <Stack.Navigator initialRouteName='main' screenOptions={{ headerShown: false }}>
+                    
+                     
                         {
                             showOnboarding
                                 ?

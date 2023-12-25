@@ -2,8 +2,10 @@ import React from "react";
 import { View, Text, Image, ImageBackground, SafeAreaView, TouchableOpacity, Dimensions, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from "../../../../constants";
+import { useSelector } from "react-redux"
 const BodyWeight = () => {
     const navigation = useNavigation();
+    const stylesLightDark = useSelector((state) => state.settings.styles);
     const text1 = "What is a healthy weight?";
     const text2 = "What is a obesity?";
     const text3 = "What causes obesity?";
@@ -16,7 +18,7 @@ const BodyWeight = () => {
     const image5 = require("../../../assets/images/post5BodyWeight.jpg");
     return (
         <SafeAreaView>
-            <ImageBackground source={require("../../../assets/images/Layer1.png")} style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, }}>
+            <ImageBackground source={require("../../../assets/images/Layer1.png")} style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width,...stylesLightDark.background }}>
                 <View style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, alignItems: 'center' }}>
 
                     <TouchableOpacity

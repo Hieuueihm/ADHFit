@@ -7,8 +7,10 @@ import Post3 from "./Post3";
 import Post4 from "./Post4";
 import Post5 from "./Post5";
 import { ROUTES } from "../../../../constants";
+import { useSelector } from "react-redux"
 const BloodSugar = () => {
     const navigation = useNavigation();
+    const stylesLightDark = useSelector((state) => state.settings.styles);
     const text1 = "Do you know how blood sugar affects your health?";
     const text2 = "What is low blood sugar (Hyperglycemia)?";
     const text3 = "How to treat low blood sugar (Hyperglycemia)?";
@@ -21,7 +23,7 @@ const BloodSugar = () => {
     const image5 = require("../../../assets/images/post5BloodSugar.jpg");
     return (
         <SafeAreaView>
-            <ImageBackground source={require("../../../assets/images/Layer1.png")} style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, }}>
+            <ImageBackground source={require("../../../assets/images/Layer1.png")} style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, ...stylesLightDark.background}}>
                 <View style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, alignItems: 'center' }}>
 
                     <TouchableOpacity

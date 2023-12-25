@@ -87,7 +87,7 @@
             <!-- <data android:scheme="@string/fb_login_protocol_scheme" /> -->
         </intent-filter>
     </activity> 
-        <service android:name="com.voximplant.foregroundservice.VIForegroundService"> </service>
+        <!-- <service android:name="com.voximplant.foregroundservice.VIForegroundService"> </service> -->
 
           <meta-data
       android:name="com.supersami.foregroundservice.notification_channel_name"
