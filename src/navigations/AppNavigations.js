@@ -93,7 +93,6 @@ export default function AppNavigations() {
             <Provider store={store}>
                 <NavigationContainer independent={true}>
                     <Stack.Navigator initialRouteName='main' screenOptions={{ headerShown: false }}>
-
                         {
                             showOnboarding
                                 ?
@@ -102,7 +101,6 @@ export default function AppNavigations() {
                                 <Stack.Screen name={ROUTES.SPLASH} component={Splash} />
                         }
                         <Stack.Screen name={ROUTES.LOGIN} component={Login} />
-
                         <Stack.Screen name={ROUTES.HOME} component={TabNavigationsMain} />
 
                         <Stack.Screen name={ROUTES.EDIT_INFORMATION} component={EditInformation} options={({ route }) => ({

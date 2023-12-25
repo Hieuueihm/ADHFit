@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
         backgroundColor: "gray",
         height: 48,
         width: 48,
+        marginLeft: 15,
     },
     headerText: {
         fontSize: 24,
