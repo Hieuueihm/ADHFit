@@ -169,11 +169,12 @@ const Home = () => {
                 source={{ uri: `https:${current?.condition.icon}` }} style={{
                     margin: 18,
                     height: 50,
+                    // backgroundColor: 'red',
                     width: 50,
                     marginLeft: 0
                 }}>
             </Image>
-            <Text style={{ marginTop: 32, marginLeft: -20, fontSize: 18, fontWeight: 'bold', ...stylesLightDark.text }}>
+            <Text style={{ marginTop: 30, marginLeft: -24, fontSize: 18, fontWeight: 'bold', ...stylesLightDark.text }}>
                 {current?.temp_c}{'\u2103'}
             </Text>
         </>

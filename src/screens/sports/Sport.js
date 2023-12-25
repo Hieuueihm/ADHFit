@@ -16,7 +16,7 @@ const Sport = () => {
     const [weather, setWeather] = useState({})
     const stylesLightDark = useSelector((state) => state.settings.styles);
     // Text theo thoi tiet nma t ko biet lay theo thoi tiet nen luc nao no cung la excellent
-    const [weatherText, setWeatherText] = useState("Excellent");
+    const [weatherText, setWeatherText] = useState("");
     const lastKm = 0;
     // Neu ket noi duoc thi la cai dong ho, neu khong la cai dong text Bluetooth is disconnect...
     const [isBluetoothConnect, setIsBluetoothConnect] = useState(false);
@@ -56,13 +56,15 @@ const Sport = () => {
             <Image
                 //tuy tinh hinh thoi tiet ma lay anh thich hop
                 source={{ uri: `https:${current?.condition.icon}` }} style={{
-                    margin: 18,
+                    margin: 0,
+                    marginRight: 16,
+                    marginTop: 6,
                     height: 50,
                     width: 50,
                     marginLeft: 0
                 }}>
             </Image>
-            <Text style={{ marginTop: 2, marginLeft: -20, fontSize: 18, fontWeight: 'bold', ...stylesLightDark.text }}>
+            <Text style={{ marginTop: 2, marginLeft: -30, fontSize: 20, fontWeight: 'bold', ...stylesLightDark.text }}>
                 {current?.temp_c}{'\u2103'}
             </Text>
         </>
