@@ -1,189 +1,133 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Image, Dimensions, ImageBackground, SafeAreaView, FlatList } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, StyleSheet, FlatList, Text, TouchableOpacity } from 'react-native';
+import { List, Title, Appbar } from 'react-native-paper';
+import MapView, { Polyline, Marker } from 'react-native-maps';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../../constants';
-import { useSelector } from "react-redux"
-import { List, Title, Headline, Appbar } from 'react-native-paper';
+import { useNavigation } from "@react-navigation/native";
 
 const History = () => {
-    const [walklist, setWalklist] = React.useState([]);
-    const [refreshing, setRefreshing] = React.useState(false);
     const navigation = useNavigation();
+    const [walklist, setWalklist] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+    const [walkinfo, setWalkinfo] = useState([]);
+    const [selectedWalkIndex, setSelectedWalkIndex] = useState(-1);
+    const mapRef = useRef();
 
-    const distance = 5.45;
-    const distanceTarget = 7;
+    const urlSource = "https://bit.ly/3vjOhiJ";
+    const isOnline = false;
+    const mockData = [
+        { distance: 1000, duration: 620, speed: 1.5, gps: [{ latitude: 37.78825, longitude: -122.4324, timestamp: "2023-01-01T12:00:00" }] },
+        { distance: 1200, duration: 100, speed: 1.5, gps: [{ latitude: 21.041262, longitude: 105.777878, timestamp: "2023-01-01T12:00:00" }] },
+        { distance: 7600, duration: 300, speed: 1.5, gps: [{ latitude: 21.028689, longitude: 105.808214, timestamp: "2023-01-01T12:00:00" }] },
+        { distance: 1200, duration: 350, speed: 1.5, gps: [{ latitude: 21.062709, longitude: 105.360341, timestamp: "2023-01-01T12:00:00" }] },
+        // Thêm các phần tử khác nếu cần
+    ];
 
-    const time = 30;
-    const pace = time / distance;
-    const kCal = 450;
-    const kCalTarget = 400;
-    const heart = 120;
+    useEffect(() => {
+        setWalklist(mockData);
+    }, []);
 
-    const calculateKm = () => {
-        // Tính toán tỷ lệ tiến triển (progress) của distance so với distanceTarget
-        const progress = Math.min(distance / distanceTarget, 1);
-        return progress * 100; // Chuyển đổi thành phần trăm
-    };
-
-    const progress = calculateKm();
-
-    const calculateKcal = () => {
-        const progressKcal = Math.min(kCal / kCalTarget, 1);
-        return progressKcal * 100;
-    };
-
-    const progressKcal = calculateKcal();
-
-    const pullData = async (url) => {
-        await setRefreshing(true);
-        const csvdata = await fetchData(url);
-        if (!csvdata) {
-            await setRefreshing(false);
-            return false;
-        }
-        const parsedWalks = await parseCsvdata(csvdata, minThreshold);
-        await setWalklist(parsedWalks);
-        await setRefreshing(false);
-        return true;
-    };
     const renderItem = ({ item, index }) => {
-        const borderColor = (index === selectedWalkIndex) ? "green" : "gray";
-        return (
-            <View>
-                <List.Item
-                    style={[styles.listitem, { borderColor }]}
-                    title={`Walk #${index + 1} - Distance: ${item.distance}m`}
-                    description={
-                        `Dur: ${twoDecimals(item.duration / 60)}mins - ` +
-                        `Avg Spd: ${twoDecimals(item.speed)}m/sec`}
-                    left={props => <List.Icon {...props} icon="walk" style={styles.icon} />}
-                    onPress={() => {
-                        const newWalkinfo = item.gps.map(e => { return { latitude: e.latitude, longitude: e.longitude, timestamp: e.timestamp } })
-                        setWalkinfo(newWalkinfo);
-                        mapRef.current.fitToCoordinates(newWalkinfo);
-                        setSelectedWalkIndex(index);
-                        // print current walk info on console
-                        // console.log(`Walk #${index + 1} Distance: ${item.distance}m `+
-                        //   `Duration: ${twoDecimals(item.duration / 60)}mins `+
-                        //   `Avg Spd: ${twoDecimals(item.speed)}m/sec`);
+        const borderColor = (index === selectedWalkIndex) ? "orange" : "gray";
+        const walkDistance = item.distance.toFixed(2);
+        const walkDuration = (item.duration / 60).toFixed(2);
+        const walkSpeed = item.speed.toFixed(2);
 
-                    }}
-                />
-            </View>
+        return (
+            <List.Item
+                style={[styles.listitem, { borderColor }]}
+                title={`Walk #${index + 1} Distance: ${walkDistance}m`}
+                description={`Dur.: ${walkDuration}mins Avg Spd: ${walkSpeed}m/sec`}
+                left={props => <List.Icon {...props} icon="walk" style={styles.icon} />}
+                onPress={() => {
+                    const newWalkinfo = item.gps.map(e => ({ latitude: e.latitude, longitude: e.longitude, timestamp: e.timestamp }));
+                    setWalkinfo(newWalkinfo);
+                    mapRef.current.fitToCoordinates(newWalkinfo);
+                    setSelectedWalkIndex(index);
+                }}
+            />
         );
     };
 
-
-
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.Header}>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate(ROUTES.SPORT_TAB)
-                    }}>
-                    <View style={{
-                        width: 100,
-                        alignItems: 'flex-start',
-                        //    backgroundColor: 'red',
-                        marginLeft: -150,
-                    }}><MaterialCommunityIcon name='chevron-left' size={30}></MaterialCommunityIcon></View>
-                </TouchableOpacity>
-                <View><Text style={[styles.headerText,]}>History</Text></View>
+        <View style={styles.mainView}>
+            <View style={styles.infoView}>
+                <Appbar.Header>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate(ROUTES.SPORT_TAB)
+                        }}
+                    >
+                        <MaterialCommunityIcon name='chevron-left' size={37}></MaterialCommunityIcon>
+                    </TouchableOpacity>
+                    <Text style={styles.headerText}>History walking</Text>
+                </Appbar.Header>
+                <MapView
+                    ref={mapRef}
+                    style={styles.mapView}
+                    initialRegion={{
+                        latitude: 37.78825,
+                        longitude: -122.4324,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                >
+                    <Polyline
+                        coordinates={walkinfo}
+                        strokeColor="#8E94F2"
+                        strokeWidth={6}
+                        lineDashPattern={[3, 1, 3, 1]}
+                    />
+                    {walkinfo.length > 0 &&
+                        <>
+                            <Marker
+                                title={`Start: ${walkinfo[0].timestamp}`}
+                                pinColor="green"
+                                coordinate={walkinfo[0]}
+                            />
+                            <Marker
+                                title={`Stop: ${walkinfo[walkinfo.length - 1].timestamp}`}
+                                pinColor="blue"
+                                coordinate={walkinfo[walkinfo.length - 1]}
+                            />
+                        </>
+                    }
+                </MapView>
             </View>
-
             <View style={styles.walklistView}>
                 <Title style={styles.title}>
                     Walk List ({walklist.length})
                 </Title>
                 <FlatList
-                    data={walklist} w
+                    data={walklist}
                     renderItem={renderItem}
-                    keyExtractor={(item, index) => index}
+                    keyExtractor={(item, index) => index.toString()}
                     refreshing={refreshing}
                     onRefresh={() => {
-                        pullData(urlSource)
+                        setRefreshing(true);
+                        // Thêm logic cập nhật dữ liệu ở đây
+                        setRefreshing(false);
                     }}
                 />
             </View>
-        </SafeAreaView >
-    )
-}
-export default History
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
-    container: {
+    mainView: {
         flex: 1,
-        color: '#ccc'
+        width: "100%",
+        height: "100%",
     },
-    Header: {
-        flexDirection: 'row',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: '#9d9d9d',
-        backgroundColor: 'white'
+    infoView: {
+        flex: 1,
+        width: "100%",
+        height: "100%",
     },
-    headerText: {
-        color: 'black',
-        fontSize: 24,
-    },
-    chartView: {
-        height: Dimensions.get("window").height * 0.35,
-        //    backgroundColor: 'green',
-    },
-    inforView: {
-        height: Dimensions.get("window").height * 0.35,
-        //    backgroundColor: 'green',
-        borderBottomWidth: 1,
-        borderColor: '#d1d1d1',
-    },
-    lastView: {
-        height: Dimensions.get("window").height * 0.3,
-        //    backgroundColor: 'green',
-
-    },
-    halfView: {
-        flex: 0.5,
-        //    backgroundColor: 'orange',
-        flexDirection: 'row',
-    },
-    aquarterView: {
-        flex: 0.5,
-
-    },
-    textInfor: {
-        color: 'black',
-        fontSize: 20,
-        marginLeft: 30,
-        marginTop: 5,
-    },
-    smallText: {
-        color: '#999',
-        fontSize: 12,
-        marginLeft: 30,
-    },
-    morderateText: {
-        color: 'black',
-        fontSize: 16,
-    },
-    progressBarContainer: {
-        height: 5,
-        marginLeft: 30,
-        marginTop: 10,
-        width: 350,
-        borderRadius: 15,
-        overflow: 'hidden', // Đảm bảo phần tiến triển không bị tràn ra ngoài
-    },
-    progressBar: {
-        height: '100%',
-        backgroundColor: 'blue',
+    mapView: {
+        flex: 1,
     },
     walklistView: {
         flex: 1,
@@ -191,9 +135,31 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10
     },
+    listitem: {
+        borderWidth: 2,
+        borderStyle: "solid",
+        borderColor: "gray",
+        borderRadius: 36,
+        margin: 6
+    },
     title: {
         paddingLeft: 20,
         paddingTop: 10,
         color: "#6200ee"
     },
-})
+    icon: {
+        borderRadius: 24,
+        backgroundColor: "gray",
+        height: 48,
+        width: 48,
+    },
+    headerText: {
+        fontSize: 24,
+        color: 'black',
+        alignSelf: 'center',
+        marginLeft: 72,
+    },
+
+});
+
+export default History;
