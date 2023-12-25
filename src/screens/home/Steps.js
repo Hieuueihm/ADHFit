@@ -294,7 +294,7 @@ const Steps = () => {
                                 fontSize: 15,
                                 top: 110,
                                 left: 46,
-                            }}>{currentKCals} kcal</Text>
+                            }}>{currentKCals} cal</Text>
                         <Text
                             style={{
                                 backgroundColor: '#FFB1AC',
@@ -302,7 +302,7 @@ const Steps = () => {
                                 fontSize: 15,
                                 top: 110,
                                 left: 240,
-                            }}>{currentDistance} km</Text>
+                            }}>{currentDistance} m</Text>
                     </View>
                 </View>
                 <View
