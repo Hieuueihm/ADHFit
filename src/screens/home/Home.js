@@ -185,7 +185,7 @@ const Home = () => {
                     marginLeft: 0
                 }}>
             </Image>
-            <Text style={{ marginTop: 30, marginLeft: -24, fontSize: 18, color: "#716968", fontWeight: 'bold', ...stylesLightDark.text }}>
+            <Text style={{ marginTop: 30, marginLeft: -30, fontSize: 18, color: "#716968", fontWeight: 'bold', ...stylesLightDark.text }}>
                 {current?.temp_c}{'\u2103'}
             </Text>
         </>
@@ -248,7 +248,7 @@ const Home = () => {
                                     width: 32,
                                     marginLeft: -19,
                                 }}></Image>
-                                <Text style={{ marginTop: 10, marginLeft: 3, fontSize: 16, fontWeight: 'bold', ...stylesLightDark.text }}>{co2temp} ppm</Text>
+                                <Text style={{ marginTop: 10, marginLeft: 3, fontSize: 16, fontWeight: 'bold', ...stylesLightDark.text }}>{co2 != null ? co2.toFixed(1) : 0} ppm</Text>
                             </>
                         )}
                     </TouchableOpacity>
