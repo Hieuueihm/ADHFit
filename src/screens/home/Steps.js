@@ -265,7 +265,7 @@ const Steps = () => {
                         style={{
                             width: 325,
                             height: 120,
-                            //   backgroundColor: 'blue',
+                            // backgroundColor: 'blue',
                             flexDirection: 'row',
                             position: 'relative',
                             bottom: 50,

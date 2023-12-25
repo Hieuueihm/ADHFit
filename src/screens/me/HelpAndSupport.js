@@ -1,23 +1,63 @@
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions, TextInput } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import data from '../../components/accordion/data';
 import Accordion from '../../components/accordion/Accordion';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../../constants';
+import api from '../../api';
+import utils from '../../utils';
 
 
 const HelpAndSupport = () => {
     const navigation = useNavigation();
     const [inputValue, setInputValue] = useState('');
-    const handleClick = () => {
+    const [userName, setUserName] = useState(null);
+    const [email, setEmail] = useState(null);
+    const loadData = async () => {
+        let userId = await utils.AsyncStorage.getItem('user_id');
+        await api.UserAPI.handleGetUserInformation({
+            "user_id": userId
+        })
+            .then(
+                (response) => {
+                    if (response.data.success === true) {
+                        if (response?.data?.userInfo?.name) {
+                            setUserName(response?.data?.userInfo?.name)
+                        }
+                        if (response?.data?.userInfo?.email) {
+                            setEmail(response?.data?.userInfo?.email)
+                        }
+                    }
+                }
+            )
+            .catch(error => {
+                console.log(error)
+            })
+
+    }
+    const handleClick = async () => {
         if (inputValue.trim() === '') {
             // Hiển thị cảnh báo khi người dùng không nhập gì
             alert('Please enter something before submitting.');
         } else {
-            alert('Your question has been recorded');
+            await api.UserAPI.userSendResponse({
+                'userName': userName,
+                'email': email,
+                'message': inputValue
+
+            }).then(response => {
+                setInputValue('');
+                alert('Your question has been recorded');
+            })
+                .catch(err => {
+                    console.log(err)
+                })
         }
     }
+    useEffect(() => {
+        loadData()
+    }, [])
 
     return (
         <SafeAreaView style={styles.container}>

@@ -44,6 +44,16 @@ const openYouTube = async (videoUrl) => {
 
 
 const Home = () => {
+    const [isVisible, setIsVisible] = useState(false);
+    const fetchWeatherAndCO2 = () => {
+        setIsVisible(!isVisible);
+    };
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            fetchWeatherAndCO2();
+        }, 3000);
+        return () => clearInterval(intervalId);
+    }, [isVisible]);
 
 
     const navigation = useNavigation();
@@ -72,6 +82,8 @@ const Home = () => {
     const [userId, setUserId] = useState(null);
 
     const [co2, setCo2] = useState(null);
+    const [currentTimeDisplay, setCurrentTimeDisplay] = useState(null);
+    const co2temp = 3000;
 
 
 
@@ -137,6 +149,15 @@ const Home = () => {
         }
         getStateData();
         const timeIntervalGetStateData = setInterval(() => {
+
+            const currentDate = new Date();
+            const hours = currentDate.getHours();
+            const minutes = currentDate.getMinutes();
+
+            // Format the time as "hh:mmh"
+            const formattedTime = `${hours}:${minutes}h`;
+
+            setCurrentTimeDisplay(formattedTime)
             loadData()
             getStateData()
         }, 1000);
@@ -159,11 +180,12 @@ const Home = () => {
                 source={{ uri: `https:${current?.condition.icon}` }} style={{
                     margin: 18,
                     height: 50,
+                    // backgroundColor: 'red',
                     width: 50,
                     marginLeft: 0
                 }}>
             </Image>
-            <Text style={{ marginTop: 32, marginLeft: -20, fontSize: 18, fontWeight: 'bold', ...stylesLightDark.text }}>
+            <Text style={{ marginTop: 30, marginLeft: -24, fontSize: 18, color: "#716968", fontWeight: 'bold', ...stylesLightDark.text }}>
                 {current?.temp_c}{'\u2103'}
             </Text>
         </>
@@ -213,10 +235,22 @@ const Home = () => {
                             navigation.navigate(ROUTES.WEATHER)
                         }}
                         activeOpacity={0.7}>
-                        {
-                            screensTopRight[currentScreenTopRight]
-                        }
-
+                        {isVisible !== false ? (
+                            <>
+                                {
+                                    screensTopRight[currentScreenTopRight]
+                                }
+                            </>
+                        ) : (
+                            <>
+                                <Image source={require("../../assets/icons/co2.png")} style={{
+                                    height: 32,
+                                    width: 32,
+                                    marginLeft: -19,
+                                }}></Image>
+                                <Text style={{ marginTop: 10, marginLeft: 3, fontSize: 16, fontWeight: 'bold', ...stylesLightDark.text }}>{co2temp} ppm</Text>
+                            </>
+                        )}
                     </TouchableOpacity>
                 </View>
                 <View
@@ -332,7 +366,7 @@ const Home = () => {
                                         marginLeft: 10,
                                         marginTop: 35
                                     }}
-                                >8:00h</Text>
+                                >{currentTimeDisplay}</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                         <TouchableOpacity

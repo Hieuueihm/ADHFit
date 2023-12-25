@@ -8,7 +8,11 @@ import { COLORS } from '../../../constants';
 import { ro } from 'date-fns/locale';
 import { useNavigation } from "@react-navigation/native";
 import { ROUTES } from '../../../constants';
+import api from '../../api';
+import utils from '../../utils';
 const LATITUDE_DELTA = 0.009
+console.error = function () { };
+
 const LONGITUDE_DELTA = 0.009
 export default function Walking() {
     const navigation = useNavigation();
@@ -24,7 +28,9 @@ export default function Walking() {
     const [currentLongitude, setCurrentLongitude] = React.useState(null);
 
     const [routeCoordinates, setRouteCoordinates] = React.useState([])
-
+    const [timeStart, setTimeStart] = useState(null)
+    const [timeEnd, setTimeEnd] = useState(null)
+    const [userId, setUserId] = useState(null)
 
     const urlSource = "https://bit.ly/3vjOhiJ";
     const mapRef = React.useRef();
@@ -58,8 +64,9 @@ export default function Walking() {
                 setCurrentLatitude(location?.latitude)
                 setCurrentLongitude(location?.longitude)
                 const { latitude, longitude, time } = location
+                const timestamp = new Date().getTime()
                 let coordinate = {
-                    latitude: latitude, longitude: longitude, timestamp: time
+                    latitude: latitude, longitude: longitude, timestamp: timestamp
                 }
                 setRouteCoordinates(prevCoordinates => [...prevCoordinates, coordinate]);
 
@@ -76,7 +83,13 @@ export default function Walking() {
         return granted === PermissionsAndroid.RESULTS.GRANTED
     }
 
-    React.useEffect(() => {
+    React.useEffect(async () => {
+        let userId = await utils.AsyncStorage.getItem('user_id');
+        setUserId(userId)
+
+        const time = new Date()
+        const timestamp = time.getTime()
+        setTimeStart(timestamp)
         checkLocationPermission();
         // pullData(urlSource); 
         const intervalGetLocation = setInterval(async () => {
@@ -129,13 +142,36 @@ export default function Walking() {
         }
     }, [currentLatitude, currentLongitude]);
 
-
     const [isButtonPressed, setButtonPressed] = useState(false);
     const pressTimeout = useRef(null);
 
     const handleButtonPress = () => {
         setButtonPressed(true);
         pressTimeout.current = setTimeout(() => {
+            const timestamp = new Date().getTime()
+            var timestamps = []
+            var latitudes = [];
+            var longitudes = [];
+            for (var i = 0; i < routeCoordinates.length; i++) {
+                latitudes.push(routeCoordinates[i].latitude);
+                longitudes.push(routeCoordinates[i].longitude);
+                timestamps.push(routeCoordinates[i].timestamp)
+            }
+
+            api.MapAPI.handlePostSportHistory({
+                'objectId': userId,
+                'timeStart': timeStart,
+                'timeEnd': timestamp,
+                'latitude': latitudes,
+                'longitude': longitudes,
+                'timestamp': timestamps
+            }).then(response => {
+
+            }).catch(err => {
+                console.log(err)
+            })
+
+            console.log(routeCoordinates)
             navigation.navigate(ROUTES.SPORT_TAB)
             // Xử lý logic sau khi giữ nút trong 2 giây
             console.log('2s rồi');

@@ -5,19 +5,12 @@ import MapView, { Polyline, Marker } from 'react-native-maps';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ROUTES } from '../../../constants';
 import { useNavigation } from "@react-navigation/native";
-export const mockData = [
-    {
-        distance: 1000, duration: 620, speed: 1.5, gps: [{ latitude: 21.034922, longitude: 105.769769, timestamp: "2023-01-01T12:00:00" },
-        { latitude: 21.021054, longitude: 105.765824, timestamp: "2023-01-01T12:00:00" },
-        { latitude: 21.019691, longitude: 105.762429, timestamp: "2023-01-01T12:00:00" }]
-    },
-    {
-        distance: 1200, duration: 100, speed: 1.5, gps: [{ latitude: 21.041262, longitude: 105.777878, timestamp: "2023-01-01T12:00:00" },
-        { latitude: 21.038596, longitude: 105.782852, timestamp: "2023-01-01T12:00:00" },
-        { latitude: 21.040995, longitude: 105.782187, timestamp: "2023-01-01T12:00:00" }]
-    },
-    // Thêm các phần tử khác nếu cần
-];
+
+import api from '../../api';
+import utils from '../../utils';
+import moment from 'moment';
+import * as geolib from 'geolib';
+
 const History = () => {
     const navigation = useNavigation();
     const [walklist, setWalklist] = useState([]);
@@ -29,21 +22,92 @@ const History = () => {
     const urlSource = "https://bit.ly/3vjOhiJ";
     const isOnline = false;
 
-    useEffect(() => {
-        setWalklist(mockData);
-    }, []);
+    // const mockData = [
+    //     { distance: 1000, duration: 620, 0: 1.5, gps0: [{ latitude: 37.78825, longitude: -122.4324, timestamp: "2023-01-01T12:00:00" }] },
+    //     { distance: 1200, duration: 100, speed: 1.5, gps: [{ latitude: 21.041262, longitude: 105.777878, timestamp: "2023-01-01T12:00:00" }] },
+    //     { distance: 7600, duration: 300, speed: 1.5, gps: [{ latitude: 21.028689, longitude: 105.808214, timestamp: "2023-01-01T12:00:00" }] },
+    //     { distance: 1200, duration: 350, speed: 1.5, gps: [{ latitude: 21.062709, longitude: 105.360341, timestamp: "2023-01-01T12:00:00" }] },
+    //     // Thêm các phần tử khác nếu cần
+    // ];
 
+    useEffect(() => {
+        // setWalklist(mockData);
+
+        const loadData = async () => {
+            const userId = await utils.AsyncStorage.getItem('user_id')
+
+            api.MapAPI.handleGetAllSportHistory({
+                'objectId': userId
+            }).then(response => {
+                // console.log(response.data.historySport)
+                if (response.data.success == true) {
+                    if (response.data.historySport) {
+                        const data = response.data.historySport
+                        const allData = []
+                        // console.log(data)
+                        for (i = 0; i < data.length; i++) {
+                            const timeStart = data[i].timeStart
+                            const timeEnd = data[i].timeEnd
+                            const latitude = data[i].latitude
+                            const longitude = data[i].longitude
+                            const timestamp = data[i].timestamp
+                            const mock = []
+                            for (j = 0; j < latitude.length; j++) {
+                                const currentLatitude = latitude[j]
+                                const currentLongitude = longitude[j]
+                                mock.push({
+                                    latitude: currentLatitude,
+                                    longitude: currentLongitude,
+                                    timestamp: timestamp[j]
+                                })
+                            }
+                            allData.push({
+                                timeStart: timeStart,
+                                timeEnd: timeEnd,
+                                gps: mock
+                            })
+                        }
+                        // console.log(allData)
+                        setWalklist(allData)
+                    }
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+        loadData()
+    }, []);
+    // console.log(walklist)
+    const convertToDate = (timestamp) => {
+        const momentObject = moment.utc(timestamp);
+        momentObject.utcOffset('+07:00');
+        // Chuyển đổi đối tượng Moment thành định dạng dd/MM/yyyy HH:mm
+        const formattedDateTime = momentObject.format('DD/MM/YYYY HH:mm:ss');
+        return formattedDateTime
+    }
+    const calculateDistance = (coordinates) => {
+        const distance = geolib.getPathLength(coordinates);
+        return distance
+
+    }
+    // console.log(walklist)
     const renderItem = ({ item, index }) => {
         const borderColor = (index === selectedWalkIndex) ? "orange" : "gray";
-        const walkDistance = item.distance.toFixed(2);
-        const walkDuration = (item.duration / 60).toFixed(2);
-        const walkSpeed = item.speed.toFixed(2);
+        const walkDistance = calculateDistance(item.gps).toFixed(2);
+        // console.log(walkDistance)
+        // const walkDuration = (item.duration / 60).toFixed(2);
+        // const walkSpeed = item.speed.toFixed(2);
 
+
+        const timeStart = parseInt(item.timeStart)
+        const timeEnd = parseInt(item.timeEnd)
+        const DateStart = convertToDate(timeStart)
+        const DateEnd = convertToDate(timeEnd)
         return (
             <List.Item
                 style={[styles.listitem, { borderColor }]}
                 title={`Walk #${index + 1} Distance: ${walkDistance}m`}
-                description={`Dur.: ${walkDuration}mins Avg Spd: ${walkSpeed}m/sec`}
+                description={`Time start: ${DateStart} \nTime end: ${DateEnd}`}
                 left={props => <List.Icon {...props} icon="walk" style={styles.icon} />}
                 onPress={() => {
                     const newWalkinfo = item.gps.map(e => ({ latitude: e.latitude, longitude: e.longitude, timestamp: e.timestamp }));
@@ -54,7 +118,7 @@ const History = () => {
             />
         );
     };
-
+    // console.log(walklist[0])
     return (
         <View style={styles.mainView}>
             <View style={styles.infoView}>
@@ -100,22 +164,28 @@ const History = () => {
                     }
                 </MapView>
             </View>
-            <View style={styles.walklistView}>
-                <Title style={styles.title}>
-                    Walk List ({walklist.length})
-                </Title>
-                <FlatList
-                    data={walklist}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
-                    refreshing={refreshing}
-                    onRefresh={() => {
-                        setRefreshing(true);
-                        // Thêm logic cập nhật dữ liệu ở đây
-                        setRefreshing(false);
-                    }}
-                />
-            </View>
+            {
+                walklist.length == 0
+                    ?
+                    <></>
+                    :
+                    <View style={styles.walklistView}>
+                        <Title style={styles.title}>
+                            Walk List ({walklist.length})
+                        </Title>
+                        <FlatList
+                            data={walklist}
+                            renderItem={renderItem}
+                            keyExtractor={(item, index) => index.toString()}
+                            refreshing={refreshing}
+                            onRefresh={() => {
+                                setRefreshing(true);
+                                // Thêm logic cập nhật dữ liệu ở đây
+                                setRefreshing(false);
+                            }}
+                        />
+                    </View>
+            }
         </View>
     );
 };

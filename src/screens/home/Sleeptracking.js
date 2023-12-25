@@ -1,17 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, Image, SafeAreaView, Dimensions, TouchableOpacity, ScrollView, StyleSheet, ImageBackground } from "react-native";
 import Entypo from 'react-native-vector-icons/Entypo'
 import Donutchart from "../../components/Donutchart";
 import Liinechart from "../../components/Liinechart";
 import { useNavigation } from "@react-navigation/native";
 import { ROUTES } from "../../../constants";
+import api from "../../api";
+import utils from "../../utils";
 import { useTranslation } from "react-i18next";
 
 const Sleeptracking = () => {
     const navigation = useNavigation();
-    daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    // daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     const monthsOfYear = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
     const currentTime = new Date();
+    currentTime.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to zero
+    const currentDayOfWeek = currentTime.getDay();
+    const currentTimeStamp = currentTime.getTime();
+
+
+    // Tạo một mảng 7 ngày từ hôm nay đến 7 ngày trước đó
+    const daysOfWeek = [];
+    const timeStampOfWeek = []
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    daysOfWeek.push(dayNames[currentDayOfWeek])
+    timeStampOfWeek.push(currentTimeStamp)
+    for (let i = 1; i <= 6; i++) {
+        const day = new Date(currentTime);
+        day.setDate(currentTime.getDate() - i);
+        day.setHours(0, 0, 0, 0);
+        const timestamp = day.getTime() / 1000;
+        timeStampOfWeek.push(timestamp);
+        const dayOfWeekName = dayNames[day.getDay()]; // Lấy tên của ngày từ mảng dayNames
+        daysOfWeek.push(dayOfWeekName);
+    }
+
+    // In ra tên của ngày hiện tại và mảng 7 ngày
+    // console.log('Tên của ngày hôm nay:', dayNames[currentDayOfWeek]);
+    // console.log('Mảng 7 ngày từ hôm nay đến 7 ngày trước đó:', daysOfWeek);
+
+
     currentTime.setUTCHours(currentTime.getUTCHours());
     const year = currentTime.getFullYear();     // năm
     const month = currentTime.getMonth();      // tháng
@@ -20,16 +48,85 @@ const Sleeptracking = () => {
     const dayName = daysOfWeek[day];           // Chuyen tu du lieu số sang thứ trong tuần
     const monthName = monthsOfYear[month];
     const { t } = useTranslation();
+    const [userId, setUserId] = useState(null)
+    // const [data, setData] = useState(null);
+    const [dataSleep, setDataSleep] = useState(null)
+    const [averageTotalTime, setAverageTotalTime] = useState(null)
+    const [lightSleepTime, setLightSleepTime] = useState(null)
+    const [deepSleepTime, setDeepSleepTime] = useState(null)
+    useEffect(() => {
+        const loadData = async () => {
+            let userId = await utils.AsyncStorage.getItem('user_id');
+            setUserId(userId);
+
+            // console.log(userId)
+            // console.log(currentTimeStamp)
+            api.StateAPI.handleGetWeeklyTimeSleep({
+                'objectId': userId,
+                'currentTimeStamp': currentTimeStamp
+            }).then(response => {
+                if (response.data.success == true) {
+                    const data = response?.data?.data
+                    // console.log(data)
+                    // const labels = daysOfWeek
+                    // console.log(timeStampOfWeek)
+                    const dataSleep1 = [0, 0, 0, 0, 0, 0, 0]
+                    // console.log(labels)
+                    var avg = 0
+                    setLightSleepTime(data[0].sleep.lightSleepTime / 60)
+                    setDeepSleepTime(data[0].sleep.deepSleepTime / 60)
+
+
+                    for (i = 0; i < data.length; i++) {
+                        // console.log(data[i].sleep)
+                        // console.log(data[i].timestamp)
+                        var index = -1;
+                        for (j = 0; j < 7; j++) {
+                            if (timeStampOfWeek[i] == data[i].timestamp) {
+                                index = j;
+                                break;
+                            }
+                        }
+                        if (index != -1) {
+                            dataSleep1[index] = data[i].sleep.totalSleepTime / 3600
+                            avg += data[i].sleep.totalSleepTime / 3600
+                        }
+                        // avg += dataSleep[index]
+                    }
+                    // console.log(dataSleep)
+                    const dataMerge = {
+                        labels: daysOfWeek,
+                        datasets: [
+                            {
+                                data: dataSleep1
+                            }
+
+                        ]
+                    }
+                    setDataSleep(dataMerge)
+                    setAverageTotalTime(avg / 7)
+
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+
+
+
+        }
+        loadData()
+    }, [])
 
     // du lieu ve cai ngu
-    const dataSleep = {
-        labels: ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"],
-        datasets: [
-            {
-                data: [1.5, 8, 7, 6, 4, 9, 3]
-            }
-        ]
-    };
+    // const dataSleep = {
+    //     labels: ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"],
+    //     datasets: [
+    //         {
+    //             data: [1.5, 8, 7, 6, 4, 9, 3]
+    //         }
+    //     ]
+    // };
+    // console.log(dataSleep)
     return (
         <ImageBackground
             source={require('../../assets/icons/skynight.png')}
@@ -80,14 +177,14 @@ const Sleeptracking = () => {
                                     color: 'white',
                                     fontSize: 24,
                                     margin: 5
-                                }}>{t('today')}, {t(dayName)}</Text>
+                                }}>{t('today')}, {t(daysOfWeek[0])}</Text>
                             <Text
                                 style={{
                                     color: '#8D8D8D',
                                     fontSize: 16,
                                 }}>{t(dayOfmonth)} {t(monthName)} {t(year)} </Text>
                         </View>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             activeOpacity={0.7}
                             style={{
                                 borderRadius: 19,
@@ -105,7 +202,7 @@ const Sleeptracking = () => {
                                 }}
                             >
                             </Entypo>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     <View
                         style={{
@@ -120,20 +217,40 @@ const Sleeptracking = () => {
                             borderRadius: 25,
                         }}>
                         <ScrollView horizontal={true}>
-                            <View
+                            {
+                                dataSleep == null ?
+                                    <></>
+                                    :
+
+                                    daysOfWeek.map((day, index) => {
+                                        // console.log(day)
+                                        const dataIndex = dataSleep.labels.indexOf(day);
+                                        const dataValue = dataSleep.datasets[0].data[dataIndex];
+
+                                        return (
+                                            <View
+                                                style={{
+                                                    height: Dimensions.get("window").height / 8,
+                                                    width: 100,
+                                                }}
+                                            >
+                                                <Donutchart radius={25} target={8} spent={dataValue} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
+                                                ></Donutchart>
+                                                <Text style={styles.item}>{t(day)}</Text>
+                                            </View>
+                                        )
+                                    })
+
+
+                            }
+                            {/* <View
                                 style={{
                                     height: Dimensions.get("window").height / 8,
                                     width: 100,
                                 }}
-                            // Time ngủ mong muốn(target) mặc định nên để là 8 hoặc user cài đặt
-                            //spent là cái tiến trình mình đang thực hiện
-                            // text là đơn vị, như %, h, steps
-                            //colorTarget là màu của cái chưa xong
-                            //strokeTarget phải bằng strokeamount: là độ béo của cái bánh, nếu 2 cái khác nhau thì bánh lệch
-                            //colorText là màu của cái dòng text bên giữa bánh
-                            //fontText là font chữ của cái text đấy.
-                            ><Donutchart radius={25} target={8} spent={5} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
-                            ></Donutchart>
+                            >
+                                <Donutchart radius={25} target={8} spent={5} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
+                                ></Donutchart>
                                 <Text style={styles.item}>{t('mon')}</Text>
                             </View>
                             <View
@@ -189,7 +306,7 @@ const Sleeptracking = () => {
                             ><Donutchart radius={25} target={8} spent={2} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                             ></Donutchart>
                                 <Text style={styles.item}>{t('sun')}</Text>
-                            </View>
+                            </View> */}
                         </ScrollView>
                     </View>
                     <View
@@ -233,8 +350,8 @@ const Sleeptracking = () => {
                                     //   backgroundColor:'white'
                                 }}
                             >
-                                <Text style={{ fontSize: 38, fontWeight: 'bold', color: 'white'}}>6.2</Text>
-                                <Text style={{fontSize: 12, color: 'white',marginLeft: 10, marginRight:15 }}>{t('hoursPerDay')}</Text>
+                                <Text style={{ fontSize: 38, fontWeight: 'bold', color: 'white' }}>{averageTotalTime}</Text>
+                                <Text style={{ fontSize: 12, color: 'white', marginLeft: 10, marginRight: 15 }}>{t('hoursPerDay')}</Text>
                             </View>
                         </View>
                         <View
@@ -256,7 +373,7 @@ const Sleeptracking = () => {
                                     fontSize: 14,
                                 }}
                             >{t('quality')}</Text>
-                            <Donutchart radius={50} target={100} spent={67} text="%" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="20" strokeAmount="20" colorText='#FFFFFF' fontText={20}
+                            <Donutchart radius={50} target={100} spent={averageTotalTime / 8 * 100} text="%" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="20" strokeAmount="20" colorText='#FFFFFF' fontText={20}
                             ></Donutchart>
                         </View>
                     </View>
@@ -286,6 +403,7 @@ const Sleeptracking = () => {
                                     width: 350,
                                     height: 85,
                                     flexDirection: 'row',
+                                    justifyContent: 'center',
                                     alignItems: 'center'
                                 }}>
                                 <Image
@@ -303,12 +421,12 @@ const Sleeptracking = () => {
                                     marginLeft: 12,
                                 }}>
                                     {/*Cai nay la Time sleep, truyen Time sleep vao Text */}
-                                    <Text style={styles.bigTextinLastSleep}>6h52</Text>
+                                    <Text style={styles.bigTextinLastSleep}>{dataSleep == null ? 0 : dataSleep.datasets[0].data[0]} h</Text>
                                     <Text style={styles.smallTextinLastSleep}>{t('timeInSleep')}</Text>
 
                                     {/* Cai nay la cai Wake up time  */}
                                 </View>
-                                <Image
+                                {/* <Image
                                     source={require('../../assets/icons/partly-cloudy.png')}
                                     style={{
                                         width: 24,
@@ -325,7 +443,7 @@ const Sleeptracking = () => {
                                 }}>
                                     <Text style={styles.bigTextinLastSleep}>07:12 AM</Text>
                                     <Text style={styles.smallTextinLastSleep}>{t('wakeUpTime')}</Text>
-                                </View>
+                                </View> */}
                             </View>
 
                             <View  //2 cái ở dưới
@@ -350,9 +468,8 @@ const Sleeptracking = () => {
                                     justifyContent: 'center',
                                     marginLeft: 12,
                                 }}>
-                                    {/*Cai nay la Time sleep, truyen Time sleep vao Text */}
-                                    <Text style={styles.bigTextinLastSleep}>7h23m</Text>
-                                    <Text style={styles.smallTextinLastSleep}>{t('wentToBed')}</Text>
+                                    <Text style={styles.bigTextinLastSleep}>{lightSleepTime} min</Text>
+                                    <Text style={styles.smallTextinLastSleep}>Light Sleep Time</Text>
                                 </View>
                                 <Image
                                     source={require('../../assets/icons/zzz.png')}
@@ -368,8 +485,8 @@ const Sleeptracking = () => {
                                     justifyContent: 'center',
                                     marginStart: 12,
                                 }}>
-                                    <Text style={styles.bigTextinLastSleep}>25 min</Text>
-                                    <Text style={styles.smallTextinLastSleep}>{t('fellAsSleep')}</Text>
+                                    <Text style={styles.bigTextinLastSleep}>{deepSleepTime} min</Text>
+                                    <Text style={styles.smallTextinLastSleep}>Deep Sleep Time</Text>
                                 </View>
                             </View>
                         </View>
@@ -395,7 +512,14 @@ const Sleeptracking = () => {
                                 marginTop: 15,
                             }}
                         >{t('weeklySleep')}</Text>
-                        <Liinechart height={200} width={300} data={dataSleep} colorLine="#225DF8" backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' Opacity={0}></Liinechart>
+                        {
+                            dataSleep == null
+                                ?
+                                <></>
+                                :
+                                <Liinechart height={200} width={300} data={dataSleep} colorLine="#225DF8" backgroundGradient='#14142F' fillShadowGradientFrom='#14142F' fillShadowGradientTo='#14142F' Opacity={0}></Liinechart>
+
+                        }
                     </View>
                 </SafeAreaView>
             </ScrollView>
