@@ -233,6 +233,7 @@ export default function Walking() {
                                 } */}
                             </MapView>
                             <TouchableOpacity
+                                activeOpacity={0.5}
                                 onPressIn={handleButtonPress}
                                 onPressOut={handleButtonRelease}
                             >
@@ -241,7 +242,7 @@ export default function Walking() {
                                         height: 80,
                                         width: 80,
                                         borderRadius: 40,
-                                        backgroundColor: 'red',
+                                        backgroundColor: '#B04131',
                                         pointerEvents: 'box-only',
                                         position: 'absolute',
                                         bottom: 50,

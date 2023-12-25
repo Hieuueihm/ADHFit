@@ -5,7 +5,19 @@ import MapView, { Polyline, Marker } from 'react-native-maps';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ROUTES } from '../../../constants';
 import { useNavigation } from "@react-navigation/native";
-
+export const mockData = [
+    {
+        distance: 1000, duration: 620, speed: 1.5, gps: [{ latitude: 21.034922, longitude: 105.769769, timestamp: "2023-01-01T12:00:00" },
+        { latitude: 21.021054, longitude: 105.765824, timestamp: "2023-01-01T12:00:00" },
+        { latitude: 21.019691, longitude: 105.762429, timestamp: "2023-01-01T12:00:00" }]
+    },
+    {
+        distance: 1200, duration: 100, speed: 1.5, gps: [{ latitude: 21.041262, longitude: 105.777878, timestamp: "2023-01-01T12:00:00" },
+        { latitude: 21.038596, longitude: 105.782852, timestamp: "2023-01-01T12:00:00" },
+        { latitude: 21.040995, longitude: 105.782187, timestamp: "2023-01-01T12:00:00" }]
+    },
+    // Thêm các phần tử khác nếu cần
+];
 const History = () => {
     const navigation = useNavigation();
     const [walklist, setWalklist] = useState([]);
@@ -16,13 +28,6 @@ const History = () => {
 
     const urlSource = "https://bit.ly/3vjOhiJ";
     const isOnline = false;
-    const mockData = [
-        { distance: 1000, duration: 620, speed: 1.5, gps: [{ latitude: 37.78825, longitude: -122.4324, timestamp: "2023-01-01T12:00:00" }] },
-        { distance: 1200, duration: 100, speed: 1.5, gps: [{ latitude: 21.041262, longitude: 105.777878, timestamp: "2023-01-01T12:00:00" }] },
-        { distance: 7600, duration: 300, speed: 1.5, gps: [{ latitude: 21.028689, longitude: 105.808214, timestamp: "2023-01-01T12:00:00" }] },
-        { distance: 1200, duration: 350, speed: 1.5, gps: [{ latitude: 21.062709, longitude: 105.360341, timestamp: "2023-01-01T12:00:00" }] },
-        // Thêm các phần tử khác nếu cần
-    ];
 
     useEffect(() => {
         setWalklist(mockData);
@@ -152,6 +157,7 @@ const styles = StyleSheet.create({
         backgroundColor: "gray",
         height: 48,
         width: 48,
+        marginLeft: 15,
     },
     headerText: {
         fontSize: 24,
