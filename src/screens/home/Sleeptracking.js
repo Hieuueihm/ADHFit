@@ -29,7 +29,7 @@ const Sleeptracking = () => {
         const day = new Date(currentTime);
         day.setDate(currentTime.getDate() - i);
         day.setHours(0, 0, 0, 0);
-        const timestamp = day.getTime() / 1000;
+        const timestamp = day.getTime();
         timeStampOfWeek.push(timestamp);
         const dayOfWeekName = dayNames[day.getDay()]; // Lấy tên của ngày từ mảng dayNames
         daysOfWeek.push(dayOfWeekName);
@@ -39,7 +39,7 @@ const Sleeptracking = () => {
     // console.log('Tên của ngày hôm nay:', dayNames[currentDayOfWeek]);
     // console.log('Mảng 7 ngày từ hôm nay đến 7 ngày trước đó:', daysOfWeek);
 
-
+    // console.log(timeStampOfWeek)
     currentTime.setUTCHours(currentTime.getUTCHours());
     const year = currentTime.getFullYear();     // năm
     const month = currentTime.getMonth();      // tháng
@@ -67,7 +67,7 @@ const Sleeptracking = () => {
             }).then(response => {
                 if (response.data.success == true) {
                     const data = response?.data?.data
-                    // console.log(data)
+                    console.log(data)
                     // const labels = daysOfWeek
                     // console.log(timeStampOfWeek)
                     const dataSleep1 = [0, 0, 0, 0, 0, 0, 0]
@@ -76,13 +76,13 @@ const Sleeptracking = () => {
                     setLightSleepTime(data[0].sleep.lightSleepTime / 60)
                     setDeepSleepTime(data[0].sleep.deepSleepTime / 60)
 
-
+                    // console.log(data.length)
                     for (i = 0; i < data.length; i++) {
                         // console.log(data[i].sleep)
                         // console.log(data[i].timestamp)
                         var index = -1;
                         for (j = 0; j < 7; j++) {
-                            if (timeStampOfWeek[i] == data[i].timestamp) {
+                            if (timeStampOfWeek[j] == data[i].day) {
                                 index = j;
                                 break;
                             }
@@ -104,7 +104,7 @@ const Sleeptracking = () => {
                         ]
                     }
                     setDataSleep(dataMerge)
-                    setAverageTotalTime(avg / 7)
+                    setAverageTotalTime((avg / 7).toFixed(1))
 
                 }
             }).catch(err => {
@@ -234,7 +234,7 @@ const Sleeptracking = () => {
                                                     width: 100,
                                                 }}
                                             >
-                                                <Donutchart radius={25} target={8} spent={dataValue} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
+                                                <Donutchart radius={25} target={8} spent={dataValue.toFixed(1)} text="h" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="10" strokeAmount="10" colorText='#FFFFFF' fontText={12}
                                                 ></Donutchart>
                                                 <Text style={styles.item}>{t(day)}</Text>
                                             </View>
@@ -373,7 +373,7 @@ const Sleeptracking = () => {
                                     fontSize: 14,
                                 }}
                             >{t('quality')}</Text>
-                            <Donutchart radius={50} target={100} spent={averageTotalTime / 8 * 100} text="%" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="20" strokeAmount="20" colorText='#FFFFFF' fontText={20}
+                            <Donutchart radius={50} target={100} spent={((averageTotalTime / 8) * 100).toFixed(1)} text="%" colorTarget='rgba(0,0,0, 0)' colorAmount="#F6E176" strokeTarget="20" strokeAmount="20" colorText='#FFFFFF' fontText={20}
                             ></Donutchart>
                         </View>
                     </View>
