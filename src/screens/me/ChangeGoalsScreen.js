@@ -10,10 +10,12 @@ import api from "../../api";
 import Modal from 'react-native-modal';
 import utils from "../../utils";
 import Toast from 'react-native-toast-message'
+import { useTranslation } from "react-i18next";
 
 
 export default function ChangeGoalsScreen() {
     const navigation = useNavigation();
+    const { t } = useTranslation();
     const [currentScreen, setCurrentScreen] = useState(1);
     const [scollViewHeight, setScrollViewHeight] = useState(0);
     const [selectedStep, setSelectedStep] = useState(null);
@@ -95,10 +97,10 @@ export default function ChangeGoalsScreen() {
     }
 
     const titleScreen = [
-        'Goal',
-        'Period',
-        'Start time'
-    ]
+        t('goals'),
+        t('period'),
+        t('Start time')
+      ];
     const handleClickRatio = (day) => {
         setSelectedDate(prevDates => [...prevDates, day]);
     }
@@ -120,7 +122,7 @@ export default function ChangeGoalsScreen() {
                 <Text style={[styles.textCenter,
                 {
                     fontSize: 16
-                }]}>Please set your target step</Text>
+                }]}>{t("setGoals")}</Text>
             </View>
 
             <ScrollView
@@ -149,7 +151,7 @@ export default function ChangeGoalsScreen() {
                                     backgroundColor: isSelected ? '#81ACFF' : '#ccc',
                                 }}>
                                 <Text>{step}</Text>
-                                {isSelected && <Text> Steps</Text>}
+                                {isSelected && <Text> {t("steps")}</Text>}
                             </View>
                         </TouchableWithoutFeedback>
                     )
@@ -168,9 +170,9 @@ export default function ChangeGoalsScreen() {
                 {
                     fontSize: 18,
                     fontWeight: 'bold'
-                }]}>Select Training day</Text>
+                }]}>{t("selectTraining")}</Text>
             </View>
-            <Text style={[styles.textCenter, { fontSize: 16, }]}>Training for at least one day</Text>
+            <Text style={[styles.textCenter, { fontSize: 16, }]}>{t("tranning")}</Text>
             <View style={[styles.centerPosition]}>
                 <Text style={{ fontSize: 16, marginLeft: -5, color: '#81ACFF' }}>Mon</Text>
                 <Text style={{ fontSize: 16, marginLeft: -5, color: '#81ACFF' }}>Tue</Text>
@@ -206,7 +208,7 @@ export default function ChangeGoalsScreen() {
                 {
                     fontSize: 18,
                     fontWeight: 'bold'
-                }]}>Daily training start time</Text>
+                }]}>{t("DailyTraining")}</Text>
             </View>
             <LinearGradient
                 start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} colors={['rgba(255,255,255, 0.5)', '#DCDCDC', 'rgba(255,255,255, 0.5)']}
@@ -251,7 +253,7 @@ export default function ChangeGoalsScreen() {
             </LinearGradient>
             <Modal isVisible={isModalVisible} style={styles.modalBox}>
                 <View style={styles.settime}>
-                    <Text style={styles.textModal}>Reminder Time</Text>
+                    <Text style={styles.textModal}>{t("reminderTime")}</Text>
                     <Image source={require("../../assets/icons/clock1.png")}
                         style={{ height: 100, width: 100, margin: 10, }}></Image>
                     <View
@@ -269,7 +271,7 @@ export default function ChangeGoalsScreen() {
                                 marginBottom: 25,
                             }}>
                             <TextInput
-                                placeholder="Hour, examaple :13"
+                                placeholder={t("exHour")}
                                 onFocus={() => setIsTextInputHourFocused(true)}
                                 onBlur={() => setIsTextInputHourFocused(false)}
                                 onChangeText={hour => {
@@ -319,7 +321,7 @@ export default function ChangeGoalsScreen() {
                                 marginBottom: 25,
                             }}>
                             <TextInput
-                                placeholder="Minutes, examaple : 35"
+                                placeholder={t("exMin")}
                                 onFocus={() => setIsTextInputMinutesFocused(true)}
                                 onBlur={() => setIsTextInputMinutesFocused(false)}
                                 onChangeText={minutes => {
@@ -354,7 +356,7 @@ export default function ChangeGoalsScreen() {
                     </View>
                     <TouchableOpacity
                         onPress={toggleModal}>
-                        <Text style={styles.textModal}>Confirm</Text>
+                        <Text style={styles.textModal}>{t("confirm")}</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -368,19 +370,19 @@ export default function ChangeGoalsScreen() {
             </Image>
             <View style={[styles.bottomSetting,]}>
                 <View style={{ width: 300, }}>
-                    <Text style={[styles.textBottom]}>Training remainder</Text>
+                    <Text style={[styles.textBottom]}>{t("Trainingremainder")}</Text>
                 </View>
                 <SwitchButton handleOnPress={handleOnPress} />
             </View>
             <View style={[styles.bottomSetting,]}>
                 <View style={{ width: 300, }}>
-                    <Text style={[styles.textBottom]}>Reminder time</Text>
+                    <Text style={[styles.textBottom]}>{t("reminderTime")}</Text>
                 </View>
                 {
                     (hour && Minutes) ? (
                         <Text style={{ fontSize: 16, marginLeft: 25, }}>{hour}:{Minutes}</Text>
                     ) : (
-                        <Text style={{ fontSize: 16, marginLeft: 25, }}>Time</Text>
+                        <Text style={{ fontSize: 16, marginLeft: 25, }}>{t("time")}</Text>
                     )
                 }
                 <TouchableOpacity onPress={toggleModal}>

@@ -61,7 +61,7 @@
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCtyNlpUoses3dSfqptLB_ZWwSwim2mVwM"/>
    <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
- <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
+ <!-- <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
            <intent-filter>
@@ -69,7 +69,7 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
-          </receiver>
+          </receiver> -->
 
     
     
@@ -87,7 +87,7 @@
             <!-- <data android:scheme="@string/fb_login_protocol_scheme" /> -->
         </intent-filter>
     </activity> 
-        <service android:name="com.voximplant.foregroundservice.VIForegroundService"> </service>
+        <!-- <service android:name="com.voximplant.foregroundservice.VIForegroundService"> </service> -->
 
           <meta-data
       android:name="com.supersami.foregroundservice.notification_channel_name"

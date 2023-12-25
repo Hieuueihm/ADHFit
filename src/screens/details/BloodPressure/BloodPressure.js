@@ -3,8 +3,10 @@ import { View, Text, Image, ImageBackground, SafeAreaView, TouchableOpacity, Dim
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from "../../../../constants";
 import Post1 from "./Post1";
+import { useSelector } from "react-redux"
 const BloodPressure = () => {
     const navigation = useNavigation();
+    const stylesLightDark = useSelector((state) => state.settings.styles);
     const text1 = "Blood pressure introduction";
     const text2 = "Details of blood pressure numbers range";
     const text3 = "The risks of high blood pressure";
@@ -17,7 +19,7 @@ const BloodPressure = () => {
     const image5 = require("../../../assets/images/post5BloodPressure.jpg");
     return (
         <SafeAreaView>
-            <ImageBackground source={require("../../../assets/images/Layer1.png")} style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, }}>
+            <ImageBackground source={require("../../../assets/images/Layer1.png")} style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width,...stylesLightDark.background }}>
                 <View style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, alignItems: 'center' }}>
 
                     <TouchableOpacity

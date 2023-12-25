@@ -7,10 +7,14 @@ import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../../constants';
 import api from '../../api';
 import utils from '../../utils';
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux"
 
 
 const HelpAndSupport = () => {
     const navigation = useNavigation();
+    const { t } = useTranslation();
+    const stylesLightDark = useSelector((state) => state.settings.styles);
     const [inputValue, setInputValue] = useState('');
     const [userName, setUserName] = useState(null);
     const [email, setEmail] = useState(null);
@@ -60,7 +64,7 @@ const HelpAndSupport = () => {
     }, [])
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={{ ...stylesLightDark.background, flex: 1 }}>
             <View style={styles.Header}>
                 <TouchableOpacity
                     onPress={() => {
@@ -73,11 +77,11 @@ const HelpAndSupport = () => {
                         marginLeft: -80,
                     }}><MaterialCommunityIcon name='chevron-left' size={30}></MaterialCommunityIcon></View>
                 </TouchableOpacity>
-                <View><Text style={[styles.headerText,]}>Help And Support</Text></View>
+                <View><Text style={[styles.headerText,]}>{t("help&Support")}</Text></View>
 
             </View>
             <View style={styles.boxUnit}>
-                <Text style={[styles.headerText, { fontWeight: 'bold' }]}>FAQs</Text>
+                <Text style={[styles.headerText, { fontWeight: 'bold' }, {...stylesLightDark.text}]}>FAQs</Text>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -86,11 +90,11 @@ const HelpAndSupport = () => {
                 })}
 
                 <View style={styles.boxUnit}>
-                    <Text style={[styles.headerText, { fontWeight: 'bold' }]}>Send Your Question</Text>
+                    <Text style={[styles.headerText, { fontWeight: 'bold' },{...stylesLightDark.text}]}>{t("sendQuestion")}</Text>
                 </View>
                 <View style={styles.boxTextInput}>
                     <TextInput
-                        placeholder="You are have a question?"
+                        placeholder={t("aQuestion")}
                         value={inputValue}
                         style={{ paddingLeft: 15, }}
                         onChangeText={(text) => setInputValue(text)}></TextInput>
@@ -98,7 +102,7 @@ const HelpAndSupport = () => {
                 <TouchableOpacity
                     onPress={handleClick}>
                     <View style={styles.next}>
-                        <Text style={{ fontSize: 20, color: 'white' }}>Send</Text>
+                        <Text style={{ fontSize: 20, color: 'white' }}>{t("send")}</Text>
                         <Image source={require("../../assets/icons/paperlane.png")}
                             style={{
                                 height: 40,

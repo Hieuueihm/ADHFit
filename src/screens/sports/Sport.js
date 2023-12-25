@@ -7,12 +7,14 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../../constants';
-import { useSelector } from "react-redux"
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const LATITUDE_DELTA = 0.009
 const LONGITUDE_DELTA = 0.009
 const Sport = () => {
     const navigation = useNavigation();
+    const { t } = useTranslation();
     const [weather, setWeather] = useState({})
     const stylesLightDark = useSelector((state) => state.settings.styles);
     // Text theo thoi tiet nma t ko biet lay theo thoi tiet nen luc nao no cung la excellent
@@ -80,10 +82,10 @@ const Sport = () => {
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                pointerEvents: 'box-none'
+                pointerEvents: 'box-none',
             }}>
                 <View style={styles.header}>
-                    <Text style={styles.headerText}>Sport</Text>
+                    <Text style={styles.headerText}>{t("sport")}</Text>
                 </View>
                 <View style={styles.halfView}>
                     <View style={{
@@ -124,9 +126,9 @@ const Sport = () => {
                                 </>
                                 :
                                 <>
-                                    <View style={[styles.weatherButton, { width: 200, marginLeft: -5, }]}>
+                                    {/* <View style={[styles.weatherButton, { width: 200, marginLeft: -5, }]}>
                                         <Text style={styles.textSmall}>Bluetooth is disconnected !</Text>
-                                    </View>
+                                    </View> */}
                                 </>
                         }
                     </View>
@@ -139,7 +141,7 @@ const Sport = () => {
                                 navigation.navigate(ROUTES.Waittime)
                             }}>
                             <View style={styles.goButton}>
-                                <Text style={{ fontSize: 55, color: "white" }}>GO!</Text>
+                                <Text style={{ fontSize: 55, color: "white" }}>{t("go")}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
