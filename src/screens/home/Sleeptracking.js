@@ -126,6 +126,7 @@ const Sleeptracking = () => {
     //         }
     //     ]
     // };
+    // console.log(dataSleep)
     return (
         <ImageBackground
             source={require('../../assets/icons/skynight.png')}

@@ -13,3 +13,19 @@ export const handlePostSportHistory = async (data) => {
         return error;
     }
 };
+
+export const handleGetAllSportHistory = async (data) => {
+    try {
+        const result = await APIManager('/map/getAllSportHistory', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: data
+        });
+        return result;
+    } catch (error) {
+        return error;
+    }
+};
+

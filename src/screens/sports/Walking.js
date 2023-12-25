@@ -64,8 +64,9 @@ export default function Walking() {
                 setCurrentLatitude(location?.latitude)
                 setCurrentLongitude(location?.longitude)
                 const { latitude, longitude, time } = location
+                const timestamp = new Date().getTime()
                 let coordinate = {
-                    latitude: latitude, longitude: longitude, timestamp: time
+                    latitude: latitude, longitude: longitude, timestamp: timestamp
                 }
                 setRouteCoordinates(prevCoordinates => [...prevCoordinates, coordinate]);
 
@@ -147,13 +148,14 @@ export default function Walking() {
     const handleButtonPress = () => {
         setButtonPressed(true);
         pressTimeout.current = setTimeout(() => {
-            const time = new Date()
-            const timestamp = time.getTime()
+            const timestamp = new Date().getTime()
+            var timestamps = []
             var latitudes = [];
             var longitudes = [];
             for (var i = 0; i < routeCoordinates.length; i++) {
                 latitudes.push(routeCoordinates[i].latitude);
                 longitudes.push(routeCoordinates[i].longitude);
+                timestamps.push(routeCoordinates[i].timestamp)
             }
 
             api.MapAPI.handlePostSportHistory({
@@ -161,7 +163,8 @@ export default function Walking() {
                 'timeStart': timeStart,
                 'timeEnd': timestamp,
                 'latitude': latitudes,
-                'longitude': longitudes
+                'longitude': longitudes,
+                'timestamp': timestamps
             }).then(response => {
 
             }).catch(err => {

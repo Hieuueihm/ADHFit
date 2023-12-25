@@ -22,14 +22,14 @@ import SetTarget from './src/screens/sports/SetTarget';
 import HelpAndSupport from './src/screens/me/HelpAndSupport';
 import Loading from './src/components/Loading';
 
-import ReactNativeForegroundService from "@supersami/rn-foreground-service";
-import BackgroundService from 'react-native-background-actions';
+// import ReactNativeForegroundService from "@supersami/rn-foreground-service";
+// import BackgroundService from 'rdeact-native-background-actions';
 
 
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 Notifications.registerRemoteNotifications();
-ReactNativeForegroundService.register();
+// ReactNativeForegroundService.register();
 
 // const sleep = (time) => new Promise((resolve) => setTimeout(() => resolve(), time));
 // const veryIntensiveTask = async (taskDataArguments) => {
