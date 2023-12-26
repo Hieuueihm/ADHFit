@@ -12,6 +12,9 @@ import utils from "../../utils";
 import Toast from 'react-native-toast-message'
 import { useTranslation } from "react-i18next";
 
+import { LogBox } from "react-native"
+LogBox.ignoreAllLogs(true)
+
 
 export default function ChangeGoalsScreen() {
     const navigation = useNavigation();
