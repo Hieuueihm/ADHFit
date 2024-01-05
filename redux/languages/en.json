@@ -125,9 +125,11 @@
       "time": "Time",
       "confirm":"Confirm",
       "exHour" : "Hour, examaple :13",
-      "exMin": "Minutes, examaple : 35"
-
-
+      "exMin": "Minutes, examaple : 35", 
+      "Home": "Home",
+      "Details": "Details",
+      "Sport": "Sport",
+      "Me": "Me"
 
 
 

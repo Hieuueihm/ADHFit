@@ -8,13 +8,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import Details from '../screens/details/Details';
 import Sport from '../screens/sports/Sport';
 import Walking from '../screens/sports/Walking';
+import { useTranslation } from "react-i18next";
 
 const Tab = createBottomTabNavigator();
 
 export function TabNavigations() {
+    const { t } = useTranslation();
     return (
         <Tab.Navigator
-            initialRouteName={ROUTES.HOME_TAB}
+            initialRouteName={t(ROUTES.HOME_TAB)}
             screenOptions={({ route }) => ({
                 tabBarActiveTintColor: 'black',
                 tabBarInactiveTintColor: '#9D9D9D',
@@ -22,18 +24,18 @@ export function TabNavigations() {
                     let iconName;
                     let screenName = route.name;
                     let background;
-                    if (screenName === ROUTES.HOME_TAB) {
+                    if (screenName === t(ROUTES.HOME_TAB)) {
                         iconName = focused ? 'home' : 'home-outline';
                         background = focused ? '#BBF246' : 'white';
-                    } else if (screenName === ROUTES.ME_TAB) {
+                    } else if (screenName === t(ROUTES.ME_TAB)) {
                         iconName = focused ? 'settings' : 'settings-outline';
                         background = focused ? '#BBF246' : 'white';
                     }
-                    else if (screenName === ROUTES.DETAILS) {
+                    else if (screenName === t(ROUTES.DETAILS)) {
                         iconName = focused ? 'document' : 'document-outline';
                         background = focused ? "#BBF246" : "white"
                     }
-                    else if (screenName === ROUTES.SPORT_TAB) {
+                    else if (screenName === t(ROUTES.SPORT_TAB)) {
                         iconName = focused ? 'footsteps' : "footsteps-outline";
                         background = focused ? "#bbf246" : 'white'
                     }
@@ -49,10 +51,10 @@ export function TabNavigations() {
                     </View>
                 },
             })}>
-            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.SPORT_TAB} component={Sport} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.DETAILS} component={Details} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.ME_TAB} component={Me} options={{ headerShown: false }} />
+            <Tab.Screen name={t(ROUTES.HOME_TAB)} component={Home} options={{ headerShown: false }} />
+            <Tab.Screen name={t(ROUTES.SPORT_TAB)} component={Sport} options={{ headerShown: false }} />
+            <Tab.Screen name={t(ROUTES.DETAILS)} component={Details} options={{ headerShown: false }} />
+            <Tab.Screen name={t(ROUTES.ME_TAB)} component={Me} options={{ headerShown: false }} />
         </Tab.Navigator>
     );
 }

@@ -51,7 +51,7 @@ export default function Setting() {
                 <View style={styles.leftHeader}>
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate(ROUTES.ME_TAB);
+                            navigation.navigate(t(ROUTES.ME_TAB));
                         }
                         }
                     >

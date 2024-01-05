@@ -121,6 +121,10 @@
       "time": "Thời gian",
       "confirm":"Xác nhận",
       "exHour" : "Giờ, ví dụ :13",
-      "exMin": "Phút, ví dụ: 35"
+      "exMin": "Phút, ví dụ: 35",
+      "Home": "Nhà",
+      "Details": "Chi tiết",
+      "Sport": "Thể thao",
+      "Me": "Tôi"
 }
   
