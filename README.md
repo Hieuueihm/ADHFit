@@ -55,7 +55,7 @@
 
 ## Documentation
 
-[Documentation](https://docs.google.com/document/d/1gbCcq1MDdTvpESl276nn1ER8RAWpwdCPB0WoXKpOQZg/edit?usp=sharing)
+[Documentation](https://docs.google.com/document/d/1pMKA4Lipd5hExAA4EqLBMvbZjEX_N3AqRbssdwnXams/edit?usp=sharing)
 
 ## Demo
 
